@@ -1,31 +1,59 @@
-import * as THREE from 'three';
+import * as THREE from 'three'; // THREE 핵심 모듈 추가
+import SceneManager from './SceneManager.js';
+import Farm from './Farm.js';
+import GrassManager from './GrassManager.js';
+import AnimalManager from './AnimalManager.js';
+import UIManager from './UIManager.js';
 
-// 씬 생성
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000000);
+// Three.js 컨텍스트 초기화
+class MainApplication {
+    constructor() {
+        this._initScene();
+        this._initManagers();
+        this._startAnimation();
+    }
 
-// 카메라 생성
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 5;
+    _initScene() {
+        // 1. 씬 매니저 초기화
+        this.sceneManager = new SceneManager('scene-container');
 
-// 렌더러 생성 및 설정
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+        // 2. 농장 평면 생성 (반드시 풀/동물보다 먼저 생성)
+        this.farm = new Farm(this.sceneManager.scene);
+    }
 
-// HTML의 'scene-container'에 렌더러 DOM 요소 추가
-document.getElementById('scene-container').appendChild(renderer.domElement);
+    _initManagers() {
+        // 3. 풀 & 동물 시스템 초기화
+        this.grassManager = new GrassManager(this.sceneManager.scene);
+        this.animalManager = new AnimalManager(this.sceneManager.scene);
 
-// 간단한 큐브 생성
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+        // 4. UI 컨트롤 패널 연결
+        this.uiManager = new UIManager(
+            this.grassManager,
+            this.animalManager
+        );
+    }
 
-// 애니메이션 루프
-function animate() {
-    requestAnimationFrame(animate);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    renderer.render(scene, camera);
+    _startAnimation() {
+        // 5. 애니메이션 루프 설정
+        const clock = new THREE.Clock();
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+            const deltaTime = clock.getDelta();
+
+            // 시스템 업데이트
+            this.grassManager.update(deltaTime);
+            this.animalManager.update(deltaTime);
+
+            // 렌더링
+            this.sceneManager.render();
+        };
+
+        // 6. 초기 강제 렌더링
+        this.sceneManager.render();
+        animate();
+    }
 }
-animate();
+
+// 7. 애플리케이션 실행
+new MainApplication();

@@ -3,21 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js Project</title>
-    <link rel="stylesheet" href="/styles/main.css">
+    <title>Farm Simulator</title>
+    <style>
+        /* 기본 리셋 및 전체 화면 설정 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #scene-container {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
 </head>
 <body>
 <div id="scene-container"></div>
 
+<!-- Three.js 모듈 매핑 -->
 <script type="importmap">
     {
         "imports": {
-            "three": "./node_modules/three/build/three.module.js"
+            "three": "./node_modules/three/build/three.module.js",
+            "three/addons/": "./node_modules/three/examples/jsm/",
+            "./SceneManager.js": "./src/SceneManager.js",
+            "./Farm.js": "./src/Farm.js",
+            "./GrassManager.js": "./src/GrassManager.js",
+            "./AnimalManager.js": "./src/AnimalManager.js",
+            "./UIManager.js": "./src/UIManager.js"
         }
     }
 </script>
-<script type="module" src="main.js">
 
+<!-- 메인 애플리케이션 진입점 -->
+<script type="module">
+    import MainApplication from './src/main.js';
+
+    // 애플리케이션 초기화
+    new MainApplication();
+
+    // 개발자 도구 활성화 (옵션)
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'F12') window.debugMode = true;
+    });
 </script>
 </body>
 </html>
