@@ -1,4 +1,4 @@
-import {setScene, setSceneElements} from "./Projects/sceneManager.js";
+import {setScene, setSceneElements} from "/Projects/sceneManager.js";
 
 setScene();
 setSceneElements();
