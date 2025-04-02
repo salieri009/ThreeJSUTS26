@@ -1,3 +1,4 @@
+/*
 import * as THREE from 'three';
 
 export default class AnimalManager {
@@ -62,4 +63,4 @@ export default class AnimalManager {
             animal.material.color.set(newColor);
         });
     }
-}
+}*/

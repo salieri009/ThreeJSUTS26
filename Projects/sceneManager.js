@@ -1,5 +1,34 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import * as THREE from './build/three.module.js';
+import { OrbitControls } from './build/controls/OrbitControls.js';
+
+
+export function setScene(){
+    scene = new THREE.Scene();
+    const ratio = window.innerWidth / window.innerHeight;
+    camera = new THREE.PerspectiveCamera(75, ratio, 0.1, 1000);
+    scene.background = new THREE.Color(0x87CEEB);
+
+    camera.position.set(0, 0, 15);
+    camera.lookAt(0, 0, 1);
+
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    controls = new OrbitControls(camera, renderer.domElement);
+}
+
+export function setSceneElements(){
+    const geometry = new THREE.BoxGeometry(2, 2, 2);
+    const material = new THREE.MeshStandardMaterial({
+        color: 0x00ff00,
+    });
+    
+    const box = new THREE.Mesh(geometry, material);
+    scene.add(box);
+}
+
+/*
 
 class SceneManager {
     constructor(containerId) {
@@ -117,3 +146,4 @@ setTimeout(() => {
 }, 100);
 
 animate();
+*/

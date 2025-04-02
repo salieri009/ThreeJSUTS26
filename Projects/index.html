@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farm Simulator</title>
+    <title>Interactive Farm</title>
     <style>
         /* 기본 리셋 및 전체 화면 설정 */
         * {
@@ -24,35 +24,19 @@
         }
     </style>
 </head>
+
 <body>
 <div id="scene-container"></div>
 
-<!-- Three.js 모듈 매핑 -->
-<script type="importmap">
-    {
-        "imports": {
-            "three": "./node_modules/three/build/three.module.js",
-            "three/addons/": "./node_modules/three/examples/jsm/",
-            "./SceneManager.js": "./src/SceneManager.js",
-            "./Farm.js": "./src/Farm.js",
-            "./GrassManager.js": "./src/GrassManager.js",
-            "./AnimalManager.js": "./src/AnimalManager.js",
-            "./UIManager.js": "./src/UIManager.js"
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./build/three.module.js"
+            }
         }
-    }
-</script>
+    </script>
 
-<!-- 메인 애플리케이션 진입점 -->
-<script type="module">
-    import MainApplication from './src/main.js';
+    <script src="main.js" type="module"></script>
 
-    // 애플리케이션 초기화
-    new MainApplication();
-
-    // 개발자 도구 활성화 (옵션)
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'F12') window.debugMode = true;
-    });
-</script>
 </body>
 </html>

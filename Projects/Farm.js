@@ -1,3 +1,4 @@
+/*
 import * as THREE from 'three';
 
 export default class Farm {
@@ -19,4 +20,4 @@ export default class Farm {
 
         scene.add(this.plane);
     }
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 import * as THREE from 'three';
 
 export default class GrassManager {
@@ -60,3 +61,4 @@ export default class GrassManager {
         });
     }
 }
+*/
