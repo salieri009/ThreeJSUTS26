@@ -1,6 +1,8 @@
 import * as THREE from './build/three.module.js';
 import { OrbitControls } from './build/controls/OrbitControls.js';
 
+import { GLTFLoader } from './build/GLTFLoader.js'
+
 let camera, controls, renderer, scene, box;
 export function setScene(){
     scene = new THREE.Scene();
@@ -16,27 +18,24 @@ export function setScene(){
 
     controls = new OrbitControls(camera, renderer.domElement);
 
-    var cameraLight = new THREE.PointLight(new THREE.Color(1, 1, 1), 0.5);
+    var cameraLight = new THREE.PointLight(new THREE.Color(1, 1, 1), 3);
     cameraLight.position.set(0, 5, 10);
     camera.add(cameraLight);
     scene.add(camera);
+   
 }
 
 export function setSceneElements(){
-    const geometry = new THREE.BoxGeometry(2, 2, 2);
-    const material = new THREE.MeshBasicMaterial({
-        color: new THREE.Color(1, 1, 1),
-        wireframe: true
-    });
-    
-    box = new THREE.Mesh(geometry, material);
-    scene.add(box);
+    const loader = new GLTFLoader();
+    loader.load("models/Cow.gltf", function ( gltf ) {
+		scene.add( gltf.scene );
+		gltf.scene; 
+	});
 }
 
 export function controlCamera(){
     requestAnimationFrame(controlCamera);
     controls.update();
-    //box.rotation.x += 0.01;
     renderer.render(scene, camera);
 }
 
