@@ -11813,7 +11813,7 @@ class PerspectiveCamera extends Camera {
 	 * multi-monitor/multi-machine setups.
 	 *
 	 * For example, if you have 3x2 monitors and each monitor is 1920x1080 and
-	 * the monitors are in grid like this
+	 * the monitors are in terrain like this
 	 *
 	 *   +---+---+---+
 	 *   | A | B | C |
@@ -11841,7 +11841,7 @@ class PerspectiveCamera extends Camera {
 	 *   --F--
 	 *   camera.setViewOffset( fullWidth, fullHeight, w * 2, h * 1, w, h );
 	 *
-	 *   Note there is no reason monitors have to be the same size or in a grid.
+	 *   Note there is no reason monitors have to be the same size or in a terrain.
 	 */
 	setViewOffset( fullWidth, fullHeight, x, y, width, height ) {
 
