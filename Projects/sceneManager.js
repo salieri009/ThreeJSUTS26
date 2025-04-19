@@ -1,92 +1,161 @@
 import * as THREE from './build/three.module.js';
 import { OrbitControls } from './build/controls/OrbitControls.js';
-import { GLTFLoader } from './build/GLTFLoader.js';
 
-let camera, controls, renderer, scene;
-
-export function setScene() {
+let camera, controls, renderer, scene, box;
+export function setScene(){
     scene = new THREE.Scene();
-
     const ratio = window.innerWidth / window.innerHeight;
     camera = new THREE.PerspectiveCamera(75, ratio, 0.1, 1000);
-    camera.position.set(0, 10, 25);
-    camera.lookAt(0, 0, 0);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    camera.position.set(0, 0, 15);
+    camera.lookAt(0, 0, 1);
+    
+    renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    // #scene-container에 추가 (CSS가 적용되어 있다고 가정)
-    const container = document.getElementById('scene-container') || document.body;
-    container.appendChild(renderer.domElement);
+    document.body.appendChild(renderer.domElement);
 
     controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
 
-    // 기본 조명
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1.1);
-    sunLight.position.set(8, 20, 10);
-    sunLight.castShadow = true;
-    scene.add(sunLight);
-
-    // 바닥(그리드) 예시
-    const ground = new THREE.Mesh(
-        new THREE.BoxGeometry(10, 0.5, 10), // BoxGeometry로 변경 (15x15 크기, 두께 0.5)
-        new THREE.MeshStandardMaterial({ color: 0xb7e1cd }) // 동일한 재질
-    );
-    ground.position.y = 0; // 두께의 절반만큼 올려서 바닥이 씹히지 않도록
-    ground.receiveShadow = true;
-    scene.add(ground);
-
-    // 리사이즈 대응
-    window.addEventListener('resize', handleWindowResize);
+    var cameraLight = new THREE.PointLight(new THREE.Color(1, 1, 1), 0.5);
+    cameraLight.position.set(0, 5, 10);
+    camera.add(cameraLight);
+    scene.add(camera);
 }
 
-function handleWindowResize() {
-    if (!camera || !renderer) return;
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-export function setSceneElements() {
-    return new Promise((resolve, reject) => {
-        const loader = new GLTFLoader();
-        loader.load(
-            "models/Cow.gltf",
-            (gltf) => {
-                gltf.scene.traverse(child => {
-                    if (child.isMesh) child.castShadow = true;
-                });
-                scene.add(gltf.scene);
-                resolve(gltf.scene);
-            },
-            undefined,
-            (error) => {
-                console.error("Cow.gltf load error", error);
-                alert("Failed to load Cow model.");
-                reject(error);
-            }
-        );
+export function setSceneElements(){
+    const geometry = new THREE.BoxGeometry(2, 2, 2);
+    const material = new THREE.MeshBasicMaterial({
+        color: new THREE.Color(1, 1, 1),
+        wireframe: true
     });
+    
+    box = new THREE.Mesh(geometry, material);
+    scene.add(box);
 }
 
-export function controlCamera() {
-    let prevTime = performance.now();
-    function animate() {
-        requestAnimationFrame(animate);
-        const now = performance.now();
-        const delta = (now - prevTime) / 1000;
-        prevTime = now;
-        controls.update();
-        renderer.render(scene, camera);
+export function controlCamera(){
+    requestAnimationFrame(controlCamera);
+    controls.update();
+    //box.rotation.x += 0.01;
+    renderer.render(scene, camera);
+}
+
+/*
+
+class SceneManager {
+    constructor(containerId) {
+        // 1. 기본 씬 설정
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0x87CEEB);
+
+        // 2. 카메라 설정
+        this.camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        this.camera.position.set(0, 10, 20);
+        this.camera.lookAt(0, 0, 0);  // 장면 중심을 바라봄
+
+        // 3. 렌더러 설정
+        this.renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            powerPreference: "high-performance"
+        });
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.getElementById(containerId).appendChild(this.renderer.domElement);
+
+        // 4. 컨트롤 설정
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.05;
+        this.controls.minDistance = 5;
+        this.controls.maxDistance = 50;
+
+        // 5. 조명 시스템 초기화
+        this._initLightingSystem();
+
+        // 6. 테스트 객체 추가
+        this._addDebugObjects();
+
+        // 7. 창 크기 변경 핸들러
+        window.addEventListener('resize', this._handleResize.bind(this));
     }
-    animate();
+
+    _initLightingSystem() {
+        // 환경 조명
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+        this.scene.add(ambientLight);
+
+        // 주 조명
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+        directionalLight.position.set(10, 20, 10);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        this.scene.add(directionalLight);
+    }
+
+    _addDebugObjects() {
+        // 테스트 큐브
+        const geometry = new THREE.BoxGeometry(2, 2, 2);
+        const material = new THREE.MeshStandardMaterial({
+            color: 0x00ff00,
+            metalness: 0.3,
+            roughness: 0.2
+        });
+        this.testCube = new THREE.Mesh(geometry, material);
+        this.testCube.castShadow = true;
+        this.testCube.receiveShadow = true;
+        this.scene.add(this.testCube);
+
+        // 바닥 평면
+        const planeGeometry = new THREE.PlaneGeometry(20, 20);
+        const planeMaterial = new THREE.MeshStandardMaterial({
+            color: 0x808080,
+            side: THREE.DoubleSide
+        });
+        this.groundPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+        this.groundPlane.rotation.x = -Math.PI / 2;
+        this.groundPlane.receiveShadow = true;
+        this.scene.add(this.groundPlane);
+
+        // 좌표계 도우미
+        this.scene.add(new THREE.AxesHelper(5));
+    }
+
+    _handleResize() {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    render() {
+        this.controls.update();
+        this.renderer.render(this.scene, this.camera);
+    }
 }
 
-// 필요한 전역 access용 getter (권장)
-export function getScene() { return scene; }
-export function getCamera() { return camera; }
-export function getRenderer() { return renderer; }
+// 초기화 및 애니메이션 루프
+const sceneManager = new SceneManager('scene-container');
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    // 테스트 큐브 회전
+    sceneManager.testCube.rotation.x += 0.01;
+    sceneManager.testCube.rotation.y += 0.01;
+
+    sceneManager.render();
+}
+
+// 초기 렌더링 강제 실행
+setTimeout(() => {
+    sceneManager.render();
+}, 100);
+
+animate();
+*/
