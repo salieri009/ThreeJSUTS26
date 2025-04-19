@@ -33,11 +33,10 @@ export function setScene() {
 
     // 바닥(그리드) 예시
     const ground = new THREE.Mesh(
-        new THREE.PlaneGeometry(50, 50),
-        new THREE.MeshStandardMaterial({ color: 0xb7e1cd })
+        new THREE.BoxGeometry(15, 0.5, 15), // BoxGeometry로 변경 (15x15 크기, 두께 0.5)
+        new THREE.MeshStandardMaterial({ color: 0xb7e1cd }) // 동일한 재질
     );
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = 0;
+    ground.position.y = 0; // 두께의 절반만큼 올려서 바닥이 씹히지 않도록
     ground.receiveShadow = true;
     scene.add(ground);
 
