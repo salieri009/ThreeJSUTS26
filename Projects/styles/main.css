@@ -1,8 +1,115 @@
+/* 기본 전체화면 세팅 */
 body, html {
     margin: 0;
     overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(#e9f7ef 0%, #b7e1cd 90%);
+    font-family: 'Segoe UI', Arial, sans-serif;
 }
+
+/* Three.js 렌더 타겟 컨테이너 */
 #scene-container {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    /* (필요시) outline: 1px solid #ccc; */
+}
+
+/* Three.js 캔버스 꽉 채우기 */
+#scene-container canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+}
+
+/* UI 버튼 샘플 */
+.ui-button {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    padding: 11px 24px;
+    border-radius: 7px;
+    cursor: pointer;
+    opacity: 0.95;
+    transition: background 0.18s;
+    z-index: 10;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.08);
+}
+.ui-button:hover { background: #217dbb; }
+
+.status-message {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222b;
+    color: #fff;
+    padding: 13px 24px;
+    border-radius: 7px;
+    font-size: 1.13em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    z-index: 20;
+}
+
+/* lil-gui 패널 위치 및 스타일 */
+.lil-gui.root {
+    font-size: 15px !important;
+    right: 18px !important;
+    top: 72px !important;
+    border-radius: 7px !important;
+    background: rgba(255,255,255,0.93) !important;
+    box-shadow: 0 2px 16px #6ad19a23 !important;
+    z-index: 30 !important;
+}
+
+/* 자원 표시기 스타일 */
+.resource-bar {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.92);
+    padding: 11px 32px 11px 24px;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(80,160,80,0.15);
+    font-size: 20px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    gap: 26px;
+    align-items: center;
+    z-index: 100;
+    user-select: none;
+}
+.resource-bar span {
+    margin-right: 12px;
+    font-weight: 600;
+}
+.resource-bar .icon {
+    font-style: normal;
+    margin-right: 6px;
+}
+@media (max-width: 600px) {
+    .resource-bar {
+        font-size: 16px;
+        padding: 7px 10px 7px 10px;
+        top: 6px;
+        gap: 12px;
+    }
+}
+
+/* 모바일 대응 */
+@media (max-width: 600px) {
+    .ui-button { top: 8px; left: 8px; font-size: 15px; padding: 8px 16px; }
+    .status-message { bottom: 10px; font-size: 0.94em; }
+    .lil-gui.root { right: 2px !important; top: 38px !important; }
 }
