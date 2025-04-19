@@ -72,6 +72,41 @@ body, html {
     z-index: 30 !important;
 }
 
+/* 자원 표시기 스타일 */
+.resource-bar {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.92);
+    padding: 11px 32px 11px 24px;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(80,160,80,0.15);
+    font-size: 20px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    gap: 26px;
+    align-items: center;
+    z-index: 100;
+    user-select: none;
+}
+.resource-bar span {
+    margin-right: 12px;
+    font-weight: 600;
+}
+.resource-bar .icon {
+    font-style: normal;
+    margin-right: 6px;
+}
+@media (max-width: 600px) {
+    .resource-bar {
+        font-size: 16px;
+        padding: 7px 10px 7px 10px;
+        top: 6px;
+        gap: 12px;
+    }
+}
+
 /* 모바일 대응 */
 @media (max-width: 600px) {
     .ui-button { top: 8px; left: 8px; font-size: 15px; padding: 8px 16px; }
