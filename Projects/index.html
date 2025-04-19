@@ -3,29 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Farm</title>
-<!--    <link rel="stylesheet" href="styles/main.css">-->
+    <title>Idle Game</title>
 </head>
-
 <body>
-<div id="scene-container"></div>
+<div class="game-container">
+    <!-- Main Game Screen -->
+    <div class="game-screen">
+        <div id="scene-container"></div>
 
-<!--자원표시-->
-<div class="resource-bar">
-    <span><span class="icon">🪵</span><span id="resource-wood">1000</span></span>
-    <span><span class="icon">🪨</span><span id="resource-stone">500</span></span>
-    <span><span class="icon">💰</span><span id="resource-gold">2000</span></span>
+        <!-- Resource Bar -->
+        <div class="resource-bar">
+            <div class="resource-item">
+                <span class="icon">🪵</span>
+                <span id="resource-wood">1000</span>
+            </div>
+            <div class="resource-item">
+                <span class="icon">🪨</span>
+                <span id="resource-stone">500</span>
+            </div>
+            <div class="resource-item">
+                <span class="icon">💰</span>
+                <span id="resource-gold">2000</span>
+            </div>
+            <div class="resource-item">
+                <span class="icon">⚡</span>
+                <span id="resource-energy">100</span>
+            </div>
+        </div>
+
+        <!-- Bottom Menu Bar -->
+        <div class="bottom-menu">
+            <div class="menu-button" id="btn-buildings">Buildings</div>
+            <div class="menu-button" id="btn-upgrades">Upgrades</div>
+            <div class="menu-button" id="btn-achievements">Achievements</div>
+            <div class="menu-button" id="btn-shop">Shop</div>
+            <div class="menu-button" id="btn-settings">Settings</div>
+        </div>
+    </div>
+
+    <!-- Side Menu -->
+    <div class="side-menu">
+        <div class="upgrade-section">
+            <h2>Building Upgrades</h2>
+            <div class="upgrade-item" id="upgrade-woodcutter">
+                Woodcutter's Hut (Level 1)
+                <div>Cost: 🪵 100</div>
+                <div>Current Production: 1 per second</div>
+            </div>
+            <div class="upgrade-item" id="upgrade-quarry">
+                Quarry (Level 1)
+                <div>Cost: 💰 150</div>
+                <div>Current Production: 1 per second</div>
+            </div>
+        </div>
+
+        <div class="upgrade-section">
+            <h2>Research</h2>
+            <div class="upgrade-item" id="research-efficiency">
+                Production Efficiency (Level 1)
+                <div>Cost: 💰 500</div>
+                <div>Effect: All production +10%</div>
+            </div>
+        </div>
+    </div>
 </div>
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "./build/three.module.js"
-            }
+<!-- Achievement Modal -->
+<div class="modal" id="achievement-modal">
+    <h2>Achievement Unlocked!</h2>
+    <p id="achievement-text"></p>
+    <button onclick="closeModal()">OK</button>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal" id="settings-modal">
+    <h2>Settings</h2>
+    <div>
+        <label>
+            Sound
+            <input type="checkbox" id="sound-toggle">
+        </label>
+    </div>
+    <div>
+        <label>
+            Notifications
+            <input type="checkbox" id="notification-toggle">
+        </label>
+    </div>
+    <button onclick="closeSettingsModal()">Save</button>
+</div>
+
+<script type="importmap">
+    {
+        "imports": {
+            "three": "./build/three.module.js"
         }
-    </script>
+    }
+</script>
 
-    <script src="/Projects/main.js" type="module"></script>
-
+<script src="/Projects/main.js" type="module"></script>
 </body>
 </html>
