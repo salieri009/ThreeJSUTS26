@@ -1,8 +1,15 @@
 import * as THREE from './build/three.module.js';
 import { OrbitControls } from './build/controls/OrbitControls.js';
 import { GLTFLoader } from './build/GLTFLoader.js'
-
+//==========Boxes for the scene
 let camera, controls, renderer, scene, box;
+//==============================Sun==============
+let sunlight;
+// 태양 각도 (0 = 동쪽, PI = 서쪽)
+let sunTheta = 0;
+//angle of light ( starting from the east to west
+//======================================================
+
 export function setScene(){
     scene = new THREE.Scene();
     const ratio = window.innerWidth / window.innerHeight;
@@ -21,7 +28,12 @@ export function setScene(){
     cameraLight.position.set(0, 5, 10);
     camera.add(cameraLight);
     scene.add(camera);
-   
+
+    //set lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+
 }
 
 //Export a Cow for test
