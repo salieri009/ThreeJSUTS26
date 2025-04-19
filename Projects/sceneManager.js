@@ -1,6 +1,5 @@
 import * as THREE from './build/three.module.js';
 import { OrbitControls } from './build/controls/OrbitControls.js';
-
 import { GLTFLoader } from './build/GLTFLoader.js'
 
 let camera, controls, renderer, scene, box;
