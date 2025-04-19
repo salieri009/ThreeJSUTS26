@@ -1,70 +1,47 @@
-gi/*
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-
+// UIManager.js
 export default class UIManager {
-    constructor(grassManager, animalManager) {
-        this.grassManager = grassManager;
-        this.animalManager = animalManager;
+    constructor() {
+        this.wood = 1000;
+        this.stone = 500;
+        this.gold = 2000;
 
-        // GUI 초기화
-        this.gui = new GUI();
+        this.woodElement = document.getElementById("resource-wood");
+        this.stoneElement = document.getElementById("resource-stone");
+        this.goldElement = document.getElementById("resource-gold");
 
-        // 풀 설정 섹션 추가
-        this._setupGrassControls();
-
-        // 동물 설정 섹션 추가
-        this._setupAnimalControls();
+        this._startAutoResourceGain();
     }
 
-    _setupGrassControls() {
-        const folder = this.gui.addFolder('Grass Settings');
-
-        // 풀 개수 조정
-        folder.add(this.grassManager.params, 'count', 100, 5000)
-            .name('Count')
-            .step(100)
-            .onChange(() => this.grassManager.createGrass());
-
-        // 풀 높이 조정
-        folder.add(this.grassManager.params, 'height', 0.1, 3.0)
-            .name('Height');
-
-        // 풀 성장 속도 조정
-        folder.add(this.grassManager.params, 'growthSpeed', 0.1, 2.0)
-            .name('Growth Speed');
-
-        // 풀 색상 변경
-        folder.addColor(this.grassManager.params, 'color')
-            .name('Color')
-            .onChange(color => this.grassManager.updateGrassColor(color));
-
-        folder.open();
+    updateResourcesDisplay() {
+        this.woodElement.textContent = Math.floor(this.wood);
+        this.stoneElement.textContent = Math.floor(this.stone);
+        this.goldElement.textContent = Math.floor(this.gold);
     }
 
-    _setupAnimalControls() {
-        const folder = this.gui.addFolder('Animal Settings');
+    _startAutoResourceGain() {
+        setInterval(() => {
+            this.wood += 5;  // 방치형 요소: 초당 증가
+            this.stone += 2;
+            this.gold += 10;
+            this.updateResourcesDisplay();
+        }, 1000); // 1초마다 자원 증가
+    }
 
-        // 동물 개수 조정
-        folder.add(this.animalManager.params, 'count', 1, 20)
-            .name('Count')
-            .step(1)
-            .onChange(() => this.animalManager.createAnimals());
+    addResources({ wood = 0, stone = 0, gold = 0 }) {
+        this.wood += wood;
+        this.stone += stone;
+        this.gold += gold;
+        this.updateResourcesDisplay();
+    }
 
-        // 동물 크기 조정
-        folder.add(this.animalManager.params, 'size', 0.1, 2.0)
-            .name('Size')
-            .onChange(() => this.animalManager.createAnimals());
-
-        // 동물 이동 속도 조정
-        folder.add(this.animalManager.params, 'speed', 0.01, 0.1)
-            .name('Speed');
-
-        // 동물 색상 변경
-        folder.addColor(this.animalManager.params, 'color')
-            .name('Color')
-            .onChange(color => this.animalManager.updateAnimalColor(color));
-
-        folder.open();
+    spendResources({ wood = 0, stone = 0, gold = 0 }) {
+        if (this.wood >= wood && this.stone >= stone && this.gold >= gold) {
+            this.wood -= wood;
+            this.stone -= stone;
+            this.gold -= gold;
+            this.updateResourcesDisplay();
+            return true;
+        }
+        return false;
     }
 }
-*/
