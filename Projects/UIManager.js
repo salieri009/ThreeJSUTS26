@@ -1,4 +1,3 @@
-gi/*
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 export default class UIManager {
