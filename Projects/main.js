@@ -5,4 +5,4 @@ setScene();
 setSceneElements();
 controlCamera();
 
-const uiManager = new UIManager(); // UIManager 인스턴스 생성
+// const uiManager = new UIManager(); // UIManager 인스턴스 생성
