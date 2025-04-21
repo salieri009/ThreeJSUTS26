@@ -52,7 +52,3 @@ export function controlCamera() {
     renderer.render(scene, camera);
 }
 
-// Initialize and Run
-setScene();
-setSceneElements();
-controlCamera();

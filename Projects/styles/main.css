@@ -326,6 +326,44 @@ body, html {
     z-index: 30 !important;
 }
 
+/* Selection Menu Styling */
+.selection-menu {
+    background: #252d40;
+    border-radius: 4px;
+    padding: 8px 0;
+    min-width: 150px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.menu-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.menu-item:hover {
+    background: #304060;
+}
+
+/* Floating Message */
+.floating-message {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(30, 37, 56, 0.9);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
 /* Responsive design adjustments */
 @media (max-width: 768px) {
     .app-container {
