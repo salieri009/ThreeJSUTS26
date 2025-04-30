@@ -1,106 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Idle Game</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>3D Builder</title>
+    <link rel="stylesheet" href="styles/main.css" />
 </head>
+
 <body>
-<div class="game-container">
-    <!-- Main Game Screen -->
-    <div class="game-screen">
-        <div id="scene-container"></div>
-
-        <!-- Resource Bar -->
-        <div class="resource-bar">
-            <div class="resource-item">
-                <span class="icon">🪵</span>
-                <span id="resource-wood">1000</span>
-            </div>
-            <div class="resource-item">
-                <span class="icon">🪨</span>
-                <span id="resource-stone">500</span>
-            </div>
-            <div class="resource-item">
-                <span class="icon">💰</span>
-                <span id="resource-gold">2000</span>
-            </div>
-            <div class="resource-item">
-                <span class="icon">⚡</span>
-                <span id="resource-energy">100</span>
-            </div>
-        </div>
-
-        <!-- Bottom Menu Bar -->
-        <div class="bottom-menu">
-            <div class="menu-button" id="btn-buildings">Buildings</div>
-            <div class="menu-button" id="btn-upgrades">Upgrades</div>
-            <div class="menu-button" id="btn-achievements">Achievements</div>
-            <div class="menu-button" id="btn-shop">Shop</div>
-            <div class="menu-button" id="btn-settings">Settings</div>
-        </div>
+<!-- 상단 헤더 -->
+<header class="app-header">
+    <span class="logo-dot"></span>
+    <span class="header-title">3D Builder</span>
+    <div class="header-actions">
+        <button class="header-btn">Save</button>
+        <button class="header-btn">Settings</button>
     </div>
+</header>
 
-    <!-- Side Menu -->
-    <div class="side-menu">
-        <div class="upgrade-section">
-            <h2>Building Upgrades</h2>
-            <div class="upgrade-item" id="upgrade-woodcutter">
-                Woodcutter's Hut (Level 1)
-                <div>Cost: 🪵 100</div>
-                <div>Current Production: 1 per second</div>
+<!-- 전체 레이아웃 -->
+<div class="app-container">
+
+    <!-- 좌측 Build 패널 -->
+    <nav id="build-panel" class="sidebar">
+        <div class="info-card">
+            <div class="info-row"><span>Level</span><span>1</span></div>
+            <div class="info-row"><span>Score</span><span>0</span></div>
+            <div class="info-row"><span>Elements</span><span>0/10</span></div>
+        </div>
+        <div class="category-tabs">
+            <div class="category-tab active">Master</div>
+            <div class="category-tab">Sphere</div>
+        </div>
+        <h3 class="props-label">Props</h3>
+        <div class="props-list">
+            <div class="draggable-item" draggable="true" data-type="tree">
+                <span class="item-icon">🌲</span>
+                <span>Tree</span>
             </div>
-            <div class="upgrade-item" id="upgrade-quarry">
-                Quarry (Level 1)
-                <div>Cost: 💰 150</div>
-                <div>Current Production: 1 per second</div>
+            <div class="draggable-item" draggable="true" data-type="house">
+                <span class="item-icon">🏠</span>
+                <span>House</span>
             </div>
         </div>
+        <button class="add-button" title="Add new">+</button>
+    </nav>
 
-        <div class="upgrade-section">
-            <h2>Research</h2>
-            <div class="upgrade-item" id="research-efficiency">
-                Production Efficiency (Level 1)
-                <div>Cost: 💰 500</div>
-                <div>Effect: All production +10%</div>
-            </div>
+    <!-- 메인 씬 영역 -->
+    <main id="scene-container" class="scene">
+        <!-- Three.js 캔버스가 여기 들어감 -->
+        <!-- 필요하면 중앙에 안내문구 표시: <div class="scene-placeholder">Drop objects here</div> -->
+        <!-- 하단 우측 장면 컨트롤 버튼 -->
+        <div class="scene-controls">
+            <button class="scene-control-button" title="Grid"><span>☰</span></button>
+            <button class="scene-control-button" title="View"><span>🔍</span></button>
         </div>
-    </div>
+    </main>
+
+    <!-- 우측 속성 패널 -->
+    <aside class="properties">
+        <h3>Properties</h3>
+        <div class="transform-group">
+            <label>Position</label>
+            <input type="text" placeholder="X" />
+            <input type="text" placeholder="Y" />
+            <input type="text" placeholder="Z" />
+        </div>
+        <div class="transform-group">
+            <label>Rotation</label>
+            <input type="text" placeholder="X" />
+            <input type="text" placeholder="Y" />
+            <input type="text" placeholder="Z" />
+        </div>
+        <div class="material-group">
+            <label>Color</label>
+            <input type="color" />
+        </div>
+        <button class="add-button" title="Add property">+</button>
+    </aside>
 </div>
 
-<!-- Achievement Modal -->
-<div class="modal" id="achievement-modal">
-    <h2>Achievement Unlocked!</h2>
-    <p id="achievement-text"></p>
-    <button onclick="closeModal()">OK</button>
+<!-- 자원 바 (필요시, 이미지엔 없지만 남기고 싶다면) -->
+<!--
+<div class="resource-bar">
+    <span><span class="icon">🪵</span><span id="resource-wood">1000</span></span>
+    <span><span class="icon">🪨</span><span id="resource-stone">500</span></span>
+    <span><span class="icon">💰</span><span id="resource-gold">2000</span></span>
 </div>
-
-<!-- Settings Modal -->
-<div class="modal" id="settings-modal">
-    <h2>Settings</h2>
-    <div>
-        <label>
-            Sound
-            <input type="checkbox" id="sound-toggle">
-        </label>
-    </div>
-    <div>
-        <label>
-            Notifications
-            <input type="checkbox" id="notification-toggle">
-        </label>
-    </div>
-    <button onclick="closeSettingsModal()">Save</button>
-</div>
+-->
 
 <script type="importmap">
     {
-        "imports": {
-            "three": "./build/three.module.js"
-        }
+      "imports": {
+        "three": "./build/three.module.js"
+      }
     }
 </script>
 
 <script src="/Projects/main.js" type="module"></script>
+
 </body>
 </html>

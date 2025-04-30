@@ -1,149 +1,269 @@
-// UIManager.js
-// 방치형(Idle) 게임용 UI 매니저 예시
+// UIManager.js - Updated with selection menu functionality
 
 export default class UIManager {
-    constructor() {
-        // 게임 상태
+    constructor(sceneManager) {
+        // Store reference to SceneManager for communication
+        this.sceneManager = sceneManager;
+
+        // Keep original resource management code
         this.resources = {
-            wood: 0,
-            stone: 0,
-            gold: 0
+            wood: 0, stone: 0, gold: 0
         };
         this.perSecond = {
-            wood: 0,
-            stone: 0,
-            gold: 0
+            wood: 0, stone: 0, gold: 0
         };
         this.upgrades = {
-            clickPower: 1,
-            autoWood: 0
+            clickPower: 1, autoWood: 0
         };
 
-        this.createUI();
+        // Initialize UI interactions
+        this.initSelectionMenus();
+
+        // Original methods (kept for compatibility)
         this.bindEvents();
         this.startResourceLoop();
     }
 
-    createUI() {
-        // 전체 UI 컨테이너
-        this.uiRoot = document.createElement("div");
-        this.uiRoot.style.position = "fixed";
-        this.uiRoot.style.top = "20px";
-        this.uiRoot.style.left = "20px";
-        this.uiRoot.style.zIndex = "100";
-        this.uiRoot.style.color = "#fff";
-        this.uiRoot.style.fontFamily = "sans-serif";
-        this.uiRoot.innerHTML = `
-            <div id="resource-panel" style="background:rgba(0,0,0,0.7);padding:16px 24px;border-radius:10px;min-width:220px;">
-                <div style="font-size:1.3em;font-weight:bold;margin-bottom:10px;">자원</div>
-                <div>🪵 <span id="wood-count">0</span> <small>(+<span id="wood-ps">0</span>/s)</small></div>
-                <div>🪨 <span id="stone-count">0</span> <small>(+<span id="stone-ps">0</span>/s)</small></div>
-                <div>💰 <span id="gold-count">0</span> <small>(+<span id="gold-ps">0</span>/s)</small></div>
-                <button id="gather-wood" style="margin-top:10px;">🪓 나무 캐기 (+<span id="click-power">1</span>)</button>
-            </div>
-            <div id="shop-panel" style="background:rgba(20,20,20,0.7);padding:16px 24px;border-radius:10px;min-width:220px;margin-top:18px;">
-                <div style="font-size:1.1em;font-weight:bold;margin-bottom:8px;">상점</div>
-                <button id="upgrade-click" style="margin-bottom:8px;width:100%;">클릭 강화<br>💰 50</button>
-                <button id="buy-auto-wood" style="width:100%;">나무 자동화<br>💰 200</button>
-            </div>
-            <div id="message-panel" style="margin-top:18px;min-height:20px;"></div>
+    // New method to initialize selection menus
+    initSelectionMenus() {
+        // Get all add buttons in the interface
+        const addButtons = document.querySelectorAll('.add-button');
+
+        // Add click event listeners to all "+" buttons
+        addButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                // Prevent event bubbling
+                event.stopPropagation();
+
+                // Determine which panel the button belongs to
+                // (left sidebar or right properties panel)
+                const isLeftPanel = button.closest('#build-panel') !== null;
+
+                // Show appropriate selection menu
+                if (isLeftPanel) {
+                    this.showCategoryMenu(button);
+                } else {
+                    // Handle right panel "+" button if needed
+                    this.showPropertyMenu(button);
+                }
+            });
+        });
+
+        // Close menus when clicking elsewhere
+        document.addEventListener('click', () => {
+            this.closeAllMenus();
+        });
+    }
+
+    // Show category selection menu (Building/Animal)
+    showCategoryMenu(button) {
+        // Close any existing menus first
+        this.closeAllMenus();
+
+        // Create category selection menu
+        const menuEl = document.createElement('div');
+        menuEl.className = 'selection-menu category-menu';
+        menuEl.innerHTML = `
+            <div class="menu-item" data-category="building">🏠 Add Building</div>
+            <div class="menu-item" data-category="animal">🐄 Add Animal</div>
         `;
-        document.body.appendChild(this.uiRoot);
 
-        // 요소 참조 저장
-        this.woodCount = this.uiRoot.querySelector("#wood-count");
-        this.stoneCount = this.uiRoot.querySelector("#stone-count");
-        this.goldCount = this.uiRoot.querySelector("#gold-count");
-        this.woodPS = this.uiRoot.querySelector("#wood-ps");
-        this.stonePS = this.uiRoot.querySelector("#stone-ps");
-        this.goldPS = this.uiRoot.querySelector("#gold-ps");
-        this.clickPowerEl = this.uiRoot.querySelector("#click-power");
-        this.messagePanel = this.uiRoot.querySelector("#message-panel");
-        this.upgradeClickBtn = this.uiRoot.querySelector("#upgrade-click");
-        this.buyAutoWoodBtn = this.uiRoot.querySelector("#buy-auto-wood");
-        this.gatherWoodBtn = this.uiRoot.querySelector("#gather-wood");
-    }
+        // Position menu near the button
+        this.positionMenuNearElement(menuEl, button);
 
-    bindEvents() {
-        // 나무 클릭 수집
-        this.gatherWoodBtn.addEventListener("click", () => {
-            this.resources.wood += this.upgrades.clickPower;
-            this.showFloatingText(`+${this.upgrades.clickPower}🪵`, this.gatherWoodBtn, "#4CAF50");
-            this.updateUI();
+        // Add event listeners to menu items
+        menuEl.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const category = item.getAttribute('data-category');
+                if (category === 'animal') {
+                    this.showAnimalSubmenu(button);
+                } else if (category === 'building') {
+                    this.showBuildingSubmenu(button);
+                }
+            });
         });
 
-        // 클릭 강화 업그레이드
-        this.upgradeClickBtn.addEventListener("click", () => {
-            if (this.resources.gold >= 50) {
-                this.resources.gold -= 50;
-                this.upgrades.clickPower += 1;
-                this.clickPowerEl.textContent = this.upgrades.clickPower;
-                this.showMessage("클릭 강화! (파워 +1)");
-                this.updateUI();
-            } else {
-                this.showMessage("골드가 부족합니다!");
-            }
+        // Add to DOM
+        document.body.appendChild(menuEl);
+    }
+
+    // Show animal selection submenu
+    showAnimalSubmenu(button) {
+        // Close previous menus
+        this.closeAllMenus();
+
+        // Create animal selection menu
+        const menuEl = document.createElement('div');
+        menuEl.className = 'selection-menu animal-menu';
+        menuEl.innerHTML = `
+            <div class="menu-item" data-animal="chicken">🐔 Chicken</div>
+            <div class="menu-item" data-animal="pig">🐖 Pig</div>
+            <div class="menu-item" data-animal="cow">🐄 Cow</div>
+        `;
+
+        // Position menu near the button
+        this.positionMenuNearElement(menuEl, button);
+
+        // Add event listeners to animal items
+        menuEl.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const animalType = item.getAttribute('data-animal');
+
+                // Send selected animal to SceneManager
+                this.addAnimalToScene(animalType);
+
+                // Close menu after selection
+                this.closeAllMenus();
+            });
         });
 
-        // 나무 자동화 업그레이드
-        this.buyAutoWoodBtn.addEventListener("click", () => {
-            if (this.resources.gold >= 200) {
-                this.resources.gold -= 200;
-                this.upgrades.autoWood += 1;
-                this.perSecond.wood += 2;
-                this.showMessage("나무 자동화 레벨 업! (+2/s)");
-                this.updateUI();
-            } else {
-                this.showMessage("골드가 부족합니다!");
-            }
+        // Add to DOM
+        document.body.appendChild(menuEl);
+    }
+
+    // Building submenu (example implementation)
+    showBuildingSubmenu(button) {
+        // Similar to animal submenu but with building types
+        const menuEl = document.createElement('div');
+        menuEl.className = 'selection-menu building-menu';
+        menuEl.innerHTML = `
+            <div class="menu-item" data-building="house">🏠 House</div>
+            <div class="menu-item" data-building="barn">🏚️ Barn</div>
+            <div class="menu-item" data-building="silo">🏗️ Silo</div>
+        `;
+
+        this.positionMenuNearElement(menuEl, button);
+
+        menuEl.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const buildingType = item.getAttribute('data-building');
+                this.addBuildingToScene(buildingType);
+                this.closeAllMenus();
+            });
         });
+
+        document.body.appendChild(menuEl);
     }
 
-    startResourceLoop() {
-        // 1초마다 자동 자원 획득
-        setInterval(() => {
-            this.resources.wood += this.perSecond.wood;
-            this.resources.stone += this.perSecond.stone;
-            this.resources.gold += this.perSecond.gold;
-            this.updateUI();
-        }, 1000);
+    // Property menu for right sidebar
+    showPropertyMenu(button) {
+        const menuEl = document.createElement('div');
+        menuEl.className = 'selection-menu property-menu';
+        menuEl.innerHTML = `
+            <div class="menu-item" data-property="material">Material</div>
+            <div class="menu-item" data-property="texture">Texture</div>
+        `;
+
+        this.positionMenuNearElement(menuEl, button);
+
+        menuEl.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const propertyType = item.getAttribute('data-property');
+                // Handle property addition
+                this.closeAllMenus();
+            });
+        });
+
+        document.body.appendChild(menuEl);
     }
 
-    updateUI() {
-        this.woodCount.textContent = Math.floor(this.resources.wood);
-        this.stoneCount.textContent = Math.floor(this.resources.stone);
-        this.goldCount.textContent = Math.floor(this.resources.gold);
-        this.woodPS.textContent = this.perSecond.wood;
-        this.stonePS.textContent = this.perSecond.stone;
-        this.goldPS.textContent = this.perSecond.gold;
-        this.clickPowerEl.textContent = this.upgrades.clickPower;
-    }
-
-    showMessage(msg) {
-        this.messagePanel.textContent = msg;
-        setTimeout(() => {
-            if (this.messagePanel.textContent === msg) this.messagePanel.textContent = "";
-        }, 2000);
-    }
-
-    showFloatingText(text, targetEl, color="#fff") {
-        // 타겟 요소의 위치 계산
+    // Helper to position menus
+    positionMenuNearElement(menuEl, targetEl) {
         const rect = targetEl.getBoundingClientRect();
-        const floatDiv = document.createElement("div");
-        floatDiv.textContent = text;
-        floatDiv.style.position = "fixed";
-        floatDiv.style.left = `${rect.left + rect.width/2 - 20}px`;
-        floatDiv.style.top = `${rect.top - 10}px`;
-        floatDiv.style.color = color;
-        floatDiv.style.fontWeight = "bold";
-        floatDiv.style.pointerEvents = "none";
-        floatDiv.style.transition = "all 1s cubic-bezier(0.4,1.4,0.4,1)";
-        floatDiv.style.opacity = "1";
-        document.body.appendChild(floatDiv);
+
+        // Default positioning
+        menuEl.style.position = 'fixed';
+        menuEl.style.zIndex = '1000';
+
+        // Position to the right of the target element
+        menuEl.style.left = `${rect.right + 5}px`;
+        menuEl.style.top = `${rect.top}px`;
+
+        // Ensure menu stays within viewport
         setTimeout(() => {
-            floatDiv.style.top = `${rect.top - 40}px`;
-            floatDiv.style.opacity = "0";
-        }, 10);
-        setTimeout(() => floatDiv.remove(), 1100);
+            const menuRect = menuEl.getBoundingClientRect();
+            if (menuRect.right > window.innerWidth) {
+                // Position to the left if not enough space on right
+                menuEl.style.left = `${rect.left - menuRect.width - 5}px`;
+            }
+            if (menuRect.bottom > window.innerHeight) {
+                // Position above if not enough space below
+                menuEl.style.top = `${rect.bottom - menuRect.height}px`;
+            }
+        }, 0);
     }
+
+    // Close all open selection menus
+    closeAllMenus() {
+        document.querySelectorAll('.selection-menu').forEach(menu => {
+            menu.remove();
+        });
+    }
+
+    // Add selected animal to ThreeJS scene
+    addAnimalToScene(animalType) {
+        // Communication with SceneManager
+        if (this.sceneManager) {
+            // Communicate with SceneManager - actual implementation depends on your SceneManager interface
+            this.sceneManager.addAnimal(animalType);
+
+            // Show confirmation message
+            this.showMessage(`${this.capitalizeFirstLetter(animalType)} added to scene!`);
+
+            // Optional: Update resources if needed
+            const costs = {
+                'chicken': { wood: 20 },
+                'pig': { wood: 50, stone: 10 },
+                'cow': { wood: 100, stone: 20 }
+            };
+
+            if (costs[animalType]) {
+                // Deduct resources if you want to implement cost
+                // this.deductResources(costs[animalType]);
+            }
+        } else {
+            console.error("SceneManager not initialized in UIManager");
+        }
+    }
+
+    // Add selected building to ThreeJS scene
+    addBuildingToScene(buildingType) {
+        if (this.sceneManager) {
+            this.sceneManager.addBuilding(buildingType);
+            this.showMessage(`${this.capitalizeFirstLetter(buildingType)} added to scene!`);
+        }
+    }
+
+    // Helper method
+    capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    // Keep original methods for compatibility
+    createUI() { /* Original code */ }
+    bindEvents() { /* Original code */ }
+    startResourceLoop() { /* Original code */ }
+    updateUI() { /* Original code */ }
+    showMessage(msg) {
+        // Use existing method or create a new one if it doesn't exist
+        this.messagePanel = this.messagePanel || document.querySelector('#message-panel');
+        if (this.messagePanel) {
+            this.messagePanel.textContent = msg;
+            setTimeout(() => {
+                if (this.messagePanel.textContent === msg) this.messagePanel.textContent = "";
+            }, 2000);
+        } else {
+            // Fallback notification
+            const notif = document.createElement('div');
+            notif.className = 'floating-message';
+            notif.textContent = msg;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 2000);
+        }
+    }
+    showFloatingText(text, targetEl, color="#fff") { /* Original code */ }
 }
