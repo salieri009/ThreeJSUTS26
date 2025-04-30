@@ -1,10 +1,10 @@
 import { setScene, setSceneElements, controlCamera } from "/Projects/sceneManager.js";
 import UIManager from "./UIManager.js";
 
-// Initialize the Three.js scene and controls
+// Three.js 씬 및 컨트롤 초기화
 setScene();
 setSceneElements();
 controlCamera();
 
-// Create an instance of UIManager
+// UI 매니저 인스턴스 생성
 const ui = new UIManager();
