@@ -66,7 +66,7 @@ export default class UIManager {
         menuEl.innerHTML = `
             <div class="menu-item" data-category="building">🏠 Add Building</div>
             <div class="menu-item" data-category="animal">🐄 Add Animal</div>
-        `;
+     g   `;
 
         // Position menu near the button
         this.positionMenuNearElement(menuEl, button);
