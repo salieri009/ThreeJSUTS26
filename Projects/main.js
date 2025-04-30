@@ -1,5 +1,5 @@
 import { setScene, setSceneElements, controlCamera } from "/Projects/sceneManager.js";
-import UIManager from './UIManager.js'; // UIManager import
+import UIManager from './srcs/managers/UIManager.js'; // UIManager import
 
 setScene();
 setSceneElements();

@@ -1,5 +1,5 @@
-import * as THREE from './build/three.module.js';
-import { OrbitControls } from './build/controls/OrbitControls.js';
+import * as THREE from '../../build/three.module.js';
+import { OrbitControls } from '../../build/controls/OrbitControls.js';
 
 let camera, controls, renderer, scene;
 let cubeManager; // 큐브 매니저 연결 참조
