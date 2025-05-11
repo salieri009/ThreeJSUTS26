@@ -2,8 +2,11 @@ import * as THREE from '../build/three.module.js';
 import { OrbitControls } from '../build/controls/OrbitControls.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 
-let camera, controls, renderer, scene, tree, cow, grass;
-const grid = new THREE.GridHelper(10, 5);
+let camera, controls, renderer, scene;
+let tree, cow, grass;
+let grasses = [];
+let grid = new THREE.GridHelper(10, 5);
+let level = 1;
 
 export function setScene() {
     scene = new THREE.Scene();
@@ -44,6 +47,7 @@ export function setSceneElementsTemp() {
     );
     grass.position.set(0, 5, 0);
     scene.add(grass);
+    grasses.push(grass);
 
     loadModels();
     setupGridInteractions();
@@ -57,9 +61,7 @@ function loadModels() {
         tree.scale.set(0.01, 0.01, 0.01);
         tree.position.set(-3, 6, 0);
         tree.traverse((node) => {
-            if (node.isMesh) {
-                node.castShadow = true;
-            }
+            if (node.isMesh) node.castShadow = true;
         });
         tree.name = 'Tree';
         scene.add(tree);
@@ -71,19 +73,17 @@ function loadModels() {
         cow.position.set(0.5, 6, 0);
         cow.rotation.set(0, Math.PI / 2, 0);
         cow.traverse((node) => {
-            if (node.isMesh) {
-                node.castShadow = true;
-            }
+            if (node.isMesh) node.castShadow = true;
         });
         cow.name = 'Cow';
         scene.add(cow);
     });
-
+    //나중에 수정함함
     const treeBox = new THREE.Mesh(
         new THREE.BoxGeometry(1, 3, 1),
         new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true })
     );
-    treeBox.name = "treeBox";
+    treeBox.name = "treeBox"; 
     scene.add(treeBox);
 }
 
@@ -121,7 +121,7 @@ function setupGridInteractions() {
         const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(mouse, camera);
 
-        const intersects = raycaster.intersectObject(grass);
+        const intersects = raycaster.intersectObjects(grasses);
         if (intersects.length > 0) {
             const point = intersects[0].point;
             const gridX = Math.round(point.x / gridSize) * gridSize;
@@ -136,7 +136,7 @@ function setupGridInteractions() {
     });
 
     window.addEventListener("mousedown", (event) => {
-        if (!camera || !scene || !grass || !highlight) return;
+        if (!camera || !scene || !grasses || !highlight) return;
 
         const mouse = new THREE.Vector2(
             (event.clientX / window.innerWidth) * 2 - 1,
@@ -152,23 +152,19 @@ function setupGridInteractions() {
                 const root = findModelRoot(intersects[0].object);
                 if (root.name.includes("Tree") || root.name.includes("Cow")) {
                     selectedObject = root;
-                    selectedSize = root.name.includes("Tree") ? { width: 1, height: 1 } : { width: 2, height: 1 };
+                    selectedSize = root.name.includes("Tree") ? { width: 1, height: 1 } : { width: 2, height: 1 }; //나중에 수정
                     isPlacing = true;
                     highlight.scale.set(selectedSize.width, 1, selectedSize.height);
                 }
             }
         } else {
-            const intersects = raycaster.intersectObject(grass);
+            const intersects = raycaster.intersectObjects(grasses);
             if (intersects.length > 0 && selectedObject) {
                 const point = intersects[0].point;
                 const gridX = Math.round(point.x / gridSize) * gridSize;
                 const gridZ = Math.round(point.z / gridSize) * gridSize;
 
-                selectedObject.position.set(
-                    gridX - (selectedSize.width === 2 ? 0.5 : 0),
-                    6.0,
-                    gridZ
-                );
+                selectedObject.position.set(gridX - (selectedSize.width === 2 ? 0.5 : 0), 6.0, gridZ);
 
                 isPlacing = false;
                 selectedObject = null;
@@ -177,17 +173,57 @@ function setupGridInteractions() {
     });
 
     window.addEventListener('keydown', (event) => {
-        if ((event.key === 'r' || event.key === 'R') && selectedObject) {
+        if ((event.key === 'r' || event.key === 'R') && selectedObject) { //수정필요
             selectedObject.rotation.y += Math.PI / 2;
             highlight.rotation.z += Math.PI / 2;
+        }
+
+        if (event.key === 'a' && level < 13) {
+            addBlock();
+            level++;
         }
     });
 }
 
 function findModelRoot(object) {
-    let current = object;
-    while (current.parent && current.parent.type !== "Scene") {
-        current = current.parent;
+    while (object.parent && object.parent.type !== "Scene") {
+        object = object.parent;
     }
-    return current;
+    return object;
+}
+
+function addBlock() {
+    if (grid) scene.remove(grid);
+
+    let size = level * 10;
+    grid = new THREE.GridHelper(size, size / 2);
+    grid.position.set(-size / 2 + 5, 6, -size / 2 + 5);
+    scene.add(grid);
+
+    for (let i = 0; i < level; i++) {
+        for (let j = 0; j < level; j++) {
+            let dirt = new THREE.Mesh(
+                new THREE.BoxGeometry(10, 8, 10),
+                new THREE.MeshPhongMaterial({ color: 0x964B00 })
+            );
+            dirt.position.set(-i * 10, 0, -j * 10);
+            scene.add(dirt);
+
+            let newGrass = new THREE.Mesh(
+                new THREE.BoxGeometry(10, 2, 10),
+                new THREE.MeshLambertMaterial({ color: 0x3E5C3A })
+            );
+            newGrass.position.set(-i * 10, 5, -j * 10);
+            scene.add(newGrass);
+            grasses.push(newGrass);
+
+            let highlight = new THREE.Mesh(
+                new THREE.PlaneGeometry(2, 2),
+                new THREE.MeshBasicMaterial({ side: THREE.DoubleSide })
+            );
+            highlight.rotation.x = -Math.PI / 2;
+            highlight.position.set(-i * 10, 5.05, -j * 10);
+            scene.add(highlight);
+        }
+    }
 }
