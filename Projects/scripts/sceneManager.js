@@ -178,7 +178,7 @@ function setupGridInteractions() {
             highlight.rotation.z += Math.PI / 2;
         }
 
-        if (event.key === 'a' && level < 13) {
+        if (event.key === 'a' && level < 10) { // 이 이상하면 렉걸림림
             addBlock();
             level++;
         }
