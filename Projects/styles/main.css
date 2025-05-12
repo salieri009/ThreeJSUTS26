@@ -1,11 +1,13 @@
-/* main.css */
+/* Reset & Base */
 body {
     margin: 0;
     font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
     background: #f7f6f3;
     color: #222;
+    overflow: hidden;
 }
 
+/* Header */
 .app-header {
     display: flex;
     align-items: center;
@@ -56,16 +58,7 @@ body {
     color: #fff;
 }
 
-.scene {
-    display: flex;
-    flex-direction: row;
-    gap: 32px;
-    padding: 32px 5vw;
-    min-height: 70vh;
-}
-
-
-/* Scene을 화면 중앙에 크게 */
+/* Scene Container */
 #scene-container {
     position: relative;
     width: 100vw;
@@ -74,7 +67,7 @@ body {
     overflow: hidden;
 }
 
-/* Three.js 캔버스가 꽉 차도록 */
+/* Three.js Canvas */
 #scene-container canvas {
     display: block;
     width: 100vw;
@@ -84,32 +77,37 @@ body {
     z-index: 1;
 }
 
+/* Overlay Controls (버튼 원형 배치) */
 .scene-overlay-controls {
     position: absolute;
     bottom: 40px;
     left: 100px;
     width: 160px;
     height: 160px;
-    position: absolute;
     z-index: 10;
     transform: translate(-50%, 0);
 }
-
 
 .overlay-btn {
     position: absolute;
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    border: none;
-    background-color: #444;
-    color: white;
-    font-size: 12px;
+    border: 2px solid #206888;
+    background: #fff;
+    color: #206888;
+    font-size: 1.2rem;
+    font-weight: 600;
+    box-shadow: 0 4px 16px #20688822;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+    padding: 0;
+    outline: none;
 }
-.overlay-btn:hover {
-    background-color: #666;
+.overlay-btn:hover, .overlay-btn.active {
+    background: #206888;
+    color: #fff;
+    border: 2px solid #33cc33;
 }
 
 /* 상하좌우 배치 */
@@ -134,53 +132,54 @@ body {
     transform: translateY(-50%);
 }
 
-.scene-overlay-controls .overlay-btn:nth-child(3) {
-    align-self: flex-end;  /* Nature - 오른쪽 */
-    margin-right: -20px;
-}
-
-
-
-.overlay-btn {
-    background: #fff;
-    border: 2px solid #206888;
-    border-radius: 16px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #206888;
-    padding: 14px 32px;
-    box-shadow: 0 4px 16px #20688822;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-}
-
-.overlay-btn:hover, .overlay-btn.active {
-    background: #206888;
-    color: #fff;
-}
-
-/* 아이템 패널 (버튼 클릭시 펼쳐짐) */
+/* Overlay Item Panel (슬라이드/드래그/녹색테두리) */
 .overlay-item-panel {
     position: absolute;
-    bottom: 100px;
     left: 50%;
-    transform: translateX(-50%);
-    z-index: 11;
-    display: none; /* 기본은 숨김 */
+    bottom: 0;
+    transform: translate(-50%, 100%);
+    transition: transform 0.4s cubic-bezier(.4,1.7,.7,1);
+    z-index: 20;
+    min-width: 340px;
+    background: #fff;
+    border: 3px solid #33cc33;
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 8px 32px #20688833;
+    padding: 0 32px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    pointer-events: none;
+    user-select: none;
+}
+.overlay-item-panel.visible {
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+}
+.overlay-item-panel.dragging {
+    transition: none;
+}
+.overlay-item-panel-header {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    padding: 16px 0 8px 0;
+    background: #f3fff3;
+    border-radius: 16px 16px 0 0;
+    cursor: move;
+    text-align: center;
+    user-select: none;
+}
+
+/* 아이템 목록 Flex */
+.item-list {
+    display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    background: rgba(255,255,255,0.98);
-    border-radius: 18px;
-    padding: 24px 32px;
-    box-shadow: 0 8px 32px #20688833;
-    min-width: 320px;
     justify-content: center;
 }
 
-.overlay-item-panel.visible {
-    display: flex;
-}
-
+/* Draggable Item */
 .draggable-item {
     width: 90px;
     height: 90px;
@@ -195,11 +194,33 @@ body {
     font-weight: 500;
     color: #206888;
     cursor: grab;
-    margin: 10px;
+    margin: 10px 0;
     transition: background 0.2s, border 0.2s;
+    box-shadow: 0 2px 8px #20688822;
 }
 .draggable-item:active {
     background: #206888;
     color: #fff;
     border: 2px solid #e94f37;
+}
+
+/* Responsive: 모바일에서 패널 크기 조정 */
+@media (max-width: 600px) {
+    .overlay-item-panel {
+        min-width: 90vw;
+        padding: 0 8vw 24px 8vw;
+    }
+    .item-list {
+        gap: 10px;
+    }
+    .draggable-item {
+        width: 60px;
+        height: 60px;
+        font-size: 1.2rem;
+    }
+    .scene-overlay-controls {
+        left: 50vw;
+        width: 120px;
+        height: 120px;
+    }
 }
