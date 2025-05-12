@@ -67,7 +67,7 @@ export function setSceneElementsTemp() {
     setupGridInteractions();
 }
 
-function loadModels() {
+function loadModels() { 
     const loader = new GLTFLoader();
 
     loader.load("models/tree/scene.gltf", (gltf) => {
@@ -78,6 +78,7 @@ function loadModels() {
             if (node.isMesh) node.castShadow = true;
         });
         tree.name = 'Tree';
+        createBox(tree, 200, 2000, 200);
         scene.add(tree);
     });
 
@@ -90,6 +91,7 @@ function loadModels() {
             if (node.isMesh) node.castShadow = true;
         });
         cow.name = 'Cow';
+        createBox(cow, 8, 8, 4);
         scene.add(cow);
     });
 
@@ -238,7 +240,7 @@ function findModelRoot(object) {
     return object;
 }
 
-function addBlock() {
+function addBlock() { // can add block by keyboard input "a" for now, this part will be removed/changed
     if (grid) scene.remove(grid);
 
     let size = level * 10;
@@ -272,4 +274,22 @@ function addBlock() {
             scene.add(highlight);
         }
     }
+
 }
+
+
+function createBox(model, width, height, depth) {
+    const boxGeometry = new THREE.BoxGeometry(width, height, depth);
+    const boxMaterial = new THREE.MeshBasicMaterial({ wireframe: true });
+    const box = new THREE.Mesh(boxGeometry, boxMaterial);
+
+    box.position.set(model.position.x, model.position.y - 5, model.position.z);
+
+    box.rotation.set(model.rotation.x, model.rotation.y, model.rotation.z);
+    model.add(box);
+
+    return box;
+}
+/*
+
+*/
