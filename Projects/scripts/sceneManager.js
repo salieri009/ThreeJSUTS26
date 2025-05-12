@@ -3,7 +3,7 @@ import { OrbitControls } from '../build/controls/OrbitControls.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 
 let camera, controls, renderer, scene;
-let tree, cow, grass;
+let tree, cow, grass, cloud;
 let grasses = [];
 let grid = new THREE.GridHelper(10, 5);
 let level = 1;
@@ -11,8 +11,11 @@ let level = 1;
 export function setScene() {
     scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(5, 15, 20);
+    const aspect = window.innerWidth / window.innerHeight;
+    let ortho = 20;
+    camera = new THREE.OrthographicCamera(-ortho * aspect, ortho * aspect, ortho, -ortho, 0.1, 1000);
+
+    camera.position.set(20, 20, 20);
     camera.lookAt(0, 0, 0);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -23,7 +26,8 @@ export function setScene() {
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxPolarAngle = Math.PI / 2 - 0.1;
+    controls.enableRotate = false; 
+    controls.enableZoom = true;
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
@@ -32,6 +36,8 @@ export function setScene() {
     sunLight.position.set(10, 20, 10);
     sunLight.castShadow = true;
     scene.add(sunLight);
+
+ 
 }
 
 export function setSceneElementsTemp() {
@@ -48,6 +54,15 @@ export function setSceneElementsTemp() {
     grass.position.set(0, 5, 0);
     scene.add(grass);
     grasses.push(grass);
+
+    const skyGeometry = new THREE.SphereGeometry(200, 8, 6); 
+    const skyMaterial = new THREE.MeshBasicMaterial({
+        color: 0x87CEEB,
+        side: THREE.BackSide, 
+        //flatShading: true      
+    });
+    const skyDome = new THREE.Mesh(skyGeometry, skyMaterial);
+    scene.add(skyDome);
 
     loadModels();
     setupGridInteractions();
@@ -78,6 +93,19 @@ function loadModels() {
         cow.name = 'Cow';
         scene.add(cow);
     });
+
+    loader.load("models/cloud/scene.gltf", (gltf) => {
+        cloud = gltf.scene;
+        cloud.scale.set(50, 50, 50);
+        cloud.position.set(0, 8, 0);
+        cloud.traverse((node) => {
+            if (node.isMesh) node.castShadow = true;
+        });
+    
+        scene.add(cloud);
+    });
+    if(cloud) console.log("cloud");
+
     //나중에 수정함함
     const treeBox = new THREE.Mesh(
         new THREE.BoxGeometry(1, 3, 1),
