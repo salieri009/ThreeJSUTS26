@@ -1,3 +1,70 @@
+/* main.css */
+body {
+    margin: 0;
+    font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
+    background: #f7f6f3;
+    color: #222;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(90deg, #206888 70%, #f7f6f3 100%);
+    padding: 16px 24px;
+    border-bottom: 4px solid #2d415a;
+}
+
+.logo-dot {
+    width: 18px;
+    height: 18px;
+    background: #e94f37;
+    border-radius: 50%;
+    margin-right: 12px;
+    box-shadow: 0 0 8px #e94f37a0;
+    display: inline-block;
+}
+
+.header-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #fff;
+    flex: 1;
+    margin-left: 12px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.header-btn {
+    background: #fff;
+    color: #206888;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px #20688820;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.header-btn:hover {
+    background: #206888;
+    color: #fff;
+}
+
+.scene {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    padding: 32px 5vw;
+    min-height: 70vh;
+}
+
+
 /* Scene을 화면 중앙에 크게 */
 #scene-container {
     position: relative;
@@ -21,45 +88,50 @@
     position: absolute;
     bottom: 40px;
     left: 40px;
-    z-index: 10;
-    width: 120px;
-    height: 120px;
+    width: 160px;
+    height: 160px;
     position: absolute;
+    z-index: 10;
+    transform: translate(-50%, 0);
 }
+
 
 .overlay-btn {
     position: absolute;
-    width: 48px;
-    height: 48px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     border: none;
-    background-color: #4caf50;
+    background-color: #444;
     color: white;
-    font-size: 18px;
+    font-size: 12px;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    transition: background-color 0.2s ease;
+    transition: background-color 0.3s;
 }
-
 .overlay-btn:hover {
-    background-color: #388e3c;
+    background-color: #666;
 }
 
-/* 삼각형 배치 */
+/* 상하좌우 배치 */
 .overlay-btn[data-category="props"] {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
 }
-
 .overlay-btn[data-category="buildings"] {
     bottom: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
 }
-
 .overlay-btn[data-category="nature"] {
-    bottom: 0;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.overlay-btn[data-category="animals"] {
     right: 0;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .scene-overlay-controls .overlay-btn:nth-child(3) {
@@ -81,6 +153,7 @@
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
 }
+
 .overlay-btn:hover, .overlay-btn.active {
     background: #206888;
     color: #fff;
