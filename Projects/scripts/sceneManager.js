@@ -34,10 +34,9 @@ export function setScene() {
 
     const sunLight = new THREE.DirectionalLight(0xffffff, 1);
     sunLight.position.set(10, 20, 10);
+    //sunLight.intensity = 1.1;
     sunLight.castShadow = true;
     scene.add(sunLight);
-
- 
 }
 
 export function setSceneElementsTemp() {
@@ -54,7 +53,7 @@ export function setSceneElementsTemp() {
     grass.position.set(0, 5, 0);
     scene.add(grass);
     grasses.push(grass);
-
+    
     const skyGeometry = new THREE.SphereGeometry(200, 8, 6); 
     const skyMaterial = new THREE.MeshBasicMaterial({
         color: 0x87CEEB,
@@ -96,15 +95,34 @@ function loadModels() {
 
     loader.load("models/cloud/scene.gltf", (gltf) => {
         cloud = gltf.scene;
-        cloud.scale.set(50, 50, 50);
-        cloud.position.set(0, 8, 0);
+        cloud.scale.set(0.25, 0.25, 0.25);
+        cloud.position.set(-5, 20, 0);
         cloud.traverse((node) => {
-            if (node.isMesh) node.castShadow = true;
+            if (node.isMesh) {
+                node.castShadow = true;
+            } 
         });
-    
         scene.add(cloud);
     });
-    if(cloud) console.log("cloud");
+    /*
+    loader.load("models/Cloud.glb", (gltf) => { //rainy cloud?
+        const glb = gltf.scene;
+        glb.scale.set(1, 1, 1);
+        glb.position.set(0, 30, 0);
+        glb.traverse((node) => {
+            if (node.isMesh) {
+                node.castShadow = true;
+
+                if (node.material) {
+                    node.material.metalness = 0;
+                    node.material.roughness = 1;
+                    node.material.needsUpdate = true;
+                }
+            }
+        });
+        scene.add(glb);
+    });*/
+
 
     //나중에 수정함함
     const treeBox = new THREE.Mesh(
