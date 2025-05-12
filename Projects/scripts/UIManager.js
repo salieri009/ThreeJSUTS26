@@ -1,7 +1,7 @@
 //
 
 const itemData = {
-    props: [
+    animals: [
         { icon: '🌲', label: 'Tree', type: 'tree' },
         { icon: '🪑', label: 'Chair', type: 'chair' },
         { icon: '🗿', label: 'Statue', type: 'statue' }
