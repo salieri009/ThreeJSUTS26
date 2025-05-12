@@ -87,7 +87,7 @@ body {
 .scene-overlay-controls {
     position: absolute;
     bottom: 40px;
-    left: 40px;
+    left: 100px;
     width: 160px;
     height: 160px;
     position: absolute;
