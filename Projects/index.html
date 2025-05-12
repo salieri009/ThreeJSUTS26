@@ -20,21 +20,19 @@
 
 <!-- 메인 영역 -->
 <main id="scene-container" class="scene">
-    <!-- 좌측 원형 버튼: 동물 카테고리 선택 -->
-    <nav class="animal-category-nav">
-        <button class="circle-btn" aria-label="육상동물">🐻</button>
-        <button class="circle-btn" aria-label="해양동물">🐟</button>
-        <button class="circle-btn" aria-label="조류">🦉</button>
-    </nav>
-    <!-- 동물 선택 네모 버튼들 (카테고리별로 다르게 표시) -->
-    <section class="animal-selection">
-        <button class="animal-btn">호랑이</button>
-        <button class="animal-btn">여우</button>
-        <button class="animal-btn">토끼</button>
-        <button class="animal-btn">늑대</button>
-        <button class="animal-btn">곰</button>
-        <button class="animal-btn">사슴</button>
-    </section>
+    <!-- Three.js 캔버스가 JS에서 appendChild로 들어감 -->
+
+    <!-- 오버레이 버튼 -->
+    <div class="scene-overlay-controls">
+        <button class="overlay-btn" data-category="props">Props</button>
+        <button class="overlay-btn" data-category="buildings">Buildings</button>
+        <button class="overlay-btn" data-category="nature">Nature</button>
+    </div>
+
+    <!-- 오버레이 아이템 패널 (처음엔 숨김, 버튼 클릭 시 펼쳐짐) -->
+    <div class="overlay-item-panel" id="item-panel">
+        <!-- JS로 아이템 목록이 동적으로 들어감 -->
+    </div>
 </main>
 <script type="importmap">
     {
