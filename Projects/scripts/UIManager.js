@@ -3,7 +3,7 @@
 //This is for the test//
 const categories = [
     {
-        name: '육상동물',
+        name: 'Animals',
         icon: '🐻',
         animals: ['호랑이', '여우', '토끼', '늑대', '곰', '사슴']
     },
