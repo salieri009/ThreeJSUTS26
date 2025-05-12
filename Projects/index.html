@@ -1,16 +1,41 @@
+<!-- animal-simulator.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>3D Builder</title>
+    <title>Animal Simulator</title>
     <link rel="stylesheet" href="styles/main.css" />
 </head>
-
 <body>
+<!-- 상단 헤더 -->
+<header class="app-header">
+    <span class="logo-dot"></span>
+    <span class="header-title">동물 시뮬레이터</span>
+    <div class="header-actions">
+        <button class="header-btn">저장</button>
+        <button class="header-btn">설정</button>
+    </div>
+</header>
 
-
-
+<!-- 메인 영역 -->
+<main id="scene-container" class="scene">
+    <!-- 좌측 원형 버튼: 동물 카테고리 선택 -->
+    <nav class="animal-category-nav">
+        <button class="circle-btn" aria-label="육상동물">🐻</button>
+        <button class="circle-btn" aria-label="해양동물">🐟</button>
+        <button class="circle-btn" aria-label="조류">🦉</button>
+    </nav>
+    <!-- 동물 선택 네모 버튼들 (카테고리별로 다르게 표시) -->
+    <section class="animal-selection">
+        <button class="animal-btn">호랑이</button>
+        <button class="animal-btn">여우</button>
+        <button class="animal-btn">토끼</button>
+        <button class="animal-btn">늑대</button>
+        <button class="animal-btn">곰</button>
+        <button class="animal-btn">사슴</button>
+    </section>
+</main>
 <script type="importmap">
     {
       "imports": {
@@ -18,11 +43,6 @@
       }
     }
 </script>
-
-
 <script src="/Projects/main.js" type="module"></script>
-
-
-
 </body>
 </html>

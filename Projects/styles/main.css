@@ -1,398 +1,140 @@
-/* Dark theme 3D Builder layout */
-body, html {
+/* main.css */
+body {
     margin: 0;
-    overflow: hidden;
-    width: 100vw;
-    height: 100vh;
-    background: #1c2333;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    color: white;
+    font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
+    background: #f7f6f3;
+    color: #222;
 }
 
-/* App container with 3-panel layout */
-.app-container {
-    display: flex;
-    width: 100vw;
-    height: 100vh;
-    background: #1c2333;
-}
-
-/* Top header bar with app title */
 .app-header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: #171e2c;
-    height: 40px;
     display: flex;
     align-items: center;
-    padding: 0 15px;
-    z-index: 20;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-.app-header .title {
-    font-size: 14px;
-    font-weight: 500;
-    margin-left: 10px;
-}
-
-.app-header .right-actions {
-    margin-left: auto;
-    display: flex;
-    gap: 15px;
-}
-
-.app-header button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-/* Left sidebar - exactly matching the image */
-#build-panel {
-    width: 160px;
-    background: #1e2538;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    overflow-y: auto;
-    z-index: 10;
-}
-
-#build-panel h2 {
-    font-size: 16px;
-    margin: 0 0 10px 0;
-    color: white;
-}
-
-#build-panel h3 {
-    font-size: 14px;
-    margin: 10px 0 10px 0;
-    color: #a0a0a0;
-}
-
-.info {
-    background: #252d40;
-    border-radius: 4px;
-    padding: 10px;
-    font-size: 13px;
-}
-
-.info p {
-    display: flex;
     justify-content: space-between;
-    margin-bottom: 5px;
-    color: #a0a0a0;
+    background: linear-gradient(90deg, #206888 70%, #f7f6f3 100%);
+    padding: 16px 24px;
+    border-bottom: 4px solid #2d415a;
 }
 
-.info span {
-    color: white;
-}
-
-/* Right properties panel - matching image width */
-.properties {
-    width: 180px;
-    background: #1e2538;
-    padding: 15px;
-    z-index: 10;
-}
-
-.properties h3 {
-    font-size: 14px;
-    margin: 0 0 15px 0;
-}
-
-.transform-group, .material-group {
-    margin-bottom: 15px;
-}
-
-.transform-group label, .material-group label {
-    display: block;
-    font-size: 12px;
-    color: #a0a0a0;
-    margin-bottom: 5px;
-}
-
-.transform-group input {
-    width: calc(33.33% - 4px);
-    background: #252d40;
-    border: none;
-    color: white;
-    padding: 5px;
-    font-size: 12px;
-    border-radius: 2px;
-    margin-bottom: 5px;
-}
-
-.material-group input[type="color"] {
-    width: 100%;
-    height: 25px;
-    background: #000;
-    border: none;
-    border-radius: 2px;
-}
-
-/* Main scene container - matching the center area in image */
-#scene-container {
-    flex: 1 1 0;
-    min-width: 0;
-    min-height: 0;
-    position: relative;
-    background: #1a202f;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    z-index: 0;
-}
-
-#scene-container canvas {
-    width: 100% !important;
-    height: 100% !important;
-    display: block;
-}
-
-/* Draggable items - matching the card style in image */
-.draggable-item {
-    background: #252d40;
-    padding: 10px;
-    margin-bottom: 8px;
-    border-radius: 4px;
-    cursor: grab;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    transition: background 0.2s;
-}
-
-.draggable-item:hover {
-    background: #2a3449;
-}
-
-.draggable-item:active {
-    background: #304060;
-}
-
-.draggable-item small {
-    font-size: 11px;
-    color: #a0a0a0;
-    margin-left: auto;
-}
-
-/* Item icons as seen in the image */
-.item-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Category tabs shown in image */
-.category-tabs {
-    display: flex;
-    margin: 5px 0 10px 0;
-    gap: 5px;
-}
-
-.category-tab {
-    flex: 1;
-    text-align: center;
-    padding: 8px 0;
-    background: #252d40;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.category-tab.active {
-    background: #444f66;
-}
-
-/* Resource bar - modified for dark theme */
-.resource-bar {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(30, 37, 56, 0.9);
-    padding: 10px 25px;
-    border-radius: 30px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-    font-size: 16px;
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    z-index: 100;
-    user-select: none;
-}
-
-.resource-bar span {
-    font-weight: 500;
-}
-
-.resource-bar .icon {
-    margin-right: 6px;
-}
-
-/* Action buttons matching the image */
-.action-button {
-    background: #252d40;
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    margin-right: 8px;
-}
-
-.action-button:hover {
-    background: #304060;
-}
-
-/* Plus button for adding items - exact match to purple button in image */
-.add-button {
-    width: 30px;
-    height: 30px;
+.logo-dot {
+    width: 18px;
+    height: 18px;
+    background: #e94f37;
     border-radius: 50%;
-    background: #6d5acd;
-    border: none;
-    color: white;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    margin: 10px 0;
+    margin-right: 12px;
+    box-shadow: 0 0 8px #e94f37a0;
+    display: inline-block;
 }
 
-/* Status messages */
-.status-message {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(30, 37, 56, 0.9);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    z-index: 20;
+.header-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #fff;
+    flex: 1;
+    margin-left: 12px;
 }
 
-/* Scene controls buttons (bottom right in image) */
-.scene-controls {
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
+.header-actions {
     display: flex;
     gap: 10px;
-    z-index: 20;
 }
 
-.scene-control-button {
-    width: 36px;
-    height: 36px;
-    background: rgba(30, 37, 56, 0.8);
+.header-btn {
+    background: #fff;
+    color: #206888;
     border: none;
-    border-radius: 4px;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px #20688820;
     cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.header-btn:hover {
+    background: #206888;
+    color: #fff;
 }
 
-/* Reset GUI styling to match dark theme */
-.lil-gui.root {
-    font-size: 13px !important;
-    right: 15px !important;
-    top: 60px !important;
-    border-radius: 4px !important;
-    background: #1e2538 !important;
-    color: white !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.4) !important;
-    z-index: 30 !important;
-}
-
-/* Selection Menu Styling */
-.selection-menu {
-    background: #252d40;
-    border-radius: 4px;
-    padding: 8px 0;
-    min-width: 150px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.menu-item {
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: background 0.2s;
-    font-size: 14px;
+.scene {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: row;
+    gap: 32px;
+    padding: 32px 5vw;
+    min-height: 70vh;
 }
 
-.menu-item:hover {
-    background: #304060;
+.animal-category-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: flex-start;
+    margin-top: 24px;
 }
 
-/* Floating Message */
-.floating-message {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(30, 37, 56, 0.9);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 14px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+.circle-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #206888;
+    font-size: 2rem;
+    color: #206888;
+    box-shadow: 0 2px 10px #20688822;
+    cursor: pointer;
+    transition: border 0.2s, background 0.2s;
+}
+.circle-btn.selected,
+.circle-btn:focus {
+    border: 3px solid #e94f37;
+    background: #f7e6e6;
+    outline: none;
 }
 
-/* Responsive design adjustments */
-@media (max-width: 768px) {
-    .app-container {
+.animal-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+    margin-top: 24px;
+}
+
+.animal-btn {
+    min-width: 90px;
+    min-height: 60px;
+    padding: 12px 24px;
+    background: #fff;
+    border: 2px solid #206888;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #206888;
+    cursor: pointer;
+    box-shadow: 0 2px 8px #20688818;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.animal-btn:hover,
+.animal-btn.selected {
+    background: #206888;
+    color: #fff;
+    border: 2px solid #e94f37;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .scene {
         flex-direction: column;
+        gap: 18px;
+        padding: 16px 2vw;
     }
-
-    #build-panel, .properties {
-        width: 100%;
-        max-height: 30vh;
+    .animal-category-nav {
+        flex-direction: row;
+        gap: 14px;
+        margin-top: 0;
+        justify-content: center;
     }
-
-    #scene-container {
-        height: 40vh;
-        flex: 0 0 40vh;
-    }
-
-    #scene-container canvas {
-        width: 100% !important;
-        height: 100% !important;
-    }
-
-    .resource-bar {
-        top: auto;
-        bottom: 20px;
-        font-size: 14px;
-        padding: 8px 15px;
-    }
-
-    .draggable-item {
-        padding: 8px;
+    .animal-selection {
+        justify-content: center;
+        margin-top: 16px;
     }
 }
