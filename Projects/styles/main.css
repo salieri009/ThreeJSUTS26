@@ -65,6 +65,7 @@ body {
     height: 100vh;
     background: #222;
     overflow: hidden;
+    align-content: center;
 }
 
 /* Three.js Canvas */
