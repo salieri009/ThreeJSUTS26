@@ -188,37 +188,82 @@ body {
 }
 
 
-/* Overlay Item Panel (슬라이드/드래그/전통 녹색 테두리) */
 .overlay-item-panel {
     position: absolute;
-    left: 50%;
-    bottom: 0;
-    transform: translate(-50%, 100%);
-    transition: transform 0.4s cubic-bezier(.4,1.7,.7,1);
-    z-index: 20;
-    min-width: 360px;
-    background: var(--panel-bg);
-    border: 4px solid var(--panel-border);
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    box-shadow: 0 12px 36px var(--panel-shadow);
-    padding: 0 36px 36px 36px;
+    left: 20%;
+    bottom: 5vw;
+    height: 15vw;
+    min-width: 25vw;
+    max-width: 90vw;
+    background: var(--panel-bg, #fffbe6);
+    border: 4px solid var(--panel-border, #c97b43);
+    border-radius: 38px;
+    box-shadow: 0 12px 36px #c97b4344, 0 0 40px #e5b85c33 inset;
+    padding: 32px 48px 40px 48px;
     display: flex;
     flex-direction: column;
     gap: 20px;
     pointer-events: none;
     user-select: none;
+    overflow: hidden;
+
+    /* 두루마리 펼치기 + 1자(세로) 모양에서 펼침 효과 */
+    transform: scaleX(0.5) scaleY(0.7);
+    opacity: 0;
+    filter: blur(3px);
+    transform-origin: left top;
+    transition:
+            transform 0.7s cubic-bezier(.4,1.7,.7,1),
+            opacity 0.5s cubic-bezier(.4,1.7,.7,1),
+            filter 0.5s cubic-bezier(.4,1.7,.7,1);
+    z-index: 20;
 }
 
 .overlay-item-panel.visible {
-    transform: translate(-50%, 0);
+    transform: scaleX(1) scaleY(1);
+    opacity: 1;
+    filter: blur(0);
     pointer-events: auto;
+    /* 내용이 펼쳐질 때 자연스럽게 */
 }
-.overlay-item-panel.dragging {
-    transition: none;
+
+/* 두루마리 말린 효과 */
+.overlay-item-panel::before,
+.overlay-item-panel::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 38px;
+    background: radial-gradient(circle at 70% 50%, #e5b85c 60%, #fffbe6 100%);
+    z-index: 1;
+    pointer-events: none;
 }
+.overlay-item-panel::before {
+    left: -38px;
+    border-radius: 50% 0 0 50% / 60% 0 0 60%;
+    box-shadow: 4px 0 20px #c97b4344;
+}
+.overlay-item-panel::after {
+    right: -38px;
+    border-radius: 0 50% 50% 0 / 0 60% 60% 0;
+    box-shadow: -4px 0 20px #c97b4344;
+}
+
+/* 내부 내용: 처음엔 투명, 펼쳐질 때 fade-in */
+.overlay-item-panel .panel-content {
+    opacity: 0;
+    filter: blur(8px);
+    transition: opacity 0.5s 0.2s, filter 0.5s 0.2s;
+}
+.overlay-item-panel.visible .panel-content {
+    opacity: 1;
+    filter: blur(0);
+}
+
+/* 헤더 */
 .overlay-item-panel-header {
     font-weight: bold;
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     margin-bottom: 12px;
     padding: 18px 0 10px 0;
     background: #E5B85C33;
@@ -228,6 +273,8 @@ body {
     user-select: none;
     color: var(--dancheong-green);
     letter-spacing: 2px;
+    z-index: 2;
+    position: relative;
 }
 
 /* 아이템 목록 Flex */

@@ -43,14 +43,29 @@ export class UIManager {
                     this.currentCategory = null;
                     return;
                 }
-                this.overlayBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                this.panelHeader.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-                this.renderItems(category);
-                this.itemPanel.classList.add('visible');
-                this.currentCategory = category;
+
+                if (this.itemPanel.classList.contains('visible')) {
+                    // 접히는 애니메이션 후 교체
+                    this.itemPanel.classList.remove('visible');
+                    setTimeout(() => {
+                        this.overlayBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.panelHeader.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                        this.renderItems(category);
+                        this.itemPanel.classList.add('visible');
+                        this.currentCategory = category;
+                    }, 400); // transition 시간과 맞추세요
+                } else {
+                    this.overlayBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.panelHeader.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                    this.renderItems(category);
+                    this.itemPanel.classList.add('visible');
+                    this.currentCategory = category;
+                }
             });
         });
+
 
         // 바깥 클릭 시 패널 닫기
         document.addEventListener('mousedown', e => {
