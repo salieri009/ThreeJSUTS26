@@ -2,7 +2,7 @@ import * as THREE from '../build/three.module.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 import { scene, camera } from './sceneManager.js';
 
-export let highlight, tree, cow, grass, cloud, barn;
+export let highlight, tree, cow, grass, cloud, barn, fence;
 export let grasses = [];
 export let grid = new THREE.GridHelper(10, 5);
 
@@ -11,10 +11,23 @@ let selectedObject = null;
 let isPlacing = false;
 let selectedSize = { width: 1, height: 1 };
 
+const textureLoad = new THREE.TextureLoader();
+
 const modelData = {     
-    "Tree": { width: 1, height: 1 },
-    "Cow": { width: 2, height: 1 },
-    "Barn": { width: 4, height: 6 },
+    "Horse": { width: 2, height: 1},
+    "Cow": { width: 2, height: 1},
+    "Pig": { width: 2, height: 1},
+    "Sheep": { width: 2, height: 1},
+    "Chicken": { width: 1, height: 1},
+
+    "Barn": { width: 4, height: 6},
+    "Fence": { width: 2, height: 1},
+    "Hay": { width: 1, height: 1},
+    
+    "Tree": { width: 1, height: 1},
+    "PineTree": { width: 1, height: 1},
+    "SRock": { width: 1, height: 1},
+    "LRock": { width: 2, height: 2},
 }
 
 export function setSceneElementsTemp() {
@@ -69,40 +82,27 @@ function loadModels() {
             if (node.isMesh) node.castShadow = true;
         });
         cow.name = 'Cow';
-        createBox(cow, 8, 8, 4);
+        createBox(cow, 8, 10, 4);
         scene.add(cow);
     });
 
-    loader.load("models/cloud/scene.gltf", (gltf) => {
-        cloud = gltf.scene;
-        cloud.scale.set(0.25, 0.25, 0.25);
-        cloud.position.set(-5, 20, 0);
-        cloud.traverse((node) => {
+    const fenceTexture = textureLoad.load('models/fence/textures/Wood_diffuse.png') 
+    loader.load("models/fence/scene.gltf", (gltf) => {
+        fence = gltf.scene;
+        fence.scale.set(0.8, 0.9, 0.6);
+        fence.position.set(0, 7, 0);
+        fence.rotation.set(0, Math.PI / 2, 0);
+        fence.traverse(node => {
             if (node.isMesh) {
-                node.castShadow = true;
-            } 
-        });
-        scene.add(cloud);
-    });
-    /*
-    loader.load("models/Cloud.glb", (gltf) => { //rainy cloud?
-        const glb = gltf.scene;
-        glb.scale.set(1, 1, 1);
-        glb.position.set(0, 30, 0);
-        glb.traverse((node) => {
-            if (node.isMesh) {
-                node.castShadow = true;
-
-                if (node.material) {
-                    node.material.metalness = 0;
-                    node.material.roughness = 1;
-                    node.material.needsUpdate = true;
-                }
+                node.material.map = fenceTexture;
             }
         });
-        scene.add(glb);
-    });*/
-    /*
+
+        fence.name = 'Fence';
+        createBox(fence, 5.1, 4, 2.9);
+        scene.add(fence);
+    });
+
     loader.load("models/barn/scene.gltf", (gltf) => {
         barn = gltf.scene;
         barn.scale.set(0.45, 0.45, 0.5);
@@ -113,9 +113,8 @@ function loadModels() {
         barn.name = 'Barn';
         createBox(barn, 20, 12, 12);
         scene.add(barn);
-    });*/
+    });
 }
-
 
 function setupGridInteractions() {
     highlight = new THREE.Mesh(
@@ -154,11 +153,7 @@ window.addEventListener("mousemove", (event) => {
         const gridX = Math.round(point.x / gridSize) * gridSize;
         const gridZ = Math.round(point.z / gridSize) * gridSize;
 
-        highlight.position.set(
-            gridX + (selectedSize.width === 2 ? -1 : 0),
-            6.05,
-            gridZ + (selectedSize.height === 2 ? -1 : 0)
-        );
+        highlight.position.set(gridX + (selectedSize.width === 2 ? -1 : 0), 6.05, gridZ + (selectedSize.height === 2 ? -1 : 0));//수정필요
     }
 });
 
@@ -192,11 +187,10 @@ window.addEventListener("mousedown", (event) => {
             const gridX = Math.round(point.x / gridSize) * gridSize;
             const gridZ = Math.round(point.z / gridSize) * gridSize;
 
-            selectedObject.position.set(
-                gridX - (selectedSize.width === 2 ? 0.5 : 0),
-                6.0,
-                gridZ
-            );
+            let y = 6; 
+            if (selectedObject.name === "Fence" || selectedObject.name === "Barn") y = 7; 
+            
+            selectedObject.position.set(gridX - (selectedSize.width === 2 ? 0.5 : 0), y, gridZ);
             isPlacing = false;
             selectedObject = null;
         }
@@ -210,7 +204,7 @@ function findModelRoot(object) {
 
 function createBox(model, width, height, depth) {
     const boxGeometry = new THREE.BoxGeometry(width, height, depth);
-    const boxMaterial = new THREE.MeshBasicMaterial({ wireframe: true });
+    const boxMaterial = new THREE.MeshBasicMaterial({ wireframe: true, transparent: true });
     const box = new THREE.Mesh(boxGeometry, boxMaterial);
 
     box.position.set(model.position.x, model.position.y - 5, model.position.z);
@@ -224,3 +218,16 @@ function createBox(model, width, height, depth) {
 export function setGrid(newGrid) {
     grid = newGrid;
 }
+/*
+    loader.load("models/cloud/scene.gltf", (gltf) => {
+        cloud = gltf.scene;
+        cloud.scale.set(0.25, 0.25, 0.25);
+        cloud.position.set(-5, 20, 0);
+        cloud.traverse((node) => {
+            if (node.isMesh) {
+                node.castShadow = true;
+            } 
+        });
+        scene.add(cloud);
+    });
+*/
