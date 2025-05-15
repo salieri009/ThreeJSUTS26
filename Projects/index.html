@@ -1,13 +1,63 @@
+<!-- animal-simulator.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>3D Builder</title>
+    <title>Animal Simulator</title>
     <link rel="stylesheet" href="styles/main.css" />
 </head>
-
 <body>
+<!-- 상단 헤더 -->
+<header class="app-header">
+    <span class="logo-dot"></span>
+    <span class="header-title">Animal Simulator</span>
+    <div class="header-actions">
+        <button class="header-btn">Save</button>
+        <button class="header-btn">Setting</button>
+    </div>
+</header>
+
+<!-- 메인 영역 -->
+<main id="scene-container" class="scene">
+    <!-- Three.js 캔버스가 JS에서 appendChild로 들어감 -->
+
+
+
+    <!-- 오버레이 버튼 -->
+    <div class="scene-overlay-controls">
+        <button class="overlay-btn" data-category="terrain expansion">+</button>
+        <button class="overlay-btn" data-category="props">Props</button>
+        <button class="overlay-btn" data-category="nature">Nature</button>
+        <button class="overlay-btn" data-category="animals">Animals</button>
+    </div>
+
+
+
+<!--    예시입니다-->
+    <div class="overlay-item-panel" id="item-panel">
+        <div class="overlay-item-panel-header">카테고리 미리보기</div>
+        <div class="item-list" id="item-list">
+            <!-- 예시 아이템 -->
+            <div class="draggable-item">
+                <span class="item-icon">🐄</span>
+                <span>소</span>
+            </div>
+            <div class="draggable-item">
+                <span class="item-icon">🌳</span>
+                <span>나무</span>
+            </div>
+            <div class="draggable-item">
+                <span class="item-icon">🏠</span>
+                <span>집</span>
+            </div>
+            <div class="draggable-item">
+                <span class="item-icon">🧸</span>
+                <span>장난감</span>
+            </div>
+        </div>
+    </div>
+</main>
 <script type="importmap">
     {
       "imports": {
@@ -15,8 +65,6 @@
       }
     }
 </script>
-
 <script src="/Projects/main.js" type="module"></script>
-
 </body>
 </html>

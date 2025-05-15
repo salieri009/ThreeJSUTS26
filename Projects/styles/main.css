@@ -1,398 +1,302 @@
-/* Dark theme 3D Builder layout */
-body, html {
+:root {
+    /* 단청/전통색 팔레트 */
+    --dancheong-red:   #A13A3A;   /* 단청 적색 */
+    --dancheong-yellow:#E5B85C;   /* 단청 황색 */
+    --dancheong-blue:  #3A6BA1;   /* 단청 청색 */
+    --dancheong-green: #3A7D5D;   /* 단청 녹색 */
+    --dancheong-orange:#C97B43;   /* 황토/오렌지 */
+    --dancheong-brown: #7C5B45;   /* 전통 갈색 */
+    --dancheong-mint:  #6DBBAA;   /* 포인트 민트 */
+    --dancheong-gray:  #ECE8E2;   /* 밝은 회색 */
+    --dancheong-dark:  #4A4743;   /* 진한 회색 */
+
+    /* UI 요소별 주요 색상 */
+    --header-gradient: linear-gradient(90deg, var(--dancheong-red) 0%, var(--dancheong-yellow) 30%, var(--dancheong-blue) 60%, var(--dancheong-green) 100%);
+    --header-border:   var(--dancheong-orange);
+    --header-shadow:   #3A6BA130;
+
+    --btn-bg:          #fff;
+    --btn-color:       var(--dancheong-blue);
+    --btn-border:      var(--dancheong-blue);
+    --btn-hover-bg:    var(--dancheong-blue);
+    --btn-hover-color: #fff;
+    --btn-hover-border:var(--dancheong-yellow);
+
+    --panel-bg:        #fff;
+    --panel-border:    var(--dancheong-green);
+    --panel-shadow:    #3A6BA133;
+
+    --item-bg:         var(--dancheong-gray);
+    --item-border:     var(--dancheong-orange);
+    --item-color:      var(--dancheong-brown);
+    --item-active-bg:  var(--dancheong-orange);
+    --item-active-color:#fff;
+    --item-active-border: var(--dancheong-green);
+
+    --scene-bg:        var(--dancheong-gray);
+
+    /* 기타 */
+    --radius-lg: 22px;
+    --radius-md: 14px;
+    --radius-sm: 8px;
+}
+
+/* Reset & Base */
+body {
     margin: 0;
+    font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
+    background: var(--scene-bg);
+    color: #222;
     overflow: hidden;
-    width: 100vw;
-    height: 100vh;
-    background: #1c2333;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    color: white;
 }
 
-/* App container with 3-panel layout */
-.app-container {
-    display: flex;
-    width: 100vw;
-    height: 100vh;
-    background: #1c2333;
-}
-
-/* Top header bar with app title */
+/* Header: 단청 그라데이션 */
 .app-header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: #171e2c;
-    height: 40px;
     display: flex;
     align-items: center;
-    padding: 0 15px;
-    z-index: 20;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    justify-content: space-between;
+    background: var(--header-gradient);
+    padding: 18px 32px 14px 32px;
+    border-bottom: 6px solid var(--header-border);
+    box-shadow: 0 4px 24px var(--header-shadow);
 }
 
-.app-header .title {
-    font-size: 14px;
-    font-weight: 500;
-    margin-left: 10px;
+.logo-dot {
+    width: 22px;
+    height: 22px;
+    background: var(--dancheong-yellow);
+    border-radius: 50%;
+    margin-right: 14px;
+    box-shadow: 0 0 12px #E5B85C80;
+    display: inline-block;
+    border: 3px solid var(--dancheong-blue);
 }
 
-.app-header .right-actions {
-    margin-left: auto;
+.header-title {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #fff;
+    flex: 1;
+    margin-left: 14px;
+    text-shadow: 1px 2px 8px #3A6BA150;
+}
+
+.header-actions {
     display: flex;
-    gap: 15px;
+    gap: 12px;
 }
 
-.app-header button {
-    background: none;
+.header-btn {
+    background: var(--btn-bg);
+    color: var(--dancheong-red);
     border: none;
-    color: white;
-    font-size: 14px;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    box-shadow: 0 2px 10px #A13A3A22;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    border-bottom: 3px solid var(--dancheong-yellow);
+}
+.header-btn:hover {
+    background: var(--dancheong-red);
+    color: #fff;
+    box-shadow: 0 4px 16px #A13A3A44;
 }
 
-/* Left sidebar - exactly matching the image */
-#build-panel {
-    width: 160px;
-    background: #1e2538;
-    padding: 15px;
+/* Scene Container */
+#scene-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: var(--scene-bg);
+    overflow: hidden;
+    align-content: center;
+}
+
+/* Three.js Canvas */
+#scene-container canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 1;
+}
+
+/* Overlay Controls (버튼 원형 배치) */
+.scene-overlay-controls {
+    position: absolute;
+    bottom: 44px;
+    left: 110px;
+    width: 180px;
+    height: 180px;
+    z-index: 10;
+    transform: translate(-50%, 0);
+}
+
+.overlay-btn {
+    position: absolute;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 2.5px solid var(--btn-border);
+    background: var(--btn-bg);
+    color: var(--btn-color);
+    font-size: 1.2rem;
+    font-weight: 700;
+    box-shadow: 0 6px 18px #3A6BA122;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+    padding: 0;
+    outline: none;
+}
+.overlay-btn:hover, .overlay-btn.active {
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-color);
+    border: 2.5px solid var(--btn-hover-border);
+    box-shadow: 0 8px 24px #3A6BA144;
+}
+
+/* 상좌우 배치*/
+.overlay-btn[data-category="props"] {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.overlay-btn[data-category="nature"] {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.overlay-btn[data-category="animals"] {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* + 버튼을 좌상단 대각 위치에 배치 */
+.overlay-btn[data-category="terrain expansion"] {
+    width: 50%;
+    height: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/* Overlay Item Panel (슬라이드/드래그/전통 녹색 테두리) */
+.overlay-item-panel {
+    position: absolute;
+    left: 50%;
+    bottom: 10%;
+    transform: translateX(-50%);
+    transition: none;
+    z-index: 20;
+    min-width: auto;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    pointer-events: auto;
+    user-select: none;
+    align-items: flex-end;
+}
+
+
+.overlay-item-panel.visible {
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+}
+.overlay-item-panel.dragging {
+    transition: none;
+}
+.overlay-item-panel-header {
+    font-weight: bold;
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+    padding: 18px 0 10px 0;
+    background: #E5B85C33;
+    border-radius: 18px 18px 0 0;
+    cursor: move;
+    text-align: center;
+    user-select: none;
+    color: var(--dancheong-green);
+    letter-spacing: 2px;
+}
+
+/* 아이템 목록 Flex */
+.item-list {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 0;
+    margin: 0;
+}
+
+
+.draggable-item {
+    width: 110px;
+    height: 110px;
+    background: var(--item-bg);
+    border: 2.5px solid var(--item-border);
+    border-radius: var(--radius-md);
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    overflow-y: auto;
-    z-index: 10;
-}
-
-#build-panel h2 {
-    font-size: 16px;
-    margin: 0 0 10px 0;
-    color: white;
-}
-
-#build-panel h3 {
-    font-size: 14px;
-    margin: 10px 0 10px 0;
-    color: #a0a0a0;
-}
-
-.info {
-    background: #252d40;
-    border-radius: 4px;
-    padding: 10px;
-    font-size: 13px;
-}
-
-.info p {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    color: #a0a0a0;
-}
-
-.info span {
-    color: white;
-}
-
-/* Right properties panel - matching image width */
-.properties {
-    width: 180px;
-    background: #1e2538;
-    padding: 15px;
-    z-index: 10;
-}
-
-.properties h3 {
-    font-size: 14px;
-    margin: 0 0 15px 0;
-}
-
-.transform-group, .material-group {
-    margin-bottom: 15px;
-}
-
-.transform-group label, .material-group label {
-    display: block;
-    font-size: 12px;
-    color: #a0a0a0;
-    margin-bottom: 5px;
-}
-
-.transform-group input {
-    width: calc(33.33% - 4px);
-    background: #252d40;
-    border: none;
-    color: white;
-    padding: 5px;
-    font-size: 12px;
-    border-radius: 2px;
-    margin-bottom: 5px;
-}
-
-.material-group input[type="color"] {
-    width: 100%;
-    height: 25px;
-    background: #000;
-    border: none;
-    border-radius: 2px;
-}
-
-/* Main scene container - matching the center area in image */
-#scene-container {
-    flex: 1 1 0;
-    min-width: 0;
-    min-height: 0;
-    position: relative;
-    background: #1a202f;
-    display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    z-index: 0;
-}
-
-#scene-container canvas {
-    width: 100% !important;
-    height: 100% !important;
-    display: block;
-}
-
-/* Draggable items - matching the card style in image */
-.draggable-item {
-    background: #252d40;
-    padding: 10px;
-    margin-bottom: 8px;
-    border-radius: 4px;
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: var(--item-color);
     cursor: grab;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    transition: background 0.2s;
-}
-
-.draggable-item:hover {
-    background: #2a3449;
+    margin: 12px 0;
+    transition: background 0.2s, border 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px #C97B4333;
 }
 
 .draggable-item:active {
-    background: #304060;
+    background: var(--item-active-bg);
+    color: var(--item-active-color);
+    border: 2.5px solid var(--item-active-border);
+    box-shadow: 0 6px 18px #C97B4344;
 }
 
-.draggable-item small {
-    font-size: 11px;
-    color: #a0a0a0;
-    margin-left: auto;
+.draggable-item .item-icon {
+    font-size: 2.4rem;
+    margin-bottom: 8px;
+}
+.draggable-item span:last-child {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--dancheong-red);
 }
 
-/* Item icons as seen in the image */
-.item-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Category tabs shown in image */
-.category-tabs {
-    display: flex;
-    margin: 5px 0 10px 0;
-    gap: 5px;
-}
-
-.category-tab {
-    flex: 1;
-    text-align: center;
-    padding: 8px 0;
-    background: #252d40;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.category-tab.active {
-    background: #444f66;
-}
-
-/* Resource bar - modified for dark theme */
-.resource-bar {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(30, 37, 56, 0.9);
-    padding: 10px 25px;
-    border-radius: 30px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-    font-size: 16px;
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    z-index: 100;
-    user-select: none;
-}
-
-.resource-bar span {
-    font-weight: 500;
-}
-
-.resource-bar .icon {
-    margin-right: 6px;
-}
-
-/* Action buttons matching the image */
-.action-button {
-    background: #252d40;
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    margin-right: 8px;
-}
-
-.action-button:hover {
-    background: #304060;
-}
-
-/* Plus button for adding items - exact match to purple button in image */
-.add-button {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: #6d5acd;
-    border: none;
-    color: white;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    margin: 10px 0;
-}
-
-/* Status messages */
-.status-message {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(30, 37, 56, 0.9);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    z-index: 20;
-}
-
-/* Scene controls buttons (bottom right in image) */
-.scene-controls {
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-    display: flex;
-    gap: 10px;
-    z-index: 20;
-}
-
-.scene-control-button {
-    width: 36px;
-    height: 36px;
-    background: rgba(30, 37, 56, 0.8);
-    border: none;
-    border-radius: 4px;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-/* Reset GUI styling to match dark theme */
-.lil-gui.root {
-    font-size: 13px !important;
-    right: 15px !important;
-    top: 60px !important;
-    border-radius: 4px !important;
-    background: #1e2538 !important;
-    color: white !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.4) !important;
-    z-index: 30 !important;
-}
-
-/* Selection Menu Styling */
-.selection-menu {
-    background: #252d40;
-    border-radius: 4px;
-    padding: 8px 0;
-    min-width: 150px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.menu-item {
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: background 0.2s;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.menu-item:hover {
-    background: #304060;
-}
-
-/* Floating Message */
-.floating-message {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(30, 37, 56, 0.9);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 14px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-}
-
-/* Responsive design adjustments */
-@media (max-width: 768px) {
-    .app-container {
-        flex-direction: column;
+/* Responsive: 모바일에서 패널 크기 조정 */
+@media (max-width: 800px) {
+    .overlay-item-panel {
+        min-width: 95vw;
+        padding: 0 4vw 18px 4vw;
     }
-
-    #build-panel, .properties {
-        width: 100%;
-        max-height: 30vh;
+    .item-list {
+        gap: 10px;
     }
-
-    #scene-container {
-        height: 40vh;
-        flex: 0 0 40vh;
-    }
-
-    #scene-container canvas {
-        width: 100% !important;
-        height: 100% !important;
-    }
-
-    .resource-bar {
-        top: auto;
-        bottom: 20px;
-        font-size: 14px;
-        padding: 8px 15px;
-    }
-
     .draggable-item {
-        padding: 8px;
+        width: 70px;
+        height: 70px;
+        font-size: 1.2rem;
+    }
+    .scene-overlay-controls {
+        left: 50vw;
+        width: 120px;
+        height: 120px;
     }
 }
