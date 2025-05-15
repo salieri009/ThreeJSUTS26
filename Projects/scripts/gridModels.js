@@ -61,7 +61,7 @@ function loadModels() {
         });
         tree.name = 'Tree';
         createBox(tree, 200, 2000, 200);
-        scene.add(tree);
+        //scene.add(tree);
     });
 
     loader.load("models/cow/Cow.gltf", (gltf) => {
@@ -74,7 +74,7 @@ function loadModels() {
         });
         cow.name = 'Cow';
         createBox(cow, 8, 10, 4);
-        scene.add(cow);
+        //scene.add(cow);
     });
 
     const fenceTexture = textureLoad.load('models/fence/textures/Wood_diffuse.png') 
@@ -91,7 +91,7 @@ function loadModels() {
 
         fence.name = 'Fence';
         createBox(fence, 5.1, 4, 2.9);
-        scene.add(fence);
+        //scene.add(fence);
     });
 }
 

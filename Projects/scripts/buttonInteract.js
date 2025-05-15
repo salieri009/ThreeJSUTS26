@@ -1,10 +1,10 @@
 import * as THREE from '../build/three.module.js';
 import { scene } from './sceneManager.js';
-import { grasses, grid , setGrid } from './gridModels.js';
+import { grasses, grid , setGrid, cow } from './gridModels.js';
 
 let level = 1;
 
-export function addBlock() { // can add block by keyboard input "a" for now, this part will be removed/changed
+export function addBlock() {
     if (grid) scene.remove(grid);
 
     let size = level * 10;
@@ -39,12 +39,7 @@ export function addBlock() { // can add block by keyboard input "a" for now, thi
             scene.add(highlight);
         }
     }
-
+    level++;
 }
 
-window.addEventListener('keydown', (event) => {
-    if (event.key === 'a' && level < 10) { // 이 이상하면 렉걸림림
-        addBlock();
-        level++;
-    }
-});
+document.querySelector('[data-category="terrain expansion"]').addEventListener('click', () => { if(level < 10) addBlock(); });
