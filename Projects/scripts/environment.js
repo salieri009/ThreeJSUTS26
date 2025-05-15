@@ -10,3 +10,17 @@ export function setBackground()  {
     const skyDome = new THREE.Mesh(skyGeometry, skyMaterial);
     scene.add(skyDome);
 }
+
+/*
+    loader.load("models/cloud/scene.gltf", (gltf) => {
+        cloud = gltf.scene;
+        cloud.scale.set(0.25, 0.25, 0.25);
+        cloud.position.set(-5, 20, 0);
+        cloud.traverse((node) => {
+            if (node.isMesh) {
+                node.castShadow = true;
+            } 
+        });
+        scene.add(cloud);
+    });
+*/

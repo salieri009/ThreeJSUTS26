@@ -196,20 +196,6 @@ function createBox(model, width, height, depth) {
 export function setGrid(newGrid) {
     grid = newGrid;
 }
-/*
-    loader.load("models/cloud/scene.gltf", (gltf) => {
-        cloud = gltf.scene;
-        cloud.scale.set(0.25, 0.25, 0.25);
-        cloud.position.set(-5, 20, 0);
-        cloud.traverse((node) => {
-            if (node.isMesh) {
-                node.castShadow = true;
-            } 
-        });
-        scene.add(cloud);
-    });
-*/
-
     /*
     loader.load("models/barn/scene.gltf", (gltf) => {
         barn = gltf.scene;
