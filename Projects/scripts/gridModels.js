@@ -45,15 +45,6 @@ export function setSceneElementsTemp() {
     scene.add(grass);
     grasses.push(grass);
     
-    const skyGeometry = new THREE.SphereGeometry(200, 8, 6); 
-    const skyMaterial = new THREE.MeshBasicMaterial({
-        color: 0x87CEEB,
-        side: THREE.BackSide, 
-        //flatShading: true      
-    });
-    const skyDome = new THREE.Mesh(skyGeometry, skyMaterial);
-    scene.add(skyDome);
-
     loadModels();
     setupGridInteractions();
 }
@@ -102,18 +93,6 @@ function loadModels() {
         createBox(fence, 5.1, 4, 2.9);
         scene.add(fence);
     });
-
-    loader.load("models/barn/scene.gltf", (gltf) => {
-        barn = gltf.scene;
-        barn.scale.set(0.45, 0.45, 0.5);
-        barn.position.set(0.5, 8.5, 0);
-        barn.traverse((node) => {
-            if (node.isMesh) node.castShadow = true;
-        });
-        barn.name = 'Barn';
-        createBox(barn, 20, 12, 12);
-        scene.add(barn);
-    });
 }
 
 function setupGridInteractions() {
@@ -156,7 +135,6 @@ window.addEventListener("mousemove", (event) => {
         highlight.position.set(gridX + (selectedSize.width === 2 ? -1 : 0), 6.05, gridZ + (selectedSize.height === 2 ? -1 : 0));//수정필요
     }
 });
-
 
 window.addEventListener("mousedown", (event) => {
     if (!camera || !scene || !grasses || !highlight) return;
@@ -231,3 +209,16 @@ export function setGrid(newGrid) {
         scene.add(cloud);
     });
 */
+
+    /*
+    loader.load("models/barn/scene.gltf", (gltf) => {
+        barn = gltf.scene;
+        barn.scale.set(0.45, 0.45, 0.5);
+        barn.position.set(0.5, 8.5, 0);
+        barn.traverse((node) => {
+            if (node.isMesh) node.castShadow = true;
+        });
+        barn.name = 'Barn';
+        createBox(barn, 20, 12, 12);
+        scene.add(barn);
+    });*/
