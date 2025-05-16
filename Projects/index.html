@@ -8,41 +8,65 @@
     <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
-<!-- 상단 헤더 -->
-
+<!-- 상단 헤더 (필요시 추가) -->
 
 <!-- 메인 영역 -->
-<main id="scene-container" class="scene">
-    <!-- Three.js 캔버스가 JS에서 appendChild로 들어감 -->
+<main id="scene-container" class="scene" style="position:relative; width:100vw; height:100vh; overflow:hidden;">
+    <!-- 상단 자원/수익 바 -->
+    <div class="idle-resource-bar" style="position:absolute; top:20px; left:50%; transform:translateX(-50%); z-index:10; display:flex; gap:30px; background:rgba(30,30,30,0.8); border-radius:16px; padding:12px 32px; color:#fff;">
+        <div>💰 <span id="currency-amount">1,000</span> (초당 +10)</div>
+        <div>🌾 <span id="crop-amount">50</span> (초당 +2)</div>
+        <div>🐄 <span id="animal-amount">5</span> (초당 +1)</div>
+        <button id="ad-reward-btn" style="margin-left:40px; background:#ffa500; color:#222; border:none; border-radius:8px; padding:6px 16px; cursor:pointer;">광고보고 2배 보상!</button>
+    </div>
+
+    <!-- 중앙 Three.js 캔버스 (JS에서 appendChild) -->
+
     <!-- 오버레이 버튼 -->
-    <div class="scene-overlay-controls">
+    <div class="scene-overlay-controls" style="position:absolute; left:30px; top:120px; z-index:10; display:flex; flex-direction:column; gap:10px;">
         <button class="overlay-btn" data-category="terrain expansion">+</button>
         <button class="overlay-btn" data-category="props">Props</button>
         <button class="overlay-btn" data-category="nature">Nature</button>
         <button class="overlay-btn" data-category="animals">Animals</button>
     </div>
-    
-<!--    예시입니다-->
-    <div class="overlay-item-panel" id="item-panel">
+
+    <!-- 아이템 미리보기 패널 -->
+    <div class="overlay-item-panel" id="item-panel" style="position:absolute; left:30px; top:270px; z-index:10; background:rgba(255,255,255,0.95); border-radius:12px; padding:16px; min-width:170px;">
         <div class="overlay-item-panel-header">카테고리 미리보기</div>
         <div class="item-list" id="item-list">
-            <!-- 예시 아이템 -->
-            <div class="draggable-item">
-                <span class="item-icon">🐄</span>
-                <span>소</span>
-            </div>
-            <div class="draggable-item">
-                <span class="item-icon">🌳</span>
-                <span>나무</span>
-            </div>
-            <div class="draggable-item">
-                <span class="item-icon">🏠</span>
-                <span>집</span>
-            </div>
-            <div class="draggable-item">
-                <span class="item-icon">🧸</span>
-                <span>장난감</span>
-            </div>
+            <div class="draggable-item"><span class="item-icon">🐄</span><span>소</span></div>
+            <div class="draggable-item"><span class="item-icon">🌳</span><span>나무</span></div>
+            <div class="draggable-item"><span class="item-icon">🏠</span><span>집</span></div>
+            <div class="draggable-item"><span class="item-icon">🧸</span><span>장난감</span></div>
+        </div>
+    </div>
+
+    <!-- 우측 Idle 게임 주요 UI -->
+    <div class="idle-ui-panel" style="position:absolute; right:30px; top:120px; z-index:10; display:flex; flex-direction:column; gap:18px; min-width:210px;">
+        <!-- 업그레이드 -->
+        <div class="upgrade-panel" style="background:rgba(255,255,255,0.95); border-radius:10px; padding:14px;">
+            <div style="font-weight:bold; margin-bottom:8px;">업그레이드</div>
+            <button class="upgrade-btn" style="width:100%; margin-bottom:6px;">🐄 소 생산량 업 (500💰)</button>
+            <button class="upgrade-btn" style="width:100%; margin-bottom:6px;">🌳 나무 성장 가속 (300💰)</button>
+            <button class="upgrade-btn" style="width:100%;">🏠 집 자동화 (1000💰)</button>
+        </div>
+        <!-- 자동화/관리자 -->
+        <div class="automation-panel" style="background:rgba(255,255,255,0.95); border-radius:10px; padding:14px;">
+            <div style="font-weight:bold; margin-bottom:8px;">자동화</div>
+            <button class="automation-btn" style="width:100%; margin-bottom:6px;">소 관리자 고용 (2000💰)</button>
+            <button class="automation-btn" style="width:100%;">나무 관리자 고용 (1500💰)</button>
+        </div>
+        <!-- 퀘스트/미션 -->
+        <div class="quest-panel" style="background:rgba(255,255,255,0.95); border-radius:10px; padding:14px;">
+            <div style="font-weight:bold; margin-bottom:8px;">퀘스트</div>
+            <div>🌾 곡식 100개 모으기 (진행: 50/100)</div>
+            <div>🐄 소 10마리 키우기 (진행: 5/10)</div>
+            <button class="quest-btn" style="margin-top:8px; width:100%;">보상 받기</button>
+        </div>
+        <!-- 환생/프레스티지 -->
+        <div class="prestige-panel" style="background:rgba(255,255,255,0.95); border-radius:10px; padding:14px;">
+            <div style="font-weight:bold; margin-bottom:8px;">환생</div>
+            <button class="prestige-btn" style="width:100%;">환생하고 영구 보너스 받기!</button>
         </div>
     </div>
 </main>
