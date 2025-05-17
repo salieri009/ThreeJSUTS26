@@ -79,6 +79,7 @@ function loadModels() {
         });
         cow.name = 'Cow';
         createBox(cow, 8, 10, 4);
+        scene.add(cow);
     });
 
     const fenceTexture = textureLoad.load('models/fence/textures/Wood_diffuse.png') 
@@ -199,10 +200,32 @@ function setupGridInteractions() {
 }
 
 window.addEventListener('keydown', (event) => {
-    if ((event.key === 'r' || event.key === 'R') && selectedObject) { //수정필요
+    if ((event.key === 'r' || event.key === 'R') && selectedObject) {
         selectedObject.rotation.y += Math.PI / 2;
         highlight.rotation.z += Math.PI / 2;
-    }
+
+        let temp = selectedSize.width;
+        selectedSize.width = selectedSize.height;
+        selectedSize.height = temp;
+
+        selectedObject.position.x = Math.round(selectedObject.position.x / gridSize) * gridSize;
+        selectedObject.position.z = Math.round(selectedObject.position.z / gridSize) * gridSize;
+        highlight.position.x = selectedObject.position.x;
+        highlight.position.z = selectedObject.position.z;
+
+        if (selectedSize.width % 2 === 0) {
+            selectedObject.position.x = Math.round(selectedObject.position.x / gridSize) * gridSize;
+        } else {
+            selectedObject.position.x = Math.round(selectedObject.position.x / gridSize) * gridSize ;
+        }
+
+        if (selectedSize.height % 2 === 0) {
+            selectedObject.position.z = Math.round(selectedObject.position.z / gridSize) * gridSize;
+        } else {
+            selectedObject.position.z = Math.round(selectedObject.position.z / gridSize) * gridSize;
+        }
+        highlight.position.x = selectedObject.position.x;
+        highlight.position.z = selectedObject.position.z;    }
 });
 
 window.addEventListener("mousemove", (event) => {
