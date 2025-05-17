@@ -147,6 +147,17 @@ body {
     transform: none; /* 중앙 정렬이 필요없으면 제거 */
 }
 
+.scene-overlay-add-and-remove{
+    position: absolute;
+    top: 450px;
+    left: 60px;
+    width: 180px;
+    height: 180px;
+    z-index: 10;
+    transform: none;
+    display: flex;
+}
+
 .scene-overlay-weather {
     position: absolute;
     top: 40px;
