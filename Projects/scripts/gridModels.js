@@ -225,7 +225,8 @@ window.addEventListener('keydown', (event) => {
             selectedObject.position.z = Math.round(selectedObject.position.z / gridSize) * gridSize;
         }
         highlight.position.x = selectedObject.position.x;
-        highlight.position.z = selectedObject.position.z;    }
+        highlight.position.z = selectedObject.position.z;   
+    }
 });
 
 window.addEventListener("mousemove", (event) => {
