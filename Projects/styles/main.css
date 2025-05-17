@@ -261,6 +261,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    left:140px;
+
     /* You can add a stronger border or color for emphasis */
     /* border: 3px solid var(--btn-important-border); */
 }
