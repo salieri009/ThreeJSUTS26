@@ -139,25 +139,46 @@ body {
 /* Overlay Controls (버튼 원형 배치) */
 .scene-overlay-controls {
     position: absolute;
-    bottom: 44px;
-    left: 120px;
+    bottom: 40px;
+    left: 60px;
     width: 180px;
     height: 180px;
     z-index: 10;
-    transform: translate(-50%, 0);
+    transform: none; /* 중앙 정렬이 필요없으면 제거 */
 }
 
-.scene-overlay-weather{
+.scene-overlay-weather {
     position: absolute;
-    top: 30px;
-    left: 120px;
-    width: 180px;
+    top: 40px;
+    left: 60px;
+    width: 200px;
     height: 100px;
-    align-content: center;
     z-index: 10;
     background-color: rgba(128, 128, 128, 0.5);
-    transform: translate(-50%, 0);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px #8884;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* transform 제거: 좌측 상단에 자연스럽게 */
 }
+
+.scene-overlay-upgrade-panel {
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    width: 250px;
+    height: 540px;
+    z-index: 10;
+    background-color: rgba(128, 128, 128, 0.5);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px #8884;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* transform 제거: 우측 상단에 자연스럽게 */
+}
+
 
 .overlay-btn {
     position: absolute;
