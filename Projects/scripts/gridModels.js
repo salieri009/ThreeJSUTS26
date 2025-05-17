@@ -2,7 +2,7 @@ import * as THREE from '../build/three.module.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 import { scene, camera } from './sceneManager.js';
 
-export let highlight, tree, cow, grass, cloud, barn, fence;
+export let highlight, tree, cow, grass, cloud, barn, fence, chicken, hay, rock;
 export let grasses = [];
 export let grid = new THREE.GridHelper(10, 5);
 
@@ -14,20 +14,22 @@ let selectedSize = { width: 1, height: 1 };
 const textureLoad = new THREE.TextureLoader();
 
 const modelData = {     
-    "Horse": { width: 2, height: 1},
     "Cow": { width: 2, height: 1},
-    "Pig": { width: 2, height: 1},
-    "Sheep": { width: 2, height: 1},
+    "Pig": { width: 2, height: 1}, //
+    "Sheep": { width: 2, height: 1}, //
     "Chicken": { width: 1, height: 1},
 
     "Barn": { width: 4, height: 6},
     "Fence": { width: 2, height: 1},
-    "Hay": { width: 1, height: 1},
-    
-    "Tree": { width: 1, height: 1},
-    "PineTree": { width: 1, height: 1},
-    "SRock": { width: 1, height: 1},
-    "LRock": { width: 2, height: 2},
+    "SRock": { width: 1, height: 1}, 
+    "Rock": { width: 2, height: 2}, 
+
+    "Hay": { width: 1, height: 1}, 
+    "Corps": { width: 1, height: 1}, //
+    "Tree": { width: 1, height: 1}, 
+    "FruitTree": { width: 1, height: 1}, //
+
+    "StonePath": { width: 1, height: 1},
 }
 
 export function setSceneElementsTemp() {
@@ -61,7 +63,6 @@ function loadModels() {
         });
         tree.name = 'Tree';
         createBox(tree, 200, 2000, 200);
-        //scene.add(tree);
     });
 
     loader.load("models/cow/Cow.gltf", (gltf) => {
@@ -74,7 +75,6 @@ function loadModels() {
         });
         cow.name = 'Cow';
         createBox(cow, 8, 10, 4);
-        //scene.add(cow);
     });
 
     const fenceTexture = textureLoad.load('models/fence/textures/Wood_diffuse.png') 
@@ -88,10 +88,65 @@ function loadModels() {
                 node.material.map = fenceTexture;
             }
         });
-
         fence.name = 'Fence';
         createBox(fence, 5.1, 4, 2.9);
-        //scene.add(fence);
+    });
+
+    loader.load("models/chicken/scene.gltf", (gltf) => { //animation : chicken-rig idle, pecking, rest, walking, standing up, sitting idle, sitting down
+        chicken = gltf.scene;
+        chicken.scale.set(0.006, 0.006, 0.006);
+        chicken.position.set(0, 6 , 0);
+        fence.traverse(node => {
+            if (node.isMesh) node.castShadow = true;
+        });
+        chicken.name = "Chicken";
+        createBox(chicken, 100, 100, 100); //temp
+        //scene.add(chicken);
+    });
+
+    loader.load("models/barn/scene.gltf", (gltf) => {
+        barn = gltf.scene;
+        barn.scale.set(0.45, 0.45, 0.5);
+        barn.position.set(0.5, 8.5, 0);
+        barn.traverse((node) => {
+            if (node.isMesh) node.castShadow = true;
+        });
+        barn.name = 'Barn';
+        createBox(barn, 20, 12, 12);
+    });
+
+    const hayTexture = textureLoad.load('models/hay/textures/lambert1_baseColor.jpeg');
+    const hayTexture2 = textureLoad.load('models/hay/textures/lambert2_baseColor.png');
+    loader.load("models/hay/scene.gltf", (gltf) => {
+        hay = gltf.scene;
+        hay.scale.set(0.2, 0.2, 0.15);
+        hay.position.set(0, 6, 0);
+        hay.traverse(node => {
+            if (node.isMesh) {
+                if (node.name === "pCube1_lambert1_0") {
+                    node.material.map = hayTexture;
+                } else if (node.name === "pPlane46_lambert2_0" ||node.name === "pPlane47_lambert2_0") {
+                    node.material.map = hayTexture2;
+                }
+            }
+        });
+
+        hay.name = 'Hay';
+        createBox(hay, 51, 40, 29);
+    });
+
+    const rockTexture = textureLoad.load('models/rock/textures/Material.010_baseColor.png');
+    loader.load("models/rock/scene.gltf", (gltf) => {
+        rock = gltf.scene;
+        rock.scale.set(1, 1, 1);
+        rock.position.set(0, 6, 0);
+        rock.traverse(node => {
+            if(node.isMesh) {
+                node.material.map = rockTexture;
+            }
+        });
+        rock.name = 'Rock';
+        createBox(rock, 5, 5, 5);
     });
 }
 
@@ -106,14 +161,14 @@ function setupGridInteractions() {
 
     grid.position.set(0, 6, 0);
     scene.add(grid);
-
-    window.addEventListener('keydown', (event) => {
-        if ((event.key === 'r' || event.key === 'R') && selectedObject) { //수정필요
-            selectedObject.rotation.y += Math.PI / 2;
-            highlight.rotation.z += Math.PI / 2;
-        }
-    });
 }
+
+window.addEventListener('keydown', (event) => {
+    if ((event.key === 'r' || event.key === 'R') && selectedObject) { //수정필요
+        selectedObject.rotation.y += Math.PI / 2;
+        highlight.rotation.z += Math.PI / 2;
+    }
+});
 
 window.addEventListener("mousemove", (event) => {
     if (!camera || !grass || !highlight) return;
@@ -197,14 +252,4 @@ export function setGrid(newGrid) {
     grid = newGrid;
 }
     /*
-    loader.load("models/barn/scene.gltf", (gltf) => {
-        barn = gltf.scene;
-        barn.scale.set(0.45, 0.45, 0.5);
-        barn.position.set(0.5, 8.5, 0);
-        barn.traverse((node) => {
-            if (node.isMesh) node.castShadow = true;
-        });
-        barn.name = 'Barn';
-        createBox(barn, 20, 12, 12);
-        scene.add(barn);
-    });*/
+*/
