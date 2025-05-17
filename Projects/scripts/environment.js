@@ -11,7 +11,9 @@ export function setBackground()  {
     scene.add(skyDome);
 }
 
-/*
+function cloudMove() { 
+    requestAnimationFrame(cloudMove);
+    
     loader.load("models/cloud/scene.gltf", (gltf) => {
         cloud = gltf.scene;
         cloud.scale.set(0.25, 0.25, 0.25);
@@ -23,4 +25,4 @@ export function setBackground()  {
         });
         scene.add(cloud);
     });
-*/
+}

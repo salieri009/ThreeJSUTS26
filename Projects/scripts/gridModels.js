@@ -46,6 +46,7 @@ export function setSceneElementsTemp() {
         new THREE.BoxGeometry(10, 2, 10),
         new THREE.MeshLambertMaterial({ color: 0x3E5C3A })
     );
+    
     grass.position.set(0, 5, 0);
     scene.add(grass);
     grasses.push(grass);

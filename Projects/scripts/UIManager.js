@@ -6,20 +6,20 @@ let currentCategory = null;
 
 const itemData = {
     props: [
-        { icon: '🎩', label: 'Hat', type: 'hat' },
-        { icon: '🧸', label: 'Toy', type: 'toy' }
+        { icon: '🎩', label: 'Hat' },
+        { icon: '🧸', label: 'Toy' }
     ],
     buildings: [
-        { icon: '🏠', label: 'House', type: 'house' },
-        { icon: '🏢', label: 'Office', type: 'office' }
+        { icon: '🏠', label: 'House' },
+        { icon: '🏢', label: 'Office' }
     ],
     nature: [
-        { icon: '🌳', label: 'Oak', type: 'oak' },
-        { icon: '🌸', label: 'Flower', type: 'flower' }
+        { icon: '🌳', label: 'Oak' },
+        { icon: '🌸', label: 'Flower' }
     ],
     animals: [
-        { icon: '🐄', label: 'Cow', type: 'cow' },
-        { icon: '🐑', label: 'Sheep', type: 'sheep' }
+        { icon: '🐄', label: 'Cow' },
+        { icon: '🐑', label: 'Sheep' }
     ]
 };
 
@@ -27,20 +27,24 @@ export function init() {
     overlayBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const category = btn.dataset.category;
-            if (itemPanel.classList.contains('visible') && currentCategory === category) {
+
+            if (currentCategory === category && itemPanel.classList.contains('visible')) {
                 itemPanel.classList.remove('visible');
                 overlayBtns.forEach(b => b.classList.remove('active'));
                 currentCategory = null;
                 return;
             }
+
             overlayBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+
+            currentCategory = category;
             panelHeader.textContent = category.charAt(0).toUpperCase() + category.slice(1);
             renderItems(category);
             itemPanel.classList.add('visible');
-            currentCategory = category;
         });
     });
+
 
     document.addEventListener('mousedown', e => {
         if (!itemPanel.contains(e.target) && ![...overlayBtns].includes(e.target)) {
@@ -49,8 +53,6 @@ export function init() {
             currentCategory = null;
         }
     });
-
-    initDrag();
 }
 
 function renderItems(category) {
@@ -58,45 +60,8 @@ function renderItems(category) {
     (itemData[category] || []).forEach(item => {
         const div = document.createElement('div');
         div.className = 'draggable-item';
-        div.draggable = true;
         div.innerHTML = `<span class="item-icon">${item.icon}</span><span>${item.label}</span>`;
-        div.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', item.type);
-        });
         itemList.appendChild(div);
     });
 }
 
-function initDrag() {
-    let isDragging = false, startX, startY, startLeft, startTop;
-    
-    panelHeader.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        itemPanel.classList.add('dragging');
-        const rect = itemPanel.getBoundingClientRect();
-        startX = e.clientX;
-        startY = e.clientY;
-        startLeft = rect.left;
-        startTop = rect.top;
-        itemPanel.style.position = 'fixed';
-        itemPanel.style.left = `${rect.left}px`;
-        itemPanel.style.top = `${rect.top}px`;
-        itemPanel.style.bottom = '';
-        itemPanel.style.transform = 'none';
-    });
-
-    document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        let dx = e.clientX - startX;
-        let dy = e.clientY - startY;
-        itemPanel.style.left = `${startLeft + dx}px`;
-        itemPanel.style.top = `${startTop + dy}px`;
-    });
-
-    document.addEventListener('mouseup', () => {
-        if (isDragging) {
-            isDragging = false;
-            itemPanel.classList.remove('dragging');
-        }
-    });
-}
