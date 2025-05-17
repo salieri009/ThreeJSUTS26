@@ -147,16 +147,24 @@ body {
     transform: none; /* 중앙 정렬이 필요없으면 제거 */
 }
 
-.scene-overlay-add-and-remove{
+.scene-overlay-add-and-remove {
     position: absolute;
     top: 450px;
     left: 60px;
-    width: 180px;
-    height: 180px;
+    width: 240px;           /* 버튼 2개 + 여백 */
+    height: 60px;           /* 버튼 높이 + 여유 */
     z-index: 10;
-    transform: none;
     display: flex;
+    flex-direction: row;    /* 가로 배치 */
+    align-items: center;    /* 세로 중앙정렬 */
+    justify-content: space-between; /* 버튼 사이 간격 */
+    gap: 16px;              /* 버튼 사이 여백 */
+    background: rgba(255,255,255,0.85); /* 배경 투명도 (선택) */
+    border-radius: 16px;    /* 부드러운 모서리 (선택) */
+    box-shadow: 0 4px 18px #0001; /* 살짝 그림자 (선택) */
+    padding: 8px 16px;      /* 내부 여백 */
 }
+
 
 .scene-overlay-weather {
     position: absolute;
@@ -232,14 +240,31 @@ body {
     transform: translateY(-50%);
 }
 
-/* + 버튼을 좌상단 대각 위치에 배치 */
-.overlay-btn[data-category="terrain expansion"] {
-    width: 50%;
-    height: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+
+/* Rectangle buttons for 'terrain expansion' and 'remove' */
+.overlay-btn[data-category="terrain expansion"]{
+    border-radius: 12px;           /* Rounded rectangle, adjust as needed */
+    width: 110px;                  /* Adjust width for rectangle */
+    height: 48px;                  /* Adjust height for rectangle */
+    font-size: 1.1rem;             /* Optional: tweak for rectangle */
+    /* Optionally, center content if needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+.overlay-btn[data-category="remove"] {
+    border-radius: 12px;           /* Rounded rectangle, adjust as needed */
+    width: 110px;                  /* Adjust width for rectangle */
+    height: 48px;                  /* Adjust height for rectangle */
+    font-size: 1.1rem;             /* Optional: tweak for rectangle */
+    /* Optionally, center content if needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* You can add a stronger border or color for emphasis */
+    /* border: 3px solid var(--btn-important-border); */
+}
+
 
 
 /* Overlay Item Panel (슬라이드/드래그/전통 녹색 테두리) */
