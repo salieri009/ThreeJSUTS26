@@ -152,18 +152,19 @@ body {
     top: 450px;
     left: 60px;
     width: 120px;           /* 버튼 2개 + 여백 */
-    height: 60px;           /* 버튼 높이 + 여유 */
+    height: 120px;          /* 버튼 높이*2 + gap + padding */
     z-index: 10;
     display: flex;
-    flex-direction: column;    /* 가로 배치 */
-    align-items: center;    /* 세로 중앙정렬 */
-    justify-content: space-between; /* 버튼 사이 간격 */
-    gap: 16px;              /* 버튼 사이 여백 */
-    background: rgba(255,255,255,0.85); /* 배경 투명도 (선택) */
-    border-radius: 16px;    /* 부드러운 모서리 (선택) */
-    box-shadow: 0 4px 18px #0001; /* 살짝 그림자 (선택) */
-    padding: 8px 16px;      /* 내부 여백 */
+    flex-direction: column;    /* 세로 배치 */
+    align-items: center;       /* 가로 중앙정렬 */
+    justify-content: center;   /* 세로 중앙정렬 */
+    gap: 12px;                 /* 버튼 사이 여백 */
+    background: rgba(255,255,255,0.85);
+    border-radius: 16px;
+    box-shadow: 0 4px 18px #0001;
+    padding: 10px 6px;
 }
+
 
 
 .scene-overlay-weather {
@@ -374,32 +375,23 @@ body {
 
 
 /* Rectangle buttons for 'terrain expansion' and 'remove' */
-.overlay-btn[data-category="terrain expansion"]{
-    border-radius: 12px;           /* Rounded rectangle, adjust as needed */
-    width: 110px;                  /* Adjust width for rectangle */
-    height: 48px;                  /* Adjust height for rectangle */
-    font-size: 1.1rem;             /* Optional: tweak for rectangle */
-    /* Optionally, center content if needed */
-    display: column;
-    align-items: center;
-    justify-content: center;
-}
+.overlay-btn[data-category="terrain expansion"],
 .overlay-btn[data-category="remove"] {
-    border-radius: 12px;           /* Rounded rectangle, adjust as needed */
-    width: 110px;                  /* Adjust width for rectangle */
-    height: 48px;                  /* Adjust height for rectangle */
-    font-size: 1.1rem;             /* Optional: tweak for rectangle */
-    /* Optionally, center content if needed */
-    display: table-column;
+    position: relative;
+    border-radius: 12px;
+    width: 100px;
+    height: 44px;
+    font-size: 1.1rem;
+    display: flex;
     align-items: center;
     justify-content: center;
-    bottom:10px;
-
-    /* You can add a stronger border or color for emphasis */
-    /* border: 3px solid var(--btn-important-border); */
+    background: #fff;
+    color: #C02F1D;
+    border: 2px solid #C02F1D;
+    font-weight: bold;
+    box-shadow: 0 2px 6px #C02F1D22;
+    transition: background 0.2s, color 0.2s;
 }
-
-
 
 /* Overlay Item Panel (슬라이드/드래그/전통 녹색 테두리) */
 .overlay-item-panel {
