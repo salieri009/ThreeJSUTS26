@@ -21,7 +21,7 @@ const modelData = {
     "Sheep": { width: 2, height: 1}, //
     "Chicken": { width: 1, height: 1},
 
-    "Barn": { width: 4, height: 6},
+    "Barn": { width: 5, height: 3},
     "Fence": { width: 2, height: 1},
     "SRock": { width: 1, height: 1}, 
     "Rock": { width: 2, height: 2}, 
@@ -118,6 +118,7 @@ function loadModels() {
         });
         barn.name = 'Barn';
         createBox(barn, 20, 12, 12);
+        scene.add(barn);
     });
 
     const hayTexture = textureLoad.load('models/hay/textures/lambert1_baseColor.jpeg');
@@ -183,7 +184,6 @@ function loadModels() {
             soil.name = "Carrot"; 
         }
     });
-
 }
 
 function setupGridInteractions() {
@@ -246,7 +246,7 @@ window.addEventListener("mousemove", (event) => {
         const gridX = Math.round(point.x / gridSize) * gridSize;
         const gridZ = Math.round(point.z / gridSize) * gridSize;
 
-        highlight.position.set(gridX + (selectedSize.width === 2 ? -1 : 0), 6.05, gridZ + (selectedSize.height === 2 ? -1 : 0));//수정필요
+        highlight.position.set(gridX + (selectedSize.width % 2 == 0 ? -1 : 0), 6.05, gridZ + (selectedSize.height % 2 == 0 ? -1 : 0) );//수정필요
     }
 });
 
@@ -264,12 +264,17 @@ window.addEventListener("mousedown", (event) => {
     if (!isPlacing) {
         const intersects = raycaster.intersectObjects(scene.children, true);
         if (intersects.length > 0) {
-            const root = findModelRoot(intersects[0].object);        
-            if ( modelData[root.name]) {
+            let root = intersects[0].object;
+            while (root.parent && root.parent.type !== "Scene") root = root.parent;
+            if (modelData[root.name]) {
                 selectedObject = root;
-                selectedSize = { width:  modelData[root.name].width, height:  modelData[root.name].height };
+                selectedSize = { 
+                    width: modelData[root.name].width, 
+                    height: modelData[root.name].height 
+                };
                 isPlacing = true;
-                highlight.scale.set( modelData[root.name].width, 1,  modelData[root.name].height);
+                highlight.geometry.dispose();
+                highlight.geometry = new THREE.PlaneGeometry(selectedSize.width * gridSize, selectedSize.height * gridSize);
             }
         }
     } else {
@@ -288,11 +293,6 @@ window.addEventListener("mousedown", (event) => {
         }
     }
 });
-
-function findModelRoot(object) {
-    while (object.parent && object.parent.type !== "Scene") object = object.parent;
-    return object;
-}
 
 function createBox(model, width, height, depth) {
     const boxGeometry = new THREE.BoxGeometry(width, height, depth);
