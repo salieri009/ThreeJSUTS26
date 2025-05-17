@@ -139,7 +139,7 @@ body {
 /* Overlay Controls (버튼 원형 배치) */
 .scene-overlay-controls {
     position: absolute;
-    bottom: 40px;
+    bottom: 20px;
     left: 60px;
     width: 180px;
     height: 180px;
@@ -242,8 +242,8 @@ body {
     position: absolute;
     top: 40px;
     right: 60px;
-    width: 250px;
-    height: 540px;
+    width: 400px;
+    height: 600px;
     z-index: 10;
     background-color: rgba(128, 128, 128, 0.5);
     border-radius: 14px;
@@ -498,7 +498,7 @@ body {
     max-width: 700px;
     height: 44px;
     padding: 0 36px;
-    background: linear-gradient(90deg, var(--dancheong-blue) 70%, var(--dancheong-mint) 100%);
+    background: var(--dancheong-red);
     border-radius: 18px;
     border: 2.5px solid var(--dancheong-green);
     box-shadow: 0 4px 18px #3A7D5D22;
