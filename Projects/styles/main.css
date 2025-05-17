@@ -327,16 +327,34 @@ body {
 
 /* 자원/리소스 바 */
 .resource-bar {
-    width: 100vw;
-    height: 40px;
-    background: var(--dancheong-blue);
-    color: #fff;
-    font-size: 1.1rem;
+    position: absolute; /* 또는 fixed */
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 320px;
+    width: auto;
+    max-width: 700px;
+    height: 44px;
+    padding: 0 36px;
+    background: linear-gradient(90deg, var(--dancheong-blue) 70%, var(--dancheong-mint) 100%);
+    border-radius: 18px;
+    border: 2.5px solid var(--dancheong-green);
+    box-shadow: 0 4px 18px #3A7D5D22;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 2px solid var(--dancheong-green);
+    gap: 36px;
+    z-index: 15;
+    font-weight: 700;
+    color: var(--dancheong-brown);
+    font-size: 1.13rem;
     letter-spacing: 1px;
+    transition: box-shadow 0.2s;
+}
+
+.resource-bar:hover {
+    box-shadow: 0 8px 24px #3A7D5D44;
+    background: linear-gradient(90deg, var(--dancheong-blue) 55%, var(--dancheong-mint) 100%);
 }
 
 /* Weather */
