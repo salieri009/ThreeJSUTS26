@@ -151,11 +151,11 @@ body {
     position: absolute;
     top: 450px;
     left: 60px;
-    width: 240px;           /* 버튼 2개 + 여백 */
+    width: 120px;           /* 버튼 2개 + 여백 */
     height: 60px;           /* 버튼 높이 + 여유 */
     z-index: 10;
     display: flex;
-    flex-direction: row;    /* 가로 배치 */
+    flex-direction: column;    /* 가로 배치 */
     align-items: center;    /* 세로 중앙정렬 */
     justify-content: space-between; /* 버튼 사이 간격 */
     gap: 16px;              /* 버튼 사이 여백 */
@@ -248,7 +248,7 @@ body {
     height: 48px;                  /* Adjust height for rectangle */
     font-size: 1.1rem;             /* Optional: tweak for rectangle */
     /* Optionally, center content if needed */
-    display: flex;
+    display: column;
     align-items: center;
     justify-content: center;
 }
@@ -258,10 +258,10 @@ body {
     height: 48px;                  /* Adjust height for rectangle */
     font-size: 1.1rem;             /* Optional: tweak for rectangle */
     /* Optionally, center content if needed */
-    display: flex;
+    display: table-column;
     align-items: center;
     justify-content: center;
-    left:140px;
+    bottom:10px;
 
     /* You can add a stronger border or color for emphasis */
     /* border: 3px solid var(--btn-important-border); */

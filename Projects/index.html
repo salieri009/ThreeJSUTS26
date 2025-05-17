@@ -16,10 +16,21 @@
     <!-- Three.js 캔버스가 JS에서 appendChild로 들어감 -->
 
     <!--    날씨 패널-->
-    <div class="scene-overlay-weather">
-        날씨에요 안녕하세요
+    <div class="scene-overlay-weather iphone-weather-widget">
+        <div class="weather-top-row">
+            <span class="weather-location">서울</span>
+            <span class="weather-time">오후 3:12</span>
+        </div>
+        <div class="weather-main-row">
+            <span class="weather-icon">🌤️</span>
+            <span class="weather-temp">22°</span>
+            <span class="weather-desc">구름 조금</span>
+        </div>
+        <div class="weather-bottom-row">
+            <span class="weather-minmax">최고 25° · 최저 16°</span>
+            <span class="weather-extra">미세먼지 좋음</span>
+        </div>
     </div>
-
     <div class="resource-bar">
         <span>🌾 1234</span>
         <span>🌳 567</span>
@@ -64,8 +75,67 @@
     </div>
 
     <div class="scene-overlay-upgrade-panel">
-    나는 업그레이드를 해줄 거에요
+        <div class="upgrade-title">업그레이드 센터</div>
+        <div class="upgrade-list">
+
+            <!-- 생산 속도 업그레이드 -->
+            <div class="upgrade-item">
+                <div class="upgrade-icon">⏱️</div>
+                <div class="upgrade-info">
+                    <div class="upgrade-name">생산 속도 증가</div>
+                    <div class="upgrade-desc">동물들의 생산 속도가 10% 빨라집니다.</div>
+                    <div class="upgrade-cost">💎 50</div>
+                </div>
+                <button class="upgrade-btn">업그레이드</button>
+            </div>
+
+            <!-- 자원 보너스 업그레이드 -->
+            <div class="upgrade-item">
+                <div class="upgrade-icon">🌾</div>
+                <div class="upgrade-info">
+                    <div class="upgrade-name">자원 보너스</div>
+                    <div class="upgrade-desc">수확 시 추가 자원을 얻습니다.</div>
+                    <div class="upgrade-cost">🌳 100</div>
+                </div>
+                <button class="upgrade-btn">업그레이드</button>
+            </div>
+
+            <!-- 동물 수 증가 업그레이드 -->
+            <div class="upgrade-item">
+                <div class="upgrade-icon">🐑</div>
+                <div class="upgrade-info">
+                    <div class="upgrade-name">동물 수 증가</div>
+                    <div class="upgrade-desc">최대 동물 수가 5마리 증가합니다.</div>
+                    <div class="upgrade-cost">🌾 200</div>
+                </div>
+                <button class="upgrade-btn">업그레이드</button>
+            </div>
+
+            <!-- 자동 수확 업그레이드 -->
+            <div class="upgrade-item">
+                <div class="upgrade-icon">🤖</div>
+                <div class="upgrade-info">
+                    <div class="upgrade-name">자동 수확</div>
+                    <div class="upgrade-desc">일정 시간마다 자동으로 수확합니다.</div>
+                    <div class="upgrade-cost">💎 150</div>
+                </div>
+                <button class="upgrade-btn">업그레이드</button>
+            </div>
+
+            <!-- 특별 아이템 업그레이드 -->
+            <div class="upgrade-item">
+                <div class="upgrade-icon">✨</div>
+                <div class="upgrade-info">
+                    <div class="upgrade-name">특별 아이템 해금</div>
+                    <div class="upgrade-desc">특별한 아이템이 상점에 추가됩니다.</div>
+                    <div class="upgrade-cost">💎 300</div>
+                </div>
+                <button class="upgrade-btn">해금</button>
+            </div>
+
+        </div>
     </div>
+
 
 </main>
 <script type="importmap">
