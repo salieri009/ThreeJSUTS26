@@ -2,10 +2,11 @@ import * as THREE from '../build/three.module.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 import { scene, camera } from './sceneManager.js';
 
-export let highlight, tree, cow, grass, cloud, barn, fence, chicken, hay, rock;
+export let highlight, tree, cow, grass, cloud, barn, fence, chicken, hay, rock, carrot, potato, tomato, wheat, soil;
+let carrotField;
 export let grasses = [];
-export let grid = new THREE.GridHelper(10, 5);
 
+export let grid = new THREE.GridHelper(10, 5);
 const gridSize = 2;
 let selectedObject = null;
 let isPlacing = false;
@@ -13,7 +14,8 @@ let selectedSize = { width: 1, height: 1 };
 
 const textureLoad = new THREE.TextureLoader();
 
-const modelData = {     
+const modelData = {  
+    //wdith = x , height = z
     "Cow": { width: 2, height: 1},
     "Pig": { width: 2, height: 1}, //
     "Sheep": { width: 2, height: 1}, //
@@ -25,7 +27,8 @@ const modelData = {
     "Rock": { width: 2, height: 2}, 
 
     "Hay": { width: 1, height: 1}, 
-    "Corps": { width: 1, height: 1}, //
+    "Carrot": { width: 3, height: 1}, 
+
     "Tree": { width: 1, height: 1}, 
     "FruitTree": { width: 1, height: 1}, //
 
@@ -148,6 +151,37 @@ function loadModels() {
         rock.name = 'Rock';
         createBox(rock, 5, 5, 5);
     });
+
+    //crops: carrot(Carrot_F3_Carrot_0), potato(Potatoe_F3_Potatoe_0), tomato(Tomatoe_F3_Tomatoe_0), wheat(Wheat_F3_Wheat_0, _1, _2, _3)
+    loader.load("models/crops/scene.gltf", (gltf) => {
+        carrotField = gltf.scene;
+
+        carrotField.traverse(node => {
+            if (node.isMesh) {
+                if (node.name === "Soil003_Dirt_0") {
+                    soil = node.clone();
+                } else if (node.name === "Carrot_F3_Carrot_0") {
+                    carrot = node.clone();
+                }
+            }
+        });
+
+        if (soil && carrot) {
+            soil.scale.set(1, 1, 1);
+            carrot.scale.set(1, 1, 1);
+
+            soil.rotation.set(-Math.PI / 2, 0, 0);
+            soil.position.set(0, 6, 0);
+            carrot.position.set(0, 0, 0); 
+
+            soil.add(carrot);
+            scene.add(soil);
+            createBox(soil, 4, 3, 2);
+
+            soil.name = "Carrot"; 
+        }
+    });
+
 }
 
 function setupGridInteractions() {
@@ -240,9 +274,13 @@ function createBox(model, width, height, depth) {
     const boxMaterial = new THREE.MeshBasicMaterial({ wireframe: true, transparent: true });
     const box = new THREE.Mesh(boxGeometry, boxMaterial);
 
-    box.position.set(model.position.x, model.position.y - 5, model.position.z);
+    if(model == soil) {
+        box.position.set(model.position.x, model.position.y - 6, model.position.z );
+    }else{
+        box.position.set(model.position.x, model.position.y - 5, model.position.z );
+    } 
 
-    box.rotation.set(model.rotation.x, model.rotation.y, model.rotation.z);
+    box.rotation.copy(model.rotation);
     model.add(box);
 
     return box;
@@ -251,5 +289,3 @@ function createBox(model, width, height, depth) {
 export function setGrid(newGrid) {
     grid = newGrid;
 }
-    /*
-*/
