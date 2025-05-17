@@ -179,7 +179,62 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* transform 제거: 좌측 상단에 자연스럽게 */
+}
+
+.weather-widget-inner {
+    display: flex;
+    align-items: center;
+    width: 95%;
+    height: 85%;
+    gap: 18px;
+}
+
+.weather-icon-temp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 54px;
+}
+
+.weather-icon {
+    font-size: 2.3em;
+    line-height: 1;
+}
+
+.weather-temp {
+    font-size: 1.7em;
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.weather-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+}
+
+.weather-location-time {
+    display: flex;
+    gap: 10px;
+    font-size: 1em;
+    color: #222;
+    font-weight: 500;
+}
+
+.weather-desc {
+    font-size: 0.98em;
+    color: #3777c2;
+    font-weight: 500;
+    margin-top: 1px;
+}
+
+.weather-minmax {
+    font-size: 0.93em;
+    color: #444;
+    margin-top: 3px;
 }
 
 .scene-overlay-upgrade-panel {
