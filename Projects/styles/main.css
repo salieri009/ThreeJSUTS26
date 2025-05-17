@@ -140,11 +140,17 @@ body {
 .scene-overlay-controls {
     position: absolute;
     bottom: 44px;
-    left: 110px;
+    left: 120px;
     width: 180px;
     height: 180px;
     z-index: 10;
     transform: translate(-50%, 0);
+}
+
+.scene-overlay-weather{
+    position: absolute;
+    top: 10px;
+    left: 10px;
 }
 
 .overlay-btn {
@@ -290,7 +296,34 @@ body {
     color: var(--dancheong-red);
 }
 
+/* 자원/리소스 바 */
+.resource-bar {
+    width: 100vw;
+    height: 40px;
+    background: var(--dancheong-blue);
+    color: #fff;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid var(--dancheong-green);
+    letter-spacing: 1px;
+}
 
+/* Weather */
+.weather-panel {
+    width: 90%;
+    min-height: 60px;
+    background: var(--panel-bg);
+    border: 2px solid var(--panel-border);
+    border-radius: var(--radius-md);
+    color: var(--dancheong-blue);
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 /* Responsive: 모바일에서 패널 크기 조정 */
 @media (max-width: 800px) {
