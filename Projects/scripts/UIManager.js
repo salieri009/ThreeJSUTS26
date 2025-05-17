@@ -2,6 +2,13 @@ const overlayBtns = document.querySelectorAll('.overlay-btn');
 const itemPanel = document.getElementById('item-panel');
 const panelHeader = itemPanel.querySelector('.overlay-item-panel-header');
 const itemList = document.getElementById('item-list');
+
+
+//=============================Weather Feature======================================
+const API_KEY = 'YOUR_API_KEY'; // ← 여기에 본인의 OpenWeatherMap API Key 입력
+const city = 'Seoul';
+const units = 'metric'; // 섭
+//===================================================================================
 let currentCategory = null;
 
 const itemData = {
