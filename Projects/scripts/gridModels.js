@@ -246,7 +246,7 @@ window.addEventListener("mousemove", (event) => {
         const gridX = Math.round(point.x / gridSize) * gridSize;
         const gridZ = Math.round(point.z / gridSize) * gridSize;
 
-        highlight.position.set(gridX + (selectedSize.width % 2 == 0 ? -1 : 0), 6.05, gridZ + (selectedSize.height % 2 == 0 ? -1 : 0) );//수정필요
+        highlight.position.set(gridX + (selectedSize.width % 2 == 0 ? -1 : 0), 6.05, gridZ + (selectedSize.height % 2 == 0 ? -1 : 0) );
     }
 });
 
