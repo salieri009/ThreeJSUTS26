@@ -7,7 +7,7 @@ const itemList = document.getElementById('item-list');
 //=============================Weather Feature======================================
 const API_KEY = 'YOUR_API_KEY'; // ← 여기에 본인의 OpenWeatherMap API Key 입력
 const city = 'Seoul';
-const units = 'metric'; // 섭
+const units = 'metric'; // 이건 나중 나중에 시간 날때 , 심심할떼 만드는 기능이니 신경 ㄴㄴ
 //===================================================================================
 let currentCategory = null;
 

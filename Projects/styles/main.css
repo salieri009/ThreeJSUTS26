@@ -1,53 +1,44 @@
 :root {
-    /* 단청/전통색 팔레트 */
-    --dancheong-red:   #A13A3A;   /* 단청 적색 */
-    --dancheong-yellow:#E5B85C;   /* 단청 황색 */
-    --dancheong-blue:  #3A6BA1;   /* 단청 청색 */
-    --dancheong-green: #3A7D5D;   /* 단청 녹색 */
-    --dancheong-orange:#C97B43;   /* 황토/오렌지 */
-    --dancheong-brown: #7C5B45;   /* 전통 갈색 */
-    --dancheong-mint:  #6DBBAA;   /* 포인트 민트 */
-    --dancheong-gray:  #ECE8E2;   /* 밝은 회색 */
-    --dancheong-dark:  #4A4743;   /* 진한 회색 */
+    --bg-main: #EEE9E5;        /* TORINOKO */
+    --panel-bg: #F9F6F2;       /* TORINOKO 밝게 */
+    --accent-bg: #FFF8E1;      /* YAMABUKI 밝게 */
+    --shadow: 0 8px 32px 0 rgba(30,30,30,0.10), 0 2px 8px #42602d22;
 
-    /* UI 요소별 주요 색상 */
-    --header-gradient: linear-gradient(90deg, var(--dancheong-red) 0%, var(--dancheong-yellow) 30%, var(--dancheong-blue) 60%, var(--dancheong-green) 100%);
-    --header-border:   var(--dancheong-orange);
-    --header-shadow:   #3A6BA130;
+    --btn-bg: #E83929;         /* BENIHI */
+    --btn-color: #fff;
+    --btn-border: #42602D;     /* MATSUBA */
+    --btn-hover-bg: #FFB11B;   /* YAMABUKI */
+    --btn-hover-color: #165E83;/* AI */
+    --btn-hover-border: #FFB11B;
 
-    --btn-bg:          #fff;
-    --btn-color:       var(--dancheong-blue);
-    --btn-border:      var(--dancheong-blue);
-    --btn-hover-bg:    var(--dancheong-blue);
-    --btn-hover-color: #fff;
-    --btn-hover-border:var(--dancheong-yellow);
+    --text-main: #1C1C1C;      /* SUMI */
+    --text-muted: #42602D;     /* MATSUBA */
+    --text-accent: #E83929;    /* BENIHI */
 
-    --panel-bg:        #fff;
-    --panel-border:    var(--dancheong-green);
-    --panel-shadow:    #3A6BA133;
-
-    --item-bg:         var(--dancheong-gray);
-    --item-border:     var(--dancheong-orange);
-    --item-color:      var(--dancheong-brown);
-    --item-active-bg:  var(--dancheong-orange);
-    --item-active-color:#fff;
-    --item-active-border: var(--dancheong-green);
-
-    --scene-bg:        var(--dancheong-gray);
-
-    /* 기타 */
-    --radius-lg: 22px;
-    --radius-md: 14px;
-    --radius-sm: 8px;
+    --hotbar-bg: rgba(238,233,229,0.85); /* TORINOKO */
+    --hotbar-border: #42602D;   /* MATSUBA */
+    --hotbar-radius: 18px;
+    --slot-bg: #fff;
+    --slot-border: #E83929;
+    --slot-radius: 12px;
+    --slot-shadow: 0 2px 8px #42602d22;
+    --slot-selected-border: #FFB11B;
+    --slot-selected-glow: 0 0 0 3px #FFB11B44, 0 4px 16px #E8392922;
 }
+
+
 
 /* Reset & Base */
 body {
+    width: 100vw;
+    height: 100vh;
     margin: 0;
-    font-family: 'Noto Sans KR', '맑은 고딕', sans-serif;
-    background: var(--scene-bg);
-    color: #222;
+    padding: 0;
     overflow: hidden;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+    box-sizing: border-box;
 }
 
 /* Header: 단청 그라데이션 */
@@ -121,9 +112,25 @@ body {
     position: relative;
     width: 100vw;
     height: 100vh;
-    background: var(--scene-bg);
+    /*background: var();*/
     overflow: hidden;
     align-content: center;
+}
+
+/*오버레이 공통*/
+.scene-overlay-weather,
+.resource-bar,
+.scene-overlay-controls,
+.scene-overlay-add-and-remove,
+.scene-overlay-upgrade-panel,
+.overlay-item-panel {
+    position: absolute;
+    z-index: 10;
+    user-select: none;
+    box-sizing: border-box;
+    background: var(--panel-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
 }
 
 /* Three.js Canvas */
@@ -139,8 +146,8 @@ body {
 /* Overlay Controls (버튼 원형 배치) */
 .scene-overlay-controls {
     position: absolute;
-    bottom: 20px;
-    left: 60px;
+    bottom: 32vh;
+    left: 48px;
     width: 180px;
     height: 180px;
     z-index: 10;
@@ -149,21 +156,22 @@ body {
 
 .scene-overlay-add-and-remove {
     position: absolute;
-    top: 450px;
-    left: 60px;
-    width: 120px;           /* 버튼 2개 + 여백 */
-    height: 120px;          /* 버튼 높이*2 + gap + padding */
-    z-index: 10;
+    left: 48px;
+    bottom: 120px;   /* 핫바 위에 적당히 띄워서 겹치지 않게 */
+    width: 180px;
+    height: auto;
+    z-index: 12;
     display: flex;
-    flex-direction: column;    /* 세로 배치 */
-    align-items: center;       /* 가로 중앙정렬 */
-    justify-content: center;   /* 세로 중앙정렬 */
-    gap: 12px;                 /* 버튼 사이 여백 */
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
     background: rgba(255,255,255,0.85);
     border-radius: 16px;
     box-shadow: 0 4px 18px #0001;
-    padding: 10px 6px;
+    padding: 12px 8px;
 }
+
 
 
 
@@ -171,6 +179,7 @@ body {
     position: absolute;
     top: 40px;
     left: 60px;
+    min-width: 240px;
     width: 300px;
     height: 100px;
     z-index: 10;
@@ -246,15 +255,25 @@ body {
     width: 400px;
     height: 600px;
     z-index: 10;
-    background-color: rgba(128, 128, 128, 0.5);
-    border-radius: 14px;
-    box-shadow: 0 2px 8px #8884;
+    /* Glassmorphism 효과 */
+    background: rgba(238, 233, 229, 0.22); /* nipponcolors TORINOKO + 투명도 */
+    backdrop-filter: blur(18px) saturate(140%);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(30, 30, 30, 0.10), 0 2px 8px #7B3B3A22;
+    border: 1.5px solid rgba(255,255,255,0.25);
+
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* transform 제거 */
-    overflow: hidden;
+    overflow: hidden; /* 내부 스크롤바 숨김 */
+    scrollbar-width: none; /* 파이어폭스 스크롤바 숨김 */
 }
+
+/* 크롬, 엣지, 사파리 스크롤바 숨김 */
+.scene-overlay-upgrade-panel::-webkit-scrollbar {
+    display: none;
+}
+
 
 .upgrade-title {
     width: 100%;
@@ -333,6 +352,7 @@ body {
 
 
 
+
 .overlay-btn {
     position: absolute;
     width: 68px;
@@ -394,98 +414,104 @@ body {
     transition: background 0.2s, color 0.2s;
 }
 
-/* Overlay Item Panel (슬라이드/드래그/전통 녹색 테두리) */
 .overlay-item-panel {
     position: absolute;
     left: 50%;
-    bottom: 10%;
+    bottom: 4vw;
     transform: translateX(-50%);
-    transition: none;
     z-index: 20;
-    min-width: auto;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    padding: 0;
+    min-width: 0;
+    background: var(--hotbar-bg);
+    border: 2.5px solid var(--hotbar-border);
+    border-radius: var(--hotbar-radius);
+    box-shadow: var(--hotbar-shadow);
+    padding: 18px 24px 14px 24px;
     display: flex;
     flex-direction: column;
-    gap: 0;
+    align-items: center;
     pointer-events: auto;
     user-select: none;
-    align-items: flex-end;
+    gap: 0;
+    transition: background 0.2s, border 0.2s, box-shadow 0.2s, transform 0.3s cubic-bezier(.4,1.4,.6,1);
+    backdrop-filter: blur(12px) saturate(120%);
 }
-
 
 .overlay-item-panel.visible {
     transform: translate(-50%, 0);
-    pointer-events: auto;
+    box-shadow: 0 12px 36px 0 rgba(30, 30, 30, 0.13), 0 4px 12px #42602d33;
 }
+
 .overlay-item-panel.dragging {
-    transition: none;
+    box-shadow: 0 16px 48px 0 #E8392944, 0 4px 12px #42602d44;
 }
 
+/* 헤더 (핫바에는 보통 없음, 유지 시 스타일 최소화) */
 .overlay-item-panel-header {
-    font-weight: bold;
-    font-size: 1.25rem;
-    margin-bottom: 12px;
-    padding: 18px 0 10px 0;
-    background: #E5B85C33;
-    border-radius: 18px 18px 0 0;
-    cursor: move;
-    text-align: center;
-    user-select: none;
-    color: var(--dancheong-green);
-    letter-spacing: 2px;
-    top:8px;
+    display: none;
 }
 
-/* 아이템 목록 Flex */
+/* 핫바 아이템 가로 정렬 */
 .item-list {
     display: flex;
     flex-direction: row;
-    gap: 16px;
+    gap: 18px;
     justify-content: center;
     align-items: flex-end;
     padding: 0;
     margin: 0;
+    width: 100%;
+    min-height: 70px;
 }
 
-
+/* 핫바 슬롯(아이템) */
 .draggable-item {
-    width: 110px;
-    height: 110px;
-    background: var(--item-bg);
-    border: 2.5px solid var(--item-border);
-    border-radius: var(--radius-md);
+    width: 64px;
+    height: 64px;
+    background: var(--slot-bg);
+    border: 2.5px solid var(--slot-border);
+    border-radius: var(--slot-radius);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 2.4rem;
+    font-size: 2rem;
     font-weight: 600;
-    color: var(--item-color);
+    color: #1C1C1C;
     cursor: grab;
-    margin: 12px 0;
-    transition: background 0.2s, border 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px #C97B4333;
+    margin: 0;
+    transition:
+            background 0.18s,
+            border 0.18s,
+            box-shadow 0.18s,
+            transform 0.13s;
+    box-shadow: var(--slot-shadow);
+    outline: none;
+    position: relative;
 }
 
-.draggable-item:active {
-    background: var(--item-active-bg);
-    color: var(--item-active-color);
-    border: 2.5px solid var(--item-active-border);
-    box-shadow: 0 6px 18px #C97B4344;
+/* 선택/드래그 시 강조 */
+.draggable-item.selected,
+.draggable-item:active,
+.draggable-item.dragging {
+    border: 2.5px solid var(--slot-selected-border);
+    box-shadow: var(--slot-selected-glow);
+    background: #fffdf8;
+    transform: scale(1.08);
+    z-index: 2;
 }
 
 .draggable-item .item-icon {
-    font-size: 2.4rem;
-    margin-bottom: 8px;
+    font-size: 2rem;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 2px 4px #42602d11);
 }
+
 .draggable-item span:last-child {
     font-size: 1.05rem;
     font-weight: 700;
     color: var(--dancheong-red);
+    letter-spacing: 1px;
+    text-shadow: 0 1px 0 #fff9, 0 2px 4px #E8392911;
 }
 
 /* 자원/리소스 바 */
@@ -499,9 +525,9 @@ body {
     max-width: 700px;
     height: 44px;
     padding: 0 36px;
-    background: var(--dancheong-red);
+    background: var(--);
     border-radius: 18px;
-    border: 2.5px solid var(--dancheong-green);
+    border: 2.5px solid
     box-shadow: 0 4px 18px #3A7D5D22;
     display: flex;
     align-items: center;
@@ -509,7 +535,7 @@ body {
     gap: 36px;
     z-index: 15;
     font-weight: 700;
-    color: var(--dancheong-brown);
+    color:
     font-size: 1.13rem;
     letter-spacing: 1px;
     transition: box-shadow 0.2s;
@@ -525,9 +551,9 @@ body {
     width: 90%;
     min-height: 60px;
     background: var(--panel-bg);
-    border: 2px solid var(--panel-border);
-    border-radius: var(--radius-md);
-    color: var(--dancheong-blue);
+    border: 2px solid
+    border-radius:
+    color:
     font-size: 1.1rem;
     font-weight: 700;
     display: flex;
