@@ -35,7 +35,7 @@ export const modelData = {
     "StonePath": { width: 1, height: 1},
 }
 
-export function setSceneElementsTemp() {
+export function loadScene() {
     const dirt = new THREE.Mesh(
         new THREE.BoxGeometry(10, 8, 10),
         new THREE.MeshPhongMaterial({ color: 0x964B00 })
@@ -138,7 +138,7 @@ function loadModels() {
         });
 
         hay.name = 'Hay';
-        createBox(hay, 51, 40, 29);
+        createBox(hay, 20, 20, 20);
     });
 
     const rockTexture = textureLoad.load('models/rock/textures/Material.010_baseColor.png');

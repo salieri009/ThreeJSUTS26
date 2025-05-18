@@ -9,6 +9,7 @@ export function setBackground()  {
     });
     const skyDome = new THREE.Mesh(skyGeometry, skyMaterial);
     scene.add(skyDome);
+    skyDome.name = "Sky";
 }
 
 function cloudMove() { 

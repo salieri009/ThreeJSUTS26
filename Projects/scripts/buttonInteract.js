@@ -1,8 +1,9 @@
 import * as THREE from '../build/three.module.js';
-import { scene } from './sceneManager.js';
-import { grasses, grid , setGrid, modelData, setModel, cow, hay} from './gridModels.js';
+import { scene, camera } from './sceneManager.js';
+import { grasses, grid , setGrid, modelData, setModel, cow, hay, selectedObject} from './gridModels.js';
 
 let level = 1;
+let isRemoving = false;
 
 export function addBlock() {
     if (grid) scene.remove(grid);
@@ -42,8 +43,31 @@ export function addBlock() {
     level++;
 }
 
-function deleteModel() {
-    console.log("a");
+export function deleteModel() {
+    isRemoving = true;
+    window.addEventListener("mousedown", (event) => {
+        if (!camera || !scene) return;
+
+        const mouse = new THREE.Vector2(
+            (event.clientX / window.innerWidth) * 2 - 1,
+            -(event.clientY / window.innerHeight) * 2 + 1
+        );
+
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
+
+        const intersects = raycaster.intersectObjects(scene.children, true);
+        if (intersects.length > 0) {
+            let root = intersects[0].object;
+            while (root.parent && root.parent.type !== "Scene")  root = root.parent;
+            if (isRemoving) {
+                if(root.name !== "Sky" ) {
+                    scene.remove(root);
+                    isRemoving = false;
+                }
+            }
+        }
+    });
 }
 
 document.querySelector('[data-category="terrain expansion"]').addEventListener('click', () => { if(level < 10) addBlock(); });
