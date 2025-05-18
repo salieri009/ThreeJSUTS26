@@ -59,26 +59,28 @@
     </div>
     
     <!--    예시입니다-->
+    <!-- 핫바 스타일 아이템 패널 -->
     <div class="overlay-item-panel" id="item-panel">
         <div class="overlay-item-panel-header">카테고리 미리보기</div>
-        <div class="item-list" id="item-list">
-            <!-- 예시 아이템 -->
-            <div class="draggable-item">
-                <span class="item-icon">🐄</span>
-                <span>소</span>
-            </div>
-            <div class="draggable-item">
-                <span class="item-icon">🌳</span>
-                <span>나무</span>
-            </div>
-            <div class="draggable-item">
-                <span class="item-icon">🏠</span>
-                <span>집</span>
-            </div>
-            <div class="draggable-item">
-                <span class="item-icon">🧸</span>
-                <span>장난감</span>
-            </div>
+        <!-- Props 카테고리 -->
+        <div class="item-list" data-category="props" style="display: none;">
+            <div class="draggable-item"><span class="item-icon">🎩</span><span>Hat</span></div>
+            <div class="draggable-item"><span class="item-icon">🧸</span><span>Toy</span></div>
+        </div>
+        <!-- Nature 카테고리 -->
+        <div class="item-list" data-category="nature" style="display: none;">
+            <div class="draggable-item"><span class="item-icon">🌳</span><span>Oak</span></div>
+            <div class="draggable-item"><span class="item-icon">🌸</span><span>Flower</span></div>
+        </div>
+        <!-- Animals 카테고리 -->
+        <div class="item-list" data-category="animals" style="display: none;">
+            <div class="draggable-item"><span class="item-icon">🐄</span><span>Cow</span></div>
+            <div class="draggable-item"><span class="item-icon">🐑</span><span>Sheep</span></div>
+        </div>
+        <!-- Buildings 카테고리 -->
+        <div class="item-list" data-category="buildings" style="display: none;">
+            <div class="draggable-item"><span class="item-icon">🏠</span><span>House</span></div>
+            <div class="draggable-item"><span class="item-icon">🏢</span><span>Office</span></div>
         </div>
     </div>
 

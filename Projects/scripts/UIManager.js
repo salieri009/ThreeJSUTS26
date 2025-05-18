@@ -1,7 +1,7 @@
 const overlayBtns = document.querySelectorAll('.overlay-btn');
 const itemPanel = document.getElementById('item-panel');
 const panelHeader = itemPanel.querySelector('.overlay-item-panel-header');
-const itemList = document.getElementById('item-list');
+const itemLists = itemPanel.querySelectorAll('.item-list');
 
 
 //=============================Weather Feature======================================
@@ -11,39 +11,47 @@ const units = 'metric'; // 이건 나중 나중에 시간 날때 , 심심할떼 
 //===================================================================================
 let currentCategory = null;
 
-const itemData = {
-    props: [
-        { icon: '🎩', label: 'Hat', type: 'hat' },
-        { icon: '🧸', label: 'Toy', type: 'toy' }
-    ],
-    buildings: [
-        { icon: '🏠', label: 'House', type: 'house' },
-        { icon: '🏢', label: 'Office', type: 'office' }
-    ],
-    nature: [
-        { icon: '🌳', label: 'Oak', type: 'oak' },
-        { icon: '🌸', label: 'Flower', type: 'flower' }
-    ],
-    animals: [
-        { icon: '🐄', label: 'Cow', type: 'cow' },
-        { icon: '🐑', label: 'Sheep', type: 'sheep' }
-    ]
-};
+//-===========================Removes the Item data , changes==============================
+// const itemData = {
+//     props: [
+//         { icon: '🎩', label: 'Hat', type: 'hat' },
+//         { icon: '🧸', label: 'Toy', type: 'toy' }
+//     ],
+//     buildings: [
+//         { icon: '🏠', label: 'House', type: 'house' },
+//         { icon: '🏢', label: 'Office', type: 'office' }
+//     ],
+//     nature: [
+//         { icon: '🌳', label: 'Oak', type: 'oak' },
+//         { icon: '🌸', label: 'Flower', type: 'flower' }
+//     ],
+//     animals: [
+//         { icon: '🐄', label: 'Cow', type: 'cow' },
+//         { icon: '🐑', label: 'Sheep', type: 'sheep' }
+//     ]
+// };
+//=========================================================================
 
 export function init() {
     overlayBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const category = btn.dataset.category;
+
             if (itemPanel.classList.contains('visible') && currentCategory === category) {
                 itemPanel.classList.remove('visible');
+
                 overlayBtns.forEach(b => b.classList.remove('active'));
                 currentCategory = null;
                 return;
             }
+
             overlayBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            panelHeader.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-            renderItems(category);
+            panelHeader.textContent = btn.textContent;
+            // 모든 카테고리 숨김
+            itemLists.forEach(list => {
+                list.style.display = (list.dataset.category === category) ? 'flex' : 'none';
+            });
             itemPanel.classList.add('visible');
             currentCategory = category;
         });
