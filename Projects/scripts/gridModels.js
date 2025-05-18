@@ -8,13 +8,13 @@ export let grasses = [];
 
 export let grid = new THREE.GridHelper(10, 5);
 const gridSize = 2;
-let selectedObject = null;
-let isPlacing = false;
-let selectedSize = { width: 1, height: 1 };
+export let selectedObject ;
+export let isPlacing = false;
+export let selectedSize = { width: 1, height: 1 };
 
 const textureLoad = new THREE.TextureLoader();
 
-const modelData = {  
+export const modelData = {  
     //wdith = x , height = z
     "Cow": { width: 2, height: 1},
     "Pig": { width: 2, height: 1}, //
@@ -79,7 +79,7 @@ function loadModels() {
         });
         cow.name = 'Cow';
         createBox(cow, 8, 10, 4);
-        scene.add(cow);
+        //scene.add(cow);
     });
 
     const fenceTexture = textureLoad.load('models/fence/textures/Wood_diffuse.png') 
@@ -118,7 +118,7 @@ function loadModels() {
         });
         barn.name = 'Barn';
         createBox(barn, 20, 12, 12);
-        scene.add(barn);
+        //scene.add(barn);
     });
 
     const hayTexture = textureLoad.load('models/hay/textures/lambert1_baseColor.jpeg');
@@ -178,7 +178,7 @@ function loadModels() {
             carrot.position.set(0, 0, 0); 
 
             soil.add(carrot);
-            scene.add(soil);
+            //scene.add(soil);
             createBox(soil, 4, 3, 2);
 
             soil.name = "Carrot"; 
@@ -288,6 +288,7 @@ window.addEventListener("mousedown", (event) => {
             if (selectedObject.name === "Fence" || selectedObject.name === "Barn") y = 7; 
             
             selectedObject.position.set(gridX - (selectedSize.width === 2 ? 0.5 : 0), y, gridZ);
+            selectedObject.visible = true;
             isPlacing = false;
             selectedObject = null;
         }
@@ -313,4 +314,14 @@ function createBox(model, width, height, depth) {
 
 export function setGrid(newGrid) {
     grid = newGrid;
+}
+
+export function setModel(object, size, placing = true) {
+    selectedObject = object;
+    selectedSize = size;
+    isPlacing = placing;
+    object.visible = false;
+
+    highlight.geometry.dispose();
+    highlight.geometry = new THREE.PlaneGeometry(selectedSize.width * 2, selectedSize.height * 2);
 }

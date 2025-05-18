@@ -3,34 +3,7 @@ const itemPanel = document.getElementById('item-panel');
 const panelHeader = itemPanel.querySelector('.overlay-item-panel-header');
 const itemLists = itemPanel.querySelectorAll('.item-list');
 
-
-//=============================Weather Feature======================================
-const API_KEY = 'YOUR_API_KEY'; // ← 여기에 본인의 OpenWeatherMap API Key 입력
-const city = 'Seoul';
-const units = 'metric'; // 이건 나중 나중에 시간 날때 , 심심할떼 만드는 기능이니 신경 ㄴㄴ
-//===================================================================================
 let currentCategory = null;
-
-//-===========================Removes the Item data , changes==============================
-// const itemData = {
-//     props: [
-//         { icon: '🎩', label: 'Hat', type: 'hat' },
-//         { icon: '🧸', label: 'Toy', type: 'toy' }
-//     ],
-//     buildings: [
-//         { icon: '🏠', label: 'House', type: 'house' },
-//         { icon: '🏢', label: 'Office', type: 'office' }
-//     ],
-//     nature: [
-//         { icon: '🌳', label: 'Oak', type: 'oak' },
-//         { icon: '🌸', label: 'Flower', type: 'flower' }
-//     ],
-//     animals: [
-//         { icon: '🐄', label: 'Cow', type: 'cow' },
-//         { icon: '🐑', label: 'Sheep', type: 'sheep' }
-//     ]
-// };
-//=========================================================================
 
 export function init() {
     overlayBtns.forEach(btn => {
@@ -66,20 +39,6 @@ export function init() {
     });
 
     initDrag();
-}
-
-function renderItems(category) {
-    itemList.innerHTML = '';
-    (itemData[category] || []).forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'draggable-item';
-        div.draggable = true;
-        div.innerHTML = `<span class="item-icon">${item.icon}</span><span>${item.label}</span>`;
-        div.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', item.type);
-        });
-        itemList.appendChild(div);
-    });
 }
 
 function initDrag() {
