@@ -361,7 +361,7 @@ body {
     border: 2.5px solid var(--btn-border);
     background: var(--btn-bg);
     color: var(--btn-color);
-    font-size: 1.2rem;
+    font-size: 1.0rem;
     font-weight: 700;
     box-shadow: 0 6px 18px #3A6BA122;
     cursor: pointer;
@@ -376,7 +376,7 @@ body {
     box-shadow: 0 8px 24px #3A6BA144;
 }
 
-/* 상좌우 배치*/
+/* 상하좌우 배치*/
 .overlay-btn[data-category="props"] {
     top: 0;
     left: 50%;
@@ -393,6 +393,14 @@ body {
     top: 50%;
     transform: translateY(-50%);
 }
+
+.overlay-btn[data-category="buildings"] {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
 
 
 /* Rectangle buttons for 'terrain expansion' and 'remove' */
