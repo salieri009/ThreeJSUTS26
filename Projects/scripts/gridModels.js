@@ -129,7 +129,6 @@ function loadModels() {
         hay.traverse(node => {
             if (node.isMesh) {
                  node.castShadow = true;
-                 node.receiveShadow  = true;
                 if (node.name === "pCube1_lambert1_0") {
                     node.material.map = hayTexture;
                 } else if (node.name === "pPlane46_lambert2_0" ||node.name === "pPlane47_lambert2_0") {

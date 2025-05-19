@@ -28,6 +28,7 @@ export function addBlock() {
                 new THREE.MeshLambertMaterial({ color: 0x3E5C3A })
             );
             newGrass.position.set(-i * 10, 5, -j * 10);
+            newGrass.receiveShadow = true;
             scene.add(newGrass);
             grasses.push(newGrass);
 

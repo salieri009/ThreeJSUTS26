@@ -27,3 +27,17 @@ function cloudMove() {
         scene.add(cloud);
     });
 }
+
+export function sun() {
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+    sunLight.castShadow = true;
+
+    sunLight.shadow.mapSize.set(2048, 2048);
+    sunLight.shadow.camera.top = 50;
+
+    sunLight.position.set(50, 30, 0); 
+    scene.add(sunLight);
+
+    //const helper = new THREE.CameraHelper(sunLight.shadow.camera);
+    //scene.add(helper);
+}
