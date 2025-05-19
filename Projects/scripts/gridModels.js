@@ -2,7 +2,7 @@ import * as THREE from '../build/three.module.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 import { scene, camera } from './sceneManager.js';
 
-export let highlight, tree, cow, grass, cloud, barn, fence, chicken, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble;
+export let highlight, tree, cow, grass, cloud, barn, fence, chicken, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil;
 let carrotField;
 export let grasses = [];
 
@@ -28,6 +28,9 @@ export const modelData = {
 
     "Hay": { width: 1, height: 1}, 
     "Carrot": { width: 3, height: 1}, 
+    "Potato": { width: 3, height: 1},
+    "Tomato": { width: 3, height: 1},
+    "Wheat": { width: 3, height: 1},
 
     "Tree": { width: 1, height: 1}, 
     "FruitTree": { width: 1, height: 1}, //
@@ -128,7 +131,7 @@ function loadModels() {
         hay.position.set(0, 6, 0);
         hay.traverse(node => {
             if (node.isMesh) {
-                 node.castShadow = true;
+                node.castShadow = true;
                 if (node.name === "pCube1_lambert1_0") {
                     node.material.map = hayTexture;
                 } else if (node.name === "pPlane46_lambert2_0" ||node.name === "pPlane47_lambert2_0") {
@@ -136,7 +139,7 @@ function loadModels() {
                 }
             }
         });
-        scene.add(hay);
+        //scene.add(hay);
         hay.name = 'Hay';
         createBox(hay, 20, 20, 20);
     });
@@ -178,7 +181,6 @@ function loadModels() {
         stonePath.traverse(node => {
             if(node.isMesh)  {
                 node.material.map = stonePathTexture;
-                 node.castShadow = true;
             }
         });
         stonePath.name = 'StonePath';
@@ -186,44 +188,170 @@ function loadModels() {
         //scene.add(stonePath);
     });
 
-    //crops: carrot(Carrot_F3_Carrot_0), potato(Potatoe_F3_Potatoe_0), tomato(Tomatoe_F3_Tomatoe_0), wheat(Wheat_F3_Wheat_0, _1, _2, _3)
-loader.load("models/crops/scene.gltf", (gltf) => {
-    carrotField = gltf.scene;
+    loader.load("models/crops/scene.gltf", (gltf) => {
+        carrotField = gltf.scene;
 
-    carrotField.traverse(node => {
-        if (node.isMesh) {
-            node.castShadow = true;
-            if (node.name === "Soil003_Dirt_0") {
-                soil = node.clone();
-            } else if (node.name === "Carrot_F3_Carrot_0") {
-                carrot = node.clone();
+        carrotField.traverse(node => {
+            if (node.isMesh) {
+                node.castShadow = true;
+                if (node.name === "Soil003_Dirt_0") {
+                    soil = node.clone();
+                } else if (node.name === "Carrot_F3_Carrot_0") {
+                    carrot = node.clone();
+                }
             }
+        });
+
+        if (soil && carrot) {
+            soil.scale.set(1, 1, 1);
+            soil.rotation.set(-Math.PI / 2, 0, 0);
+            soil.position.set(0, 6, 0);
+
+            carrot.scale.set(1, 1, 1);
+            carrot.position.set(0, 0, 0);
+            soil.add(carrot);
+
+            const leftCarrot = carrot.clone();
+            leftCarrot.position.set(-2, 0, 0);
+            soil.add(leftCarrot);
+
+            const rightCarrot = carrot.clone();
+            rightCarrot.position.set(2, 0, 0);
+            soil.add(rightCarrot);
+
+            createBox(soil, 4, 3, 2);
+
+            soil.name = "Carrot"; 
         }
     });
 
-    if (soil && carrot) {
-        soil.scale.set(1, 1, 1);
-        soil.rotation.set(-Math.PI / 2, 0, 0);
-        soil.position.set(0, 6, 0);
+    loader.load("models/crops/scene.gltf", (gltf) => {
+        let potatoField = gltf.scene;
 
-        carrot.scale.set(1, 1, 1);
-        carrot.position.set(0, 0, 0);
-        soil.add(carrot);
+        potatoField.traverse(node => {
+            if (node.isMesh) {
+                node.castShadow = true;
+                if (node.name === "Soil003_Dirt_0") {
+                    pSoil = node.clone();
+                } else if (node.name === "Potatoe_F3_Potatoe_0") {
+                    potato = node.clone();
+                }
+            }
+        });
 
-        const leftCarrot = carrot.clone();
-        leftCarrot.position.set(-2, 0, 0);
-        soil.add(leftCarrot);
+        if (pSoil && potato) {
+            pSoil.scale.set(1, 1, 1);
+            pSoil.rotation.set(-Math.PI / 2, 0, 0);
+            pSoil.position.set(0, 6, 0);
 
-        const rightCarrot = carrot.clone();
-        rightCarrot.position.set(2, 0, 0);
-        soil.add(rightCarrot);
+            potato.scale.set(1, 1, 1);
+            potato.position.set(0, 0, 0);
+            pSoil.add(potato);
 
-        createBox(soil, 4, 3, 2);
+            const left = potato.clone();
+            left.position.set(-2, 0, 0);
+            pSoil.add(left);
 
-        soil.name = "Carrot"; 
-    }
-});
+            const right = potato.clone();
+            right.position.set(2, 0, 0);
+            pSoil.add(right);
 
+            createBox(pSoil, 4, 3, 2);
+
+            pSoil.name = "Potato"; 
+        }
+    });
+
+    loader.load("models/crops/scene.gltf", (gltf) => {
+        let tomatoField = gltf.scene;
+
+        tomatoField.traverse(node => {
+            if (node.isMesh) {
+                node.castShadow = true;
+                if (node.name === "Soil003_Dirt_0") {
+                    tSoil = node.clone();
+                } else if (node.name === "Tomatoe_F3_Tomatoe_0") {
+                    tomato = node.clone();
+                }
+            }
+        });
+
+        if (tSoil && tomato) {
+            tSoil.scale.set(1, 1, 1);
+            tSoil.rotation.set(-Math.PI / 2, 0, 0);
+            tSoil.position.set(0, 6, 0);
+
+            tomato.scale.set(1, 1, 1);
+            tomato.position.set(0, 0, 0);
+            tSoil.add(tomato);
+
+            const left = tomato.clone();
+            left.position.set(-2, 0, 0);
+            tSoil.add(left);
+
+            const right = tomato.clone();
+            right.position.set(2, 0, 0);
+            tSoil.add(right);
+
+            createBox(tSoil, 4, 3, 2);
+
+            tSoil.name = "Tomato"; 
+        }
+    });
+
+    loader.load("models/crops/scene.gltf", (gltf) => {
+        let wheatField = gltf.scene;
+
+        let wheat1 = null;
+        let wheat2 = null;
+
+        wheatField.traverse(node => {
+            if (node.isMesh) {
+                node.castShadow = true;
+
+                if (node.name === "Soil003_Dirt_0") {
+                    wSoil = node.clone();
+                } else if (node.name === "Wheat_F3_Wheat_0") {
+                    wheat1 = node.clone();
+                } else if (node.name === "Wheat_F3_Wheat_0_1") {
+                    wheat2 = node.clone();
+                }
+            }
+        });
+
+        if (wSoil && wheat1 && wheat2) {
+            wSoil.scale.set(1, 1, 1);
+            wSoil.rotation.set(-Math.PI / 2, 0, 0);
+            wSoil.position.set(0, 6, 0);
+
+            wheat1.scale.set(1, 1, 1);
+            wheat1.position.set(0, 0, 0);
+
+            wheat2.scale.set(1, 1, 1);
+            wheat2.position.set(0, 0, 0); 
+
+            wSoil.add(wheat1);
+            wSoil.add(wheat2);
+
+            const left1 = wheat1.clone();
+            left1.position.set(-2, 0, 0);
+
+            const left2 = wheat2.clone();
+            left2.position.set(-2, 0, 0);
+
+            const right1 = wheat1.clone();
+            right1.position.set(2, 0, 0);
+
+            const right2 = wheat2.clone();
+            right2.position.set(2, 0, 0);
+
+            wSoil.add(left1, left2, right1, right2);
+
+            createBox(wSoil, 4, 3, 2);
+
+            wSoil.name = "Wheat";
+        }
+    });
 }
 
 function setupGridInteractions() {

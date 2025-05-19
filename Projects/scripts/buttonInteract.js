@@ -1,6 +1,6 @@
 import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
-import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn} from './gridModels.js';
+import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat} from './gridModels.js';
 
 let level = 1;
 let isRemoving = false;
@@ -88,6 +88,30 @@ document.querySelector('[data-category="props"] .draggable-item:nth-child(2)').a
     carrotF.rotation.set(-Math.PI / 2, 0, 0); 
     scene.add(carrotF);
     setModel(carrotF, { width: modelData["Carrot"].width, height: modelData["Carrot"].height }, true);
+});
+
+document.querySelector('[data-category="props"] .draggable-item:nth-child(3)').addEventListener('click', () => { 
+    const potatoF = pSoil.clone();
+    potatoF.position.set(0, 6, 0);
+    potatoF.rotation.set(-Math.PI/2, 0, 0);
+    scene.add(potatoF);
+    setModel(potatoF, { width: modelData["Potato"].width, height: modelData["Potato"].height }, true);
+});
+
+document.querySelector('[data-category="props"] .draggable-item:nth-child(4)').addEventListener('click', () => { 
+    const tomatoF = tSoil.clone();
+    tomatoF.position.set(0, 6, 0);
+    tomatoF.rotation.set(-Math.PI/2, 0, 0);
+    scene.add(tomatoF);
+    setModel(tomatoF,  { width: modelData["Tomato"].width, height: modelData["Tomato"].height}, true);
+});
+
+document.querySelector('[data-category="props"] .draggable-item:nth-child(5)').addEventListener('click', () => { 
+    const wheatF = wSoil.clone();
+    wheatF.position.set(0, 6, 0);
+    wheatF.rotation.set(-Math.PI/2, 0, 0);
+    scene.add(wheatF);
+    setModel(wheatF, { width: modelData["Wheat"].width, height: modelData["Wheat"].height}, true);
 });
 
 //nature
