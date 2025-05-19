@@ -13,10 +13,10 @@ export function setScene() {
     camera.position.set(20, 20, 20);
     camera.lookAt(0, 0, 0);
     
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
-
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     // Create the canvas element and append it to the container
     const container = document.getElementById('scene-container');
     container.appendChild(renderer.domElement); // Append renderer to the container
@@ -32,7 +32,6 @@ export function setScene() {
 
     const sunLight = new THREE.DirectionalLight(0xffffff, 1);
     sunLight.position.set(10, 20, 10);
-    //sunLight.intensity = 1.1;
     sunLight.castShadow = true;
     scene.add(sunLight);
 }

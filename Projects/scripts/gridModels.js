@@ -44,9 +44,9 @@ export function loadScene() {
 
     grass = new THREE.Mesh(
         new THREE.BoxGeometry(10, 2, 10),
-        new THREE.MeshLambertMaterial({ color: 0x3E5C3A })
+        new THREE.MeshPhongMaterial({ color: 0x3E5C3A })
     );
-    
+    grass.receiveShadow  = true;
     grass.position.set(0, 5, 0);
     scene.add(grass);
     grasses.push(grass);
@@ -90,6 +90,7 @@ function loadModels() {
         fence.traverse(node => {
             if (node.isMesh) {
                 node.material.map = fenceTexture;
+                node.castShadow = true;
             }
         });
         fence.name = 'Fence';
@@ -127,6 +128,8 @@ function loadModels() {
         hay.position.set(0, 6, 0);
         hay.traverse(node => {
             if (node.isMesh) {
+                 node.castShadow = true;
+                 node.receiveShadow  = true;
                 if (node.name === "pCube1_lambert1_0") {
                     node.material.map = hayTexture;
                 } else if (node.name === "pPlane46_lambert2_0" ||node.name === "pPlane47_lambert2_0") {
@@ -134,7 +137,7 @@ function loadModels() {
                 }
             }
         });
-
+        scene.add(hay);
         hay.name = 'Hay';
         createBox(hay, 20, 20, 20);
     });
@@ -147,6 +150,7 @@ function loadModels() {
         rock.traverse(node => {
             if(node.isMesh) {
                 node.material.map = rockTexture;
+                 node.castShadow = true;
             }
         });
         rock.name = 'Rock';
@@ -175,6 +179,7 @@ function loadModels() {
         stonePath.traverse(node => {
             if(node.isMesh)  {
                 node.material.map = stonePathTexture;
+                 node.castShadow = true;
             }
         });
         stonePath.name = 'StonePath';
@@ -188,6 +193,7 @@ loader.load("models/crops/scene.gltf", (gltf) => {
 
     carrotField.traverse(node => {
         if (node.isMesh) {
+            node.castShadow = true;
             if (node.name === "Soil003_Dirt_0") {
                 soil = node.clone();
             } else if (node.name === "Carrot_F3_Carrot_0") {

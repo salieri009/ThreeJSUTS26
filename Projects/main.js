@@ -15,4 +15,3 @@ addBlock();
 deleteModel();
 
 init();
-
