@@ -155,6 +155,21 @@ function loadModels() {
         createBox(rock, 5, 5, 5);
     });
 
+    const stonePathTexture = textureLoad.load('models/stonePath/textures');
+    loader.load("models/stonePath/scene.gltf", (gltf) => {
+        stonePath = gltf.scene;
+        stonePath.scale.set(1, 1, 1);
+        stonePath.position.set(0, 6, 0);
+        stonePath.traverse(node => {
+            if(node.isMesh)  {
+                node.material.map = stonePathTexture;
+            }
+        });
+        stonePath.name = 'StonePath';
+        createBox(stonePath, 1, 1, 1);
+        scene.add(stonePath);
+    });
+
     //crops: carrot(Carrot_F3_Carrot_0), potato(Potatoe_F3_Potatoe_0), tomato(Tomatoe_F3_Tomatoe_0), wheat(Wheat_F3_Wheat_0, _1, _2, _3)
     loader.load("models/crops/scene.gltf", (gltf) => {
         carrotField = gltf.scene;
@@ -201,7 +216,11 @@ function setupGridInteractions() {
 
 window.addEventListener('keydown', (event) => {
     if ((event.key === 'r' || event.key === 'R') && selectedObject) {
-        selectedObject.rotation.y += Math.PI / 2;
+        if(selectedObject == soil){
+            selectedObject.rotation.z += Math.PI / 2;
+        }else{
+            selectedObject.rotation.y += Math.PI / 2;
+        }
         highlight.rotation.z += Math.PI / 2;
 
         let temp = selectedSize.width;

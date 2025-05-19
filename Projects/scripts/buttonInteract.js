@@ -1,6 +1,6 @@
 import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
-import { grasses, grid , setGrid, modelData, setModel, cow, hay, selectedObject} from './gridModels.js';
+import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil} from './gridModels.js';
 
 let level = 1;
 let isRemoving = false;
@@ -79,8 +79,13 @@ document.querySelector('[data-category="animals"] .draggable-item:nth-child(1)')
     setModel(cow, { width: modelData["Cow"].width, height: modelData["Cow"].height }, true);
 });
 
-
+//props
 document.querySelector('[data-category="props"] .draggable-item:nth-child(1)').addEventListener('click', () => { 
     scene.add(hay);
     setModel(hay, { width: modelData["Hay"].width, height: modelData["Hay"].height}, true);
+});
+
+document.querySelector('[data-category="props"] .draggable-item:nth-child(2)').addEventListener('click', () => { 
+    scene.add(soil);
+    setModel(soil, { width: modelData["Carrot"].width, height: modelData["Carrot"].height}, true);
 });
