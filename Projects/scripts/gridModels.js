@@ -2,7 +2,7 @@ import * as THREE from '../build/three.module.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 import { scene, camera } from './sceneManager.js';
 
-export let highlight, tree, cow, grass, cloud, barn, fence, chicken, hay, rock, carrot, potato, tomato, wheat, soil;
+export let highlight, tree, cow, grass, cloud, barn, fence, chicken, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble;
 let carrotField;
 export let grasses = [];
 
@@ -79,7 +79,6 @@ function loadModels() {
         });
         cow.name = 'Cow';
         createBox(cow, 8, 10, 4);
-        //scene.add(cow);
     });
 
     const fenceTexture = textureLoad.load('models/fence/textures/Wood_diffuse.png') 
@@ -118,7 +117,6 @@ function loadModels() {
         });
         barn.name = 'Barn';
         createBox(barn, 20, 12, 12);
-        //scene.add(barn);
     });
 
     const hayTexture = textureLoad.load('models/hay/textures/lambert1_baseColor.jpeg');
@@ -155,11 +153,25 @@ function loadModels() {
         createBox(rock, 5, 5, 5);
     });
 
+    loader.load("models/pebbles/scene.gltf", (gltf) => {
+        pebble = gltf.scene;
+        pebble.scale.set(100, 100, 100);
+        pebble.position.set(0, 6, 0);
+        pebble.traverse(node => {
+            if(node.isMesh) {
+                node.castShadow = true;
+            }
+        });
+        pebble.name = "SRock"
+        createBox(pebble, 1, 2, 1)
+        //scene.add(pebble);
+    });
+
     const stonePathTexture = textureLoad.load('models/stonePath/textures');
-    loader.load("models/stonePath/scene.gltf", (gltf) => {
+    loader.load("models/stonePath/scene.gltf", (gltf) => { //수정필요
         stonePath = gltf.scene;
-        stonePath.scale.set(1, 1, 1);
-        stonePath.position.set(0, 6, 0);
+        stonePath.scale.set(2, 2, 2);
+        stonePath.position.set(0, 5, 0);
         stonePath.traverse(node => {
             if(node.isMesh)  {
                 node.material.map = stonePathTexture;
@@ -167,38 +179,46 @@ function loadModels() {
         });
         stonePath.name = 'StonePath';
         createBox(stonePath, 1, 1, 1);
-        scene.add(stonePath);
+        //scene.add(stonePath);
     });
 
     //crops: carrot(Carrot_F3_Carrot_0), potato(Potatoe_F3_Potatoe_0), tomato(Tomatoe_F3_Tomatoe_0), wheat(Wheat_F3_Wheat_0, _1, _2, _3)
-    loader.load("models/crops/scene.gltf", (gltf) => {
-        carrotField = gltf.scene;
+loader.load("models/crops/scene.gltf", (gltf) => {
+    carrotField = gltf.scene;
 
-        carrotField.traverse(node => {
-            if (node.isMesh) {
-                if (node.name === "Soil003_Dirt_0") {
-                    soil = node.clone();
-                } else if (node.name === "Carrot_F3_Carrot_0") {
-                    carrot = node.clone();
-                }
+    carrotField.traverse(node => {
+        if (node.isMesh) {
+            if (node.name === "Soil003_Dirt_0") {
+                soil = node.clone();
+            } else if (node.name === "Carrot_F3_Carrot_0") {
+                carrot = node.clone();
             }
-        });
-
-        if (soil && carrot) {
-            soil.scale.set(1, 1, 1);
-            carrot.scale.set(1, 1, 1);
-
-            soil.rotation.set(-Math.PI / 2, 0, 0);
-            soil.position.set(0, 6, 0);
-            carrot.position.set(0, 0, 0); 
-
-            soil.add(carrot);
-            //scene.add(soil);
-            createBox(soil, 4, 3, 2);
-
-            soil.name = "Carrot"; 
         }
     });
+
+    if (soil && carrot) {
+        soil.scale.set(1, 1, 1);
+        soil.rotation.set(-Math.PI / 2, 0, 0);
+        soil.position.set(0, 6, 0);
+
+        carrot.scale.set(1, 1, 1);
+        carrot.position.set(0, 0, 0);
+        soil.add(carrot);
+
+        const leftCarrot = carrot.clone();
+        leftCarrot.position.set(-2, 0, 0);
+        soil.add(leftCarrot);
+
+        const rightCarrot = carrot.clone();
+        rightCarrot.position.set(2, 0, 0);
+        soil.add(rightCarrot);
+
+        createBox(soil, 4, 3, 2);
+
+        soil.name = "Carrot"; 
+    }
+});
+
 }
 
 function setupGridInteractions() {
@@ -216,7 +236,7 @@ function setupGridInteractions() {
 
 window.addEventListener('keydown', (event) => {
     if ((event.key === 'r' || event.key === 'R') && selectedObject) {
-        if(selectedObject == soil){
+        if(selectedObject.name === "Carrot"){
             selectedObject.rotation.z += Math.PI / 2;
         }else{
             selectedObject.rotation.y += Math.PI / 2;

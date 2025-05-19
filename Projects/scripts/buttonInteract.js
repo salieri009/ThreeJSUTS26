@@ -1,6 +1,6 @@
 import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
-import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil} from './gridModels.js';
+import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn} from './gridModels.js';
 
 let level = 1;
 let isRemoving = false;
@@ -73,19 +73,81 @@ export function deleteModel() {
 document.querySelector('[data-category="terrain expansion"]').addEventListener('click', () => { if(level < 10) addBlock(); });
 document.querySelector('[data-category="remove"]').addEventListener('click', () => { deleteModel(); });
 
+//props
+document.querySelector('[data-category="props"] .draggable-item:nth-child(1)').addEventListener('click', () => { 
+    const nhay = hay.clone();
+    nhay.position.set(0, 6, 0);
+    scene.add(nhay);
+    setModel(nhay, { width: modelData["Hay"].width, height: modelData["Hay"].height}, true);
+});
 
+document.querySelector('[data-category="props"] .draggable-item:nth-child(2)').addEventListener('click', () => { 
+    const carrotF = soil.clone(); 
+    carrotF.position.set(0, 6, 0); 
+    carrotF.rotation.set(-Math.PI / 2, 0, 0); 
+    scene.add(carrotF);
+    setModel(carrotF, { width: modelData["Carrot"].width, height: modelData["Carrot"].height }, true);
+});
+
+//nature
+document.querySelector('[data-category="nature"] .draggable-item:nth-child(1)').addEventListener('click', () => { 
+    //stone path
+});
+
+document.querySelector('[data-category="nature"] .draggable-item:nth-child(2)').addEventListener('click', () => { 
+    const nRock  =  rock.clone();
+    nRock.position.set(0, 6, 0);
+    scene.add(nRock);
+    setModel(nRock, { width: modelData["Rock"].width, height: modelData["Rock"].height }, true);
+});
+
+document.querySelector('[data-category="nature"] .draggable-item:nth-child(3)').addEventListener('click', () => {
+    //rock small
+});
+
+document.querySelector('[data-category="nature"] .draggable-item:nth-child(4)').addEventListener('click', () => {
+    const nTree = tree.clone();
+    nTree.position.set(0, 6, 0);
+    nTree.rotation.set(0, 0, 0);
+    scene.add(nTree);
+    setModel(nTree, { width: modelData["Tree"].width, height: modelData["Tree"].height}, true);
+});
+
+document.querySelector('[data-category="nature"] .draggable-item:nth-child(5)').addEventListener('click', () => {
+    //fruit tree
+});
+
+//animals
 document.querySelector('[data-category="animals"] .draggable-item:nth-child(1)').addEventListener('click', () => {
+    /*
+    const newCOw = cow.clone();
+    newCOw.position.set(0, 6, 0);
+    scene.add(newCOw);*/
+
+    setModel(newCOw, { width: modelData["Cow"].width, height: modelData["Cow"].height }, true);
     scene.add(cow);
     setModel(cow, { width: modelData["Cow"].width, height: modelData["Cow"].height }, true);
 });
 
-//props
-document.querySelector('[data-category="props"] .draggable-item:nth-child(1)').addEventListener('click', () => { 
-    scene.add(hay);
-    setModel(hay, { width: modelData["Hay"].width, height: modelData["Hay"].height}, true);
+document.querySelector('[data-category="animals"] .draggable-item:nth-child(2)').addEventListener('click', () => {
+
 });
 
-document.querySelector('[data-category="props"] .draggable-item:nth-child(2)').addEventListener('click', () => { 
-    scene.add(soil);
-    setModel(soil, { width: modelData["Carrot"].width, height: modelData["Carrot"].height}, true);
+document.querySelector('[data-category="animals"] .draggable-item:nth-child(3)').addEventListener('click', () => {
+
+});
+//buildings
+document.querySelector('[data-category="buildings"] .draggable-item:nth-child(1)').addEventListener('click', () => {
+    const nFence = fence.clone();
+    nFence.position.set(0, 6, 0);
+    nFence.rotation.set(0, Math.PI / 2, 0);
+    scene.add(nFence);
+    setModel(nFence, { width: modelData["Fence"].width, height: modelData["Fence"].height}, true);
+});
+
+document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)').addEventListener('click', () => {
+    const nBarn = barn.clone();
+    nBarn.position.set(0, 6, 0);
+    scene.add(nBarn);
+    setModel(nBarn, { width: modelData["Barn"].width, height: modelData["Barn"].height}, true);
 });
