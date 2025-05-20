@@ -88,8 +88,8 @@ function loadModels() {
     const sheepTexture = textureLoad.load("models/sheep/textures/material_baseColor.png"); //양모델에 문제있음음
     loader.load("models/sheep/scene.gltf", (gltf) => {
         sheep = gltf.scene;
-        sheep.scale.set(2.5, 2.5, 2.5);
-        sheep.position.set(0, 5, 0);
+        sheep.scale.set(2.7, 2.5, 2.5);
+        sheep.position.set(0, 5, -3);
         sheep.rotation.set(0, -Math.PI, 0);
         sheep.traverse((node) => {
             if(node.isMesh) {
@@ -98,7 +98,8 @@ function loadModels() {
             } 
         });
         sheep.name = "Sheep";
-        createBox(sheep, 10, 10, 10);
+        scene.add(sheep);
+        createBox(sheep, 1, 1, 1);
     });
 
     const fenceTexture = textureLoad.load('models/fence/textures/Wood_diffuse.png') 

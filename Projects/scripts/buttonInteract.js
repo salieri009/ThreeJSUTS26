@@ -160,7 +160,7 @@ document.querySelector('[data-category="animals"] .draggable-item:nth-child(2)')
 
 document.querySelector('[data-category="animals"] .draggable-item:nth-child(3)').addEventListener('click', () => {
     const nSheep = sheep.clone();
-    nSheep.position.set(100, -100, 0);
+    nSheep.position.set(0, 5, -3);
     nSheep.rotation.set(0, -Math.PI, 0);
     scene.add(nSheep);
     setModel(nSheep, { width: modelData["Sheep"].width, height: modelData["Sheep"].height}, true);
