@@ -368,6 +368,7 @@ body {
     transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
     padding: 0;
     outline: none;
+
 }
 .overlay-btn:hover, .overlay-btn.active {
     background: var(--btn-hover-bg);
@@ -392,6 +393,12 @@ body {
     right: 0;
     top: 50%;
     transform: translateY(-50%);
+}
+
+.overlay-btn[data-category="buildings"] {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 
