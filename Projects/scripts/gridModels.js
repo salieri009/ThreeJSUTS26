@@ -2,7 +2,7 @@ import * as THREE from '../build/three.module.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 import { scene, camera } from './sceneManager.js';
 
-export let highlight, tree, cow, grass, cloud, barn, fence, chicken, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil;
+export let highlight, tree, cow, grass, sheep, cloud, barn, fence, chicken, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil;
 let placingMesh;
 let carrotField;
 export let grasses = [];
@@ -83,6 +83,22 @@ function loadModels() {
         });
         cow.name = 'Cow';
         createBox(cow, 8, 10, 4);
+    });
+
+    const sheepTexture = textureLoad.load("models/sheep/textures/material_baseColor.png"); //양모델에 문제있음음
+    loader.load("models/sheep/scene.gltf", (gltf) => {
+        sheep = gltf.scene;
+        sheep.scale.set(2.5, 2.5, 2.5);
+        sheep.position.set(0, 5, 0);
+        sheep.rotation.set(0, -Math.PI, 0);
+        sheep.traverse((node) => {
+            if(node.isMesh) {
+                node.castShadow = true;
+                node.material.map = sheepTexture;
+            } 
+        });
+        sheep.name = "Sheep";
+        createBox(sheep, 10, 10, 10);
     });
 
     const fenceTexture = textureLoad.load('models/fence/textures/Wood_diffuse.png') 

@@ -1,6 +1,6 @@
 import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
-import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat} from './gridModels.js';
+import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep} from './gridModels.js';
 
 let level = 1;
 let isRemoving = false;
@@ -159,7 +159,11 @@ document.querySelector('[data-category="animals"] .draggable-item:nth-child(2)')
 });
 
 document.querySelector('[data-category="animals"] .draggable-item:nth-child(3)').addEventListener('click', () => {
-
+    const nSheep = sheep.clone();
+    nSheep.position.set(100, -100, 0);
+    nSheep.rotation.set(0, -Math.PI, 0);
+    scene.add(nSheep);
+    setModel(nSheep, { width: modelData["Sheep"].width, height: modelData["Sheep"].height}, true);
 });
 //buildings
 document.querySelector('[data-category="buildings"] .draggable-item:nth-child(1)').addEventListener('click', () => {
