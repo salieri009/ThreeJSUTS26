@@ -356,8 +356,8 @@ body {
 
 .overlay-btn {
     position: absolute;
-    width: 80px;
-    height: 80px;
+    width: 88px;
+    height: 88px;
     border-radius: 50%;
     border: none;
     background: var(--btn-bg);
@@ -428,9 +428,9 @@ body {
     bottom: 4vw;
     transform: translateX(-50%);
     z-index: 20;
-    min-width: 0;
+    min-width: 10px;
     background: var(--hotbar-bg);
-    border: 2.5px solid var(--hotbar-border);
+    border: none;
     border-radius: var(--hotbar-radius);
     box-shadow: var(--hotbar-shadow);
     padding: 18px 24px 14px 24px;
@@ -468,15 +468,15 @@ body {
     padding: 0;
     margin: 0;
     width: 100%;
-    min-height: 70px;
+    min-height: 100px;
 }
 
 /* 핫바 슬롯(아이템) */
 .draggable-item {
-    width: 64px;
-    height: 64px;
+    width: 100px;
+    height: 90px;
     background: var(--slot-bg);
-    border: 2.5px solid var(--slot-border);
+    border: none;
     border-radius: var(--slot-radius);
     display: flex;
     flex-direction: column;
