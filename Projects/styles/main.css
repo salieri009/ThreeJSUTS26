@@ -148,17 +148,18 @@ body {
     position: absolute;
     bottom: 32vh;
     left: 48px;
-    width: 180px;
+    width: 320px;
     height: 180px;
     z-index: 10;
     transform: none; /* 중앙 정렬이 필요없으면 제거 */
+
 }
 
 .scene-overlay-add-and-remove {
     position: absolute;
     left: 48px;
     bottom: 120px;   /* 핫바 위에 적당히 띄워서 겹치지 않게 */
-    width: 180px;
+    width: 320px;
     height: auto;
     z-index: 12;
     display: flex;
@@ -355,10 +356,10 @@ body {
 
 .overlay-btn {
     position: absolute;
-    width: 68px;
-    height: 68px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    border: 2.5px solid var(--btn-border);
+    border: none;
     background: var(--btn-bg);
     color: var(--btn-color);
     font-size: 1.2rem;
@@ -368,7 +369,7 @@ body {
     transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
     padding: 0;
     outline: none;
-
+    text-align: center;
 }
 .overlay-btn:hover, .overlay-btn.active {
     background: var(--btn-hover-bg);
@@ -399,6 +400,7 @@ body {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
+
 }
 
 
