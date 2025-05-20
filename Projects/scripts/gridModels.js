@@ -3,6 +3,7 @@ import { GLTFLoader } from '../build/GLTFLoader.js';
 import { scene, camera } from './sceneManager.js';
 
 export let highlight, tree, cow, grass, cloud, barn, fence, chicken, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil;
+let placingMesh;
 let carrotField;
 export let grasses = [];
 
@@ -355,10 +356,8 @@ function loadModels() {
 }
 
 function setupGridInteractions() {
-    highlight = new THREE.Mesh(
-        new THREE.PlaneGeometry(2, 2),
-        new THREE.MeshBasicMaterial({ side: THREE.DoubleSide })
-    );
+    placingMesh =  new THREE.MeshBasicMaterial({ side: THREE.DoubleSide});
+    highlight = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), placingMesh);
     highlight.rotation.x = -Math.PI / 2;
     highlight.position.set(0, 6.05, 0);
     scene.add(highlight);
@@ -445,6 +444,8 @@ window.addEventListener("mousedown", (event) => {
                     height: modelData[root.name].height 
                 };
                 isPlacing = true;
+                highlight.material.color.set(0x66FF00);
+                highlight.mesh = placingMesh;
                 highlight.geometry.dispose();
                 highlight.geometry = new THREE.PlaneGeometry(selectedSize.width * gridSize, selectedSize.height * gridSize);
             }
@@ -461,6 +462,7 @@ window.addEventListener("mousedown", (event) => {
             
             selectedObject.position.set(gridX - (selectedSize.width === 2 ? 0.5 : 0), y, gridZ);
             selectedObject.visible = true;
+            highlight.material.color.set(0xffffff);
             isPlacing = false;
             selectedObject = null;
         }
