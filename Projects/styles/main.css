@@ -522,8 +522,8 @@ body {
 .overlay-btn[data-category="rainy"],
 .overlay-btn[data-category="snowy"],
 .overlay-btn[data-category="stormy"] {
-    width: 80px;                /* 더 넓게 */
-    height: 64px;               /* 세로도 약간 더 넉넉하게 */
+    width: 70px;                /* 더 넓게 */
+    height: 30px;               /* 세로도 약간 더 넉넉하게 */
     padding: 6px 4px;
     font-size: 12px;
     border: none;
