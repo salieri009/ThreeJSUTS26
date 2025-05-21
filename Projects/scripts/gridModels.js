@@ -2,7 +2,7 @@ import * as THREE from '../build/three.module.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 import { scene, camera } from './sceneManager.js';
 
-export let highlight, tree, cow, grass, sheep, cloud, barn, fence, chicken, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil;
+export let highlight, tree, cow, grass, sheep, cloud, barn, fence, chicken, pig, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil, path, pine;
 let placingMesh;
 let carrotField;
 export let grasses = [];
@@ -18,8 +18,8 @@ const textureLoad = new THREE.TextureLoader();
 export const modelData = {  
     //wdith = x , height = z
     "Cow": { width: 2, height: 1},
-    "Pig": { width: 2, height: 1}, //
-    "Sheep": { width: 2, height: 1}, //
+    "Pig": { width: 2, height: 1}, 
+    "Sheep": { width: 2, height: 1}, 
     "Chicken": { width: 1, height: 1},
 
     "Barn": { width: 5, height: 3},
@@ -34,9 +34,9 @@ export const modelData = {
     "Wheat": { width: 3, height: 1},
 
     "Tree": { width: 1, height: 1}, 
-    "FruitTree": { width: 1, height: 1}, //
+    "Pine": { width: 1, height: 1}, 
 
-    "StonePath": { width: 1, height: 1},
+    "Path": { width: 1, height: 1},
 }
 
 export function loadScene() {
@@ -73,7 +73,23 @@ function loadModels() {
         createBox(tree, 200, 2000, 200);
     });
 
-    loader.load("models/cow/Cow.gltf", (gltf) => {
+    const pineTexture = textureLoad.load("models/pine/textures/initialShadingGroup_baseColor.png");
+    loader.load("models/pine/scene.gltf", (gltf) => {
+        pine = gltf.scene;
+        pine.scale.set(1, 1, 1);
+        pine.position.set(0, 6, 0);
+        pine.traverse((node) => {
+            if(node.isMesh) {
+                node.castShadow = true;
+                //node.material.map = pineTexture;
+            } 
+        });
+        scene.add(pine);
+        pine.name = 'Pine';
+        createBox(pine, 10, 10, 10);
+    });
+
+    loader.load("models/cow/scene.gltf", (gltf) => {
         cow = gltf.scene;
         cow.scale.set(0.4, 0.4, 0.4);
         cow.position.set(0.5, 6, 0);
@@ -98,8 +114,23 @@ function loadModels() {
             } 
         });
         sheep.name = "Sheep";
-        scene.add(sheep);
+        //scene.add(sheep);
         createBox(sheep, 1, 1, 1);
+    });
+
+    loader.load("models/pig/scene.gltf", (gltf) => {
+        pig = gltf.scene;
+        pig.scale.set(0.8, 0.8, 1.3);
+        pig.position.set(0, 6, 0);
+        pig.rotation.set(0, Math.PI/2, 0);
+        pig.traverse((node) => {
+            if(node.isMesh) {
+                node.castShadow = true;
+            } 
+        });
+        pig.name = "Pig";
+        //scene.add(pig);
+        createBox(pig, 3, 3, 3);
     });
 
     const fenceTexture = textureLoad.load('models/fence/textures/Wood_diffuse.png') 
@@ -118,15 +149,15 @@ function loadModels() {
         createBox(fence, 5.1, 4, 2.9);
     });
 
-    loader.load("models/chicken/scene.gltf", (gltf) => { //animation : chicken-rig idle, pecking, rest, walking, standing up, sitting idle, sitting down
+    loader.load("models/chicken/scene.gltf", (gltf) => { 
         chicken = gltf.scene;
-        chicken.scale.set(0.006, 0.006, 0.006);
+        chicken.scale.set(0.4, 0.4, 0.4);
         chicken.position.set(0, 6 , 0);
-        fence.traverse(node => {
+        chicken.traverse(node => {
             if (node.isMesh) node.castShadow = true;
         });
         chicken.name = "Chicken";
-        createBox(chicken, 100, 100, 100); //temp
+        createBox(chicken, 3, 5, 3); //temp
         //scene.add(chicken);
     });
 
@@ -370,6 +401,11 @@ function loadModels() {
             wSoil.name = "Wheat";
         }
     });
+
+    let pathGeo = new THREE.BoxGeometry(2,2,2);
+    path = new THREE.Mesh(pathGeo, new THREE.MeshBasicMaterial({ color: 0xC4A484 }));
+    path.rotation.set(-Math.PI/2, 0, 0);
+    path.name = "Path";
 }
 
 function setupGridInteractions() {

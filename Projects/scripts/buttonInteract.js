@@ -1,6 +1,6 @@
 import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
-import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep} from './gridModels.js';
+import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine} from './gridModels.js';
 
 let level = 1;
 let isRemoving = false;
@@ -114,23 +114,26 @@ document.querySelector('[data-category="props"] .draggable-item:nth-child(5)').a
     setModel(wheatF, { width: modelData["Wheat"].width, height: modelData["Wheat"].height}, true);
 });
 
+document.querySelector('[data-category="props"] .draggable-item:nth-child(6)').addEventListener('click', () => {
+    const nPath = path.clone();
+    nPath.position.set(0, 5.1, 0);
+    nPath.rotation.set(-Math.PI/2, 0, 0);
+    scene.add(nPath);
+    setModel(nPath, { width: modelData["Path"].width, height: modelData["Path"].height }, true);
+});
 //nature
 document.querySelector('[data-category="nature"] .draggable-item:nth-child(1)').addEventListener('click', () => { 
-    //stone path
-});
-
-document.querySelector('[data-category="nature"] .draggable-item:nth-child(2)').addEventListener('click', () => { 
-    const nRock  =  rock.clone();
+    const nRock  =  rock.clone(); // 수정필요요
     nRock.position.set(0, 6, 0);
     scene.add(nRock);
     setModel(nRock, { width: modelData["Rock"].width, height: modelData["Rock"].height }, true);
 });
 
-document.querySelector('[data-category="nature"] .draggable-item:nth-child(3)').addEventListener('click', () => {
+document.querySelector('[data-category="nature"] .draggable-item:nth-child(2)').addEventListener('click', () => {
     //rock small
 });
 
-document.querySelector('[data-category="nature"] .draggable-item:nth-child(4)').addEventListener('click', () => {
+document.querySelector('[data-category="nature"] .draggable-item:nth-child(3)').addEventListener('click', () => {
     const nTree = tree.clone();
     nTree.position.set(0, 6, 0);
     nTree.rotation.set(0, 0, 0);
@@ -138,24 +141,26 @@ document.querySelector('[data-category="nature"] .draggable-item:nth-child(4)').
     setModel(nTree, { width: modelData["Tree"].width, height: modelData["Tree"].height}, true);
 });
 
-document.querySelector('[data-category="nature"] .draggable-item:nth-child(5)').addEventListener('click', () => {
-    //fruit tree
+document.querySelector('[data-category="nature"] .draggable-item:nth-child(4)').addEventListener('click', () => {
+    const nPine = pine.clone();
+    nPine.position.set(0, 6, 0);
+    scene.add(pine);
+    setModel(nPine, { width: modelData["Pine"].width, height: modelData["Pine"].height}, true);
 });
 
 //animals
 document.querySelector('[data-category="animals"] .draggable-item:nth-child(1)').addEventListener('click', () => {
-    /*
     const newCOw = cow.clone();
     newCOw.position.set(0, 6, 0);
-    scene.add(newCOw);*/
-
+    scene.add(newCOw);
     setModel(newCOw, { width: modelData["Cow"].width, height: modelData["Cow"].height }, true);
-    scene.add(cow);
-    setModel(cow, { width: modelData["Cow"].width, height: modelData["Cow"].height }, true);
 });
 
 document.querySelector('[data-category="animals"] .draggable-item:nth-child(2)').addEventListener('click', () => {
-
+    const nPig = pig.clone();
+    nPig.rotation.set(0, Math.PI/2, 0);
+    scene.add(nPig);
+    setModel(nPig, { width: modelData["Pig"].width, height: modelData["Pig"].height }, true);
 });
 
 document.querySelector('[data-category="animals"] .draggable-item:nth-child(3)').addEventListener('click', () => {
@@ -165,6 +170,14 @@ document.querySelector('[data-category="animals"] .draggable-item:nth-child(3)')
     scene.add(nSheep);
     setModel(nSheep, { width: modelData["Sheep"].width, height: modelData["Sheep"].height}, true);
 });
+
+document.querySelector('[data-category="animals"] .draggable-item:nth-child(4)').addEventListener('click', () => {
+    const nChicken = chicken.clone();
+    nChicken.position.set(0, 6, 0);
+    scene.add(nChicken);
+    setModel(nChicken, { width: modelData["Chicken"].width, height: modelData["Chicken"].height}, true);
+});
+
 //buildings
 document.querySelector('[data-category="buildings"] .draggable-item:nth-child(1)').addEventListener('click', () => {
     const nFence = fence.clone();
