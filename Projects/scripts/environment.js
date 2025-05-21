@@ -2,15 +2,29 @@ import * as THREE from '../build/three.module.js';
 import { scene } from './sceneManager.js';
 import { loader } from './gridModels.js';
 
-export function setBackground()  {
-    const skyGeometry = new THREE.SphereGeometry(200, 8, 6); 
-    const skyMaterial = new THREE.MeshBasicMaterial({
+let skyMaterial, skyDome, sunLight;
+
+export const weather = {
+    cloudy: false,
+
+}
+
+export function setBackground() {
+    skyMaterial = new THREE.MeshBasicMaterial({
         color: 0x87CEEB,
-        side: THREE.BackSide,    
+        side: THREE.BackSide
     });
-    const skyDome = new THREE.Mesh(skyGeometry, skyMaterial);
-    scene.add(skyDome);
+    const skyGeometry = new THREE.SphereGeometry(200, 8, 6);
+    skyDome = new THREE.Mesh(skyGeometry, skyMaterial);
     skyDome.name = "Sky";
+    scene.add(skyDome);
+}
+
+export function updateSky() {
+    if (!skyMaterial) return; 
+    const newColor = weather.cloudy ? 0x778899 : 0x87CEEB;
+    sunLight.intensity = weather.cloudy ? 0.5 : 1;
+    skyMaterial.color.setHex(newColor);
 }
 
 let cloud
@@ -20,10 +34,18 @@ export function loadClouds() {
     loader.load("models/cloud/scene.gltf", (gltf) => {
         for (let i = 0; i < 11; i++) {
             cloud = gltf.scene.clone();
+                cloud.traverse((node) => {
+                if (node.isMesh && node.material && node.material.color) {
+                    node.material = node.material.clone();
+                    let cloudColour = weather.cloudy ? 0xAAAAAA : 0xffffff;
+                    node.material.color.set(cloudColour); 
+                }
+            });
             let randomScale = Math.random() * 0.15 + 0.1;
             cloud.scale.set(randomScale, randomScale, randomScale);
             cloud.position.set(Math.random() * 100 - 55, Math.random() * 10 + 10, Math.random() * 50 - 30);
-            cloud.userData.speed = Math.random() * 1 + 1.4; 
+            cloud.userData.speed = Math.random() * 1 + 1.4;
+
             clouds.push(cloud);
             scene.add(cloud);
         }
@@ -42,7 +64,7 @@ export function cloudMove() {
 }
 
 export function sun() {
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+    sunLight = new THREE.DirectionalLight(0xffffff, 1);
     sunLight.castShadow = true;
 
     sunLight.shadow.mapSize.set(2048, 2048);

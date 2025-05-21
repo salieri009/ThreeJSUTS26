@@ -1,6 +1,7 @@
 import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
 import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine, pebble} from './gridModels.js';
+import { weather,  updateSky } from './environment.js';
 
 let level = 1;
 let isRemoving = false;
@@ -195,4 +196,14 @@ document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)
     nBarn.position.set(0, 6, 0);
     scene.add(nBarn);
     setModel(nBarn, { width: modelData["Barn"].width, height: modelData["Barn"].height}, true);
+});
+
+document.querySelector('[data-category="cloudy"]').addEventListener('click', () => {
+     weather.cloudy = true; 
+     updateSky();
+});
+
+document.querySelector('[data-category="sunny"]').addEventListener('click', () => {
+     weather.cloudy = false; 
+     updateSky();
 });
