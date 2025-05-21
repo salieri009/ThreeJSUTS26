@@ -1,86 +1,124 @@
 :root {
-    --bg-main: #EEE9E5;        /* TORINOKO */
-    --panel-bg: #F9F6F2;       /* TORINOKO 밝게 */
-    --accent-bg: #FFF8E1;      /* YAMABUKI 밝게 */
-    --shadow: 0 8px 32px 0 rgba(30,30,30,0.10), 0 2px 8px #42602d22;
+    /* Color System */
+    --color-primary: #3B7A57;       /* Emerald for nature theme */
+    --color-primary-light: #60A976;
+    --color-primary-dark: #2A5540;
 
-    --btn-bg: #E83929;         /* BENIHI */
-    --btn-color: #fff;
-    --btn-border: #42602D;     /* MATSUBA */
-    --btn-hover-bg: #FFB11B;   /* YAMABUKI */
-    --btn-hover-color: #165E83;/* AI */
-    --btn-hover-border: #FFB11B;
+    --color-secondary: #EE6C4D;     /* Coral/terracotta */
+    --color-secondary-light: #F8886D;
+    --color-secondary-dark: #D14F32;
 
-    --text-main: #1C1C1C;      /* SUMI */
-    --text-muted: #42602D;     /* MATSUBA */
-    --text-accent: #E83929;    /* BENIHI */
+    --color-accent: #FFB30F;        /* Golden yellow */
+    --color-accent-light: #FFCA5A;
+    --color-accent-dark: #E09A00;
 
-    --hotbar-bg: rgba(238,233,229,0.85); /* TORINOKO */
-    --hotbar-border: #42602D;   /* MATSUBA */
-    --hotbar-radius: 18px;
-    --slot-bg: #fff;
-    --slot-border: #E83929;
-    --slot-radius: 12px;
-    --slot-shadow: 0 2px 8px #42602d22;
-    --slot-selected-border: #FFB11B;
-    --slot-selected-glow: 0 0 0 3px #FFB11B44, 0 4px 16px #E8392922;
+    --color-bg: #F5F2EB;            /* Light natural base */
+    --color-bg-panel: rgba(255, 255, 255, 0.85);
+    --color-bg-panel-solid: #FFFFFF;
+
+    --color-text: #293241;          /* Deep navy for text */
+    --color-text-light: #5D6B7E;
+    --color-text-muted: #8D99A7;
+    --color-text-inverse: #FFFFFF;
+
+    /* Functional Colors */
+    --color-success: #4CAF50;
+    --color-warning: #FFC107;
+    --color-error: #F44336;
+    --color-info: #2196F3;
+
+    /* Shadows & Effects */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+
+    --glass-blur: blur(12px);
+    --glass-saturation: saturate(140%);
+
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+    --radius-round: 9999px;
+
+    /* Animation */
+    --transition-fast: 0.15s ease;
+    --transition-medium: 0.25s ease;
+    --transition-slow: 0.35s ease;
+
+    /* Component-specific variables */
+    --hotbar-bg: rgba(255, 255, 255, 0.8);
+    --hotbar-border: var(--color-primary);
+    --hotbar-radius: var(--radius-lg);
+
+    --slot-bg: #FFFFFF;
+    --slot-border: var(--color-secondary);
+    --slot-radius: var(--radius-md);
+    --slot-shadow: var(--shadow-sm);
+    --slot-selected-border: var(--color-accent);
+    --slot-selected-glow: 0 0 0 3px rgba(255, 179, 15, 0.3), 0 4px 16px rgba(238, 108, 77, 0.15);
 }
 
-
-
-/* Reset & Base */
+/* Base Styles */
 body {
     width: 100vw;
     height: 100vh;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-    background: var(--bg-main);
-    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
     box-sizing: border-box;
 }
 
-/* Header: 단청 그라데이션 */
-.app-header {
+.app-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* Headers and Footers */
+.app-header, .app-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: var(--header-gradient);
+    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
     padding: 18px 32px 14px 32px;
-    border-bottom: 6px solid var(--header-border);
-    box-shadow: 0 4px 24px var(--header-shadow);
+    border-bottom: 4px solid var(--color-accent);
+    box-shadow: var(--shadow-md);
 }
-
 
 .app-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--header-gradient);
-    padding: 18px 32px 14px 32px;
-    border-bottom: 6px solid var(--header-border);
-    box-shadow: 0 4px 24px var(--header-shadow);
+    border-bottom: none;
+    border-top: 4px solid var(--color-accent);
 }
+
 .logo-dot {
     width: 22px;
     height: 22px;
-    background: var(--dancheong-yellow);
+    background: var(--color-accent);
     border-radius: 50%;
     margin-right: 14px;
-    box-shadow: 0 0 12px #E5B85C80;
+    box-shadow: 0 0 12px rgba(229, 184, 92, 0.5);
     display: inline-block;
-    border: 3px solid var(--dancheong-blue);
+    border: 3px solid var(--color-primary-light);
+    transition: transform var(--transition-medium);
+}
+
+.logo-dot:hover {
+    transform: scale(1.1);
 }
 
 .header-title {
     font-size: 2rem;
     font-weight: 800;
     letter-spacing: 3px;
-    color: #fff;
+    color: var(--color-text-inverse);
     flex: 1;
     margin-left: 14px;
-    text-shadow: 1px 2px 8px #3A6BA150;
+    text-shadow: 0 2px 8px rgba(41, 50, 65, 0.2);
 }
 
 .header-actions {
@@ -89,22 +127,24 @@ body {
 }
 
 .header-btn {
-    background: var(--btn-bg);
-    color: var(--dancheong-red);
+    background: var(--color-bg-panel-solid);
+    color: var(--color-secondary);
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     padding: 10px 22px;
     font-size: 1.05rem;
     font-weight: 700;
-    box-shadow: 0 2px 10px #A13A3A22;
+    box-shadow: var(--shadow-sm);
     cursor: pointer;
-    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-    border-bottom: 3px solid var(--dancheong-yellow);
+    transition: all var(--transition-fast);
+    border-bottom: 3px solid var(--color-accent);
 }
+
 .header-btn:hover {
-    background: var(--dancheong-red);
-    color: #fff;
-    box-shadow: 0 4px 16px #A13A3A44;
+    background: var(--color-secondary);
+    color: var(--color-text-inverse);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
 /* Scene Container */
@@ -112,25 +152,8 @@ body {
     position: relative;
     width: 100vw;
     height: 100vh;
-    /*background: var();*/
     overflow: hidden;
     align-content: center;
-}
-
-/*오버레이 공통*/
-.scene-overlay-weather,
-.resource-bar,
-.scene-overlay-controls,
-.scene-overlay-add-and-remove,
-.scene-overlay-upgrade-panel,
-.overlay-item-panel {
-    position: absolute;
-    z-index: 10;
-    user-select: none;
-    box-sizing: border-box;
-    background: var(--panel-bg);
-    border-radius: 16px;
-    box-shadow: var(--shadow);
 }
 
 /* Three.js Canvas */
@@ -143,38 +166,59 @@ body {
     z-index: 1;
 }
 
-/* Overlay Controls (버튼 원형 배치) */
+/* Common Overlay Styles */
+.scene-overlay-weather,
+.resource-bar,
+.scene-overlay-controls,
+.scene-overlay-add-and-remove,
+.scene-overlay-upgrade-panel,
+.overlay-item-panel {
+    position: absolute;
+    z-index: 10;
+    user-select: none;
+    box-sizing: border-box;
+    background-color: var(--color-bg-panel);
+    backdrop-filter: var(--glass-blur) var(--glass-saturation);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-medium);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Controls Overlay */
 .scene-overlay-controls {
     position: absolute;
     bottom: 32vh;
     left: 48px;
-    width: 180px;
+    width: 320px;
     height: 180px;
-    z-index: 10;
-    transform: none; /* 중앙 정렬이 필요없으면 제거 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: var(--glass-blur) var(--glass-saturation);
+    border-radius: var(--radius-xl);
 }
 
+/* Add and Remove Panel */
 .scene-overlay-add-and-remove {
     position: absolute;
-    left: 48px;
-    bottom: 120px;   /* 핫바 위에 적당히 띄워서 겹치지 않게 */
-    width: 180px;
-    height: auto;
-    z-index: 12;
+    left: 400px; /* Positioned to the right of controls */
+    bottom: 32vh; /* Same vertical position as controls */
+    width: 100px;
+    height: 180px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    gap: 16px;
-    background: rgba(255,255,255,0.85);
-    border-radius: 16px;
-    box-shadow: 0 4px 18px #0001;
-    padding: 12px 8px;
+    justify-content: center;
+    gap: 24px;
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: var(--glass-blur) var(--glass-saturation);
+    border-radius: var(--radius-xl);
+    padding: 16px;
 }
 
-
-
-
+/* Weather Panel */
 .scene-overlay-weather {
     position: absolute;
     top: 40px;
@@ -182,14 +226,20 @@ body {
     min-width: 240px;
     width: 300px;
     height: 100px;
-    z-index: 10;
-    background-color: rgba(128, 128, 128, 0.5);
-    border-radius: 14px;
-    box-shadow: 0 2px 8px #8884;
+    background-color: var(--color-bg-panel);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size:15px;
+    font-size: 15px;
+    overflow: hidden;
+    transition: all var(--transition-medium);
+}
+
+.scene-overlay-weather:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
 .weather-widget-inner {
@@ -211,12 +261,14 @@ body {
 .weather-icon {
     font-size: 2.3em;
     line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .weather-temp {
     font-size: 1.7em;
     font-weight: bold;
     margin-top: 2px;
+    color: var(--color-text);
 }
 
 .weather-info {
@@ -231,23 +283,24 @@ body {
     display: flex;
     gap: 10px;
     font-size: 1em;
-    color: #222;
+    color: var(--color-text);
     font-weight: 500;
 }
 
 .weather-desc {
     font-size: 0.98em;
-    color: #3777c2;
+    color: var(--color-primary-dark);
     font-weight: 500;
     margin-top: 1px;
 }
 
 .weather-minmax {
     font-size: 0.93em;
-    color: #444;
+    color: var(--color-text-light);
     margin-top: 3px;
 }
 
+/* Upgrade Panel */
 .scene-overlay-upgrade-panel {
     position: absolute;
     top: 40px;
@@ -255,34 +308,31 @@ body {
     width: 400px;
     height: 600px;
     z-index: 10;
-    /* Glassmorphism 효과 */
-    background: rgba(238, 233, 229, 0.22); /* nipponcolors TORINOKO + 투명도 */
-    backdrop-filter: blur(18px) saturate(140%);
-    border-radius: 24px;
-    box-shadow: 0 8px 32px 0 rgba(30, 30, 30, 0.10), 0 2px 8px #7B3B3A22;
-    border: 1.5px solid rgba(255,255,255,0.25);
-
+    background: rgba(255, 255, 255, 0.22);
+    backdrop-filter: var(--glass-blur) var(--glass-saturation);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow: hidden; /* 내부 스크롤바 숨김 */
-    scrollbar-width: none; /* 파이어폭스 스크롤바 숨김 */
+    overflow: hidden;
+    scrollbar-width: none;
 }
 
-/* 크롬, 엣지, 사파리 스크롤바 숨김 */
 .scene-overlay-upgrade-panel::-webkit-scrollbar {
     display: none;
 }
-
 
 .upgrade-title {
     width: 100%;
     text-align: center;
     font-size: 1.15em;
     font-weight: bold;
-    color: #C02F1D;
+    color: var(--color-secondary);
     margin: 18px 0 10px 0;
     letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .upgrade-list {
@@ -293,20 +343,38 @@ body {
     flex-direction: column;
     gap: 13px;
     padding-bottom: 14px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary-light) transparent;
+}
+
+.upgrade-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.upgrade-list::-webkit-scrollbar-thumb {
+    background-color: var(--color-primary-light);
+    border-radius: var(--radius-round);
 }
 
 .upgrade-item {
     display: flex;
     align-items: center;
-    background: rgba(255,255,255,0.90);
-    border-radius: 8px;
-    padding: 10px 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    background: rgba(255, 255, 255, 0.90);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.upgrade-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .upgrade-icon {
     font-size: 1.6em;
-    margin-right: 10px;
+    margin-right: 14px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .upgrade-info {
@@ -316,71 +384,83 @@ body {
 
 .upgrade-name {
     font-weight: bold;
-    color: #ff9900;
+    color: var(--color-accent-dark);
     font-size: 1em;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
 }
 
 .upgrade-desc {
     font-size: 0.92em;
-    color: #555;
-    margin-bottom: 2px;
+    color: var(--color-text-light);
+    margin-bottom: 4px;
     white-space: normal;
     word-break: keep-all;
+    line-height: 1.4;
 }
 
 .upgrade-cost {
     font-size: 0.93em;
-    color: #C02F1D;
+    color: var(--color-secondary);
+    font-weight: 500;
 }
 
 .upgrade-btn {
-    background: #C02F1D;
-    color: #fff;
+    background: var(--color-secondary);
+    color: var(--color-text-inverse);
     border: none;
-    border-radius: 6px;
-    padding: 7px 12px;
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
     cursor: pointer;
     font-weight: bold;
     font-size: 0.97em;
     margin-left: 7px;
-    transition: background 0.2s;
+    transition: all var(--transition-fast);
 }
+
 .upgrade-btn:hover {
-    background: #ff9900;
+    background: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
-
-
-
+/* Buttons */
 .overlay-btn {
     position: absolute;
-    width: 68px;
-    height: 68px;
+    width: 88px;
+    height: 88px;
     border-radius: 50%;
-    border: 2.5px solid var(--btn-border);
-    background: var(--btn-bg);
-    color: var(--btn-color);
-    font-size: 1.2rem;
+    border: none;
+    background: var(--color-secondary);
+    color: var(--color-text-inverse);
+    font-size: 1.4rem;
     font-weight: 700;
-    box-shadow: 0 6px 18px #3A6BA122;
+    box-shadow: var(--shadow-md);
     cursor: pointer;
-    transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+    transition: all var(--transition-fast);
     padding: 0;
     outline: none;
-}
-.overlay-btn:hover, .overlay-btn.active {
-    background: var(--btn-hover-bg);
-    color: var(--btn-hover-color);
-    border: 2.5px solid var(--btn-hover-border);
-    box-shadow: 0 8px 24px #3A6BA144;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* 상좌우 배치*/
+.overlay-btn:hover, .overlay-btn.active {
+    background: var(--color-accent);
+    color: var(--color-text);
+    transform: scale(1.05);
+    box-shadow: var(--shadow-lg), 0 0 0 4px rgba(255, 179, 15, 0.3);
+}
+
+/* Button Positioning */
 .overlay-btn[data-category="props"] {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
+}
+
+.overlay-btn[data-category="props"]:hover {
+    transform: translateX(-50%) scale(1.05);
 }
 
 .overlay-btn[data-category="nature"] {
@@ -388,43 +468,72 @@ body {
     top: 50%;
     transform: translateY(-50%);
 }
+
+.overlay-btn[data-category="nature"]:hover {
+    transform: translateY(-50%) scale(1.05);
+}
+
 .overlay-btn[data-category="animals"] {
     right: 0;
     top: 50%;
     transform: translateY(-50%);
 }
 
+.overlay-btn[data-category="animals"]:hover {
+    transform: translateY(-50%) scale(1.05);
+}
 
-/* Rectangle buttons for 'terrain expansion' and 'remove' */
+.overlay-btn[data-category="buildings"] {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.overlay-btn[data-category="buildings"]:hover {
+    transform: translateX(-50%) scale(1.05);
+}
+
+/* Rectangle buttons */
 .overlay-btn[data-category="terrain expansion"],
 .overlay-btn[data-category="remove"] {
     position: relative;
-    border-radius: 12px;
-    width: 100px;
-    height: 44px;
+    border-radius: var(--radius-md);
+    width: 60px;
+    height: 50px;
     font-size: 1.1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
-    color: #C02F1D;
-    border: 2px solid #C02F1D;
+    background: var(--color-bg-panel-solid);
+    color: var(--color-secondary);
+    border: none;
     font-weight: bold;
-    box-shadow: 0 2px 6px #C02F1D22;
-    transition: background 0.2s, color 0.2s;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+    transform: none;
+    font-size:40px;
 }
 
+.overlay-btn[data-category="terrain expansion"]:hover,
+.overlay-btn[data-category="remove"]:hover {
+    background: var(--color-secondary);
+    color: var(--color-text-inverse);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Item Panel (Hotbar) */
 .overlay-item-panel {
     position: absolute;
     left: 50%;
     bottom: 4vw;
     transform: translateX(-50%);
     z-index: 20;
-    min-width: 0;
+    min-width: 10px;
     background: var(--hotbar-bg);
-    border: 2.5px solid var(--hotbar-border);
+    border: none;
     border-radius: var(--hotbar-radius);
-    box-shadow: var(--hotbar-shadow);
+    box-shadow: var(--shadow-md);
     padding: 18px 24px 14px 24px;
     display: flex;
     flex-direction: column;
@@ -432,25 +541,25 @@ body {
     pointer-events: auto;
     user-select: none;
     gap: 0;
-    transition: background 0.2s, border 0.2s, box-shadow 0.2s, transform 0.3s cubic-bezier(.4,1.4,.6,1);
-    backdrop-filter: blur(12px) saturate(120%);
+    transition: all var(--transition-medium), transform 0.3s cubic-bezier(.4,1.4,.6,1);
+    backdrop-filter: var(--glass-blur) var(--glass-saturation);
 }
 
 .overlay-item-panel.visible {
     transform: translate(-50%, 0);
-    box-shadow: 0 12px 36px 0 rgba(30, 30, 30, 0.13), 0 4px 12px #42602d33;
+    box-shadow: var(--shadow-lg);
 }
 
 .overlay-item-panel.dragging {
-    box-shadow: 0 16px 48px 0 #E8392944, 0 4px 12px #42602d44;
+    box-shadow: 0 16px 48px 0 rgba(238, 108, 77, 0.25), 0 4px 12px rgba(41, 50, 65, 0.2);
 }
 
-/* 헤더 (핫바에는 보통 없음, 유지 시 스타일 최소화) */
+/* Hide header */
 .overlay-item-panel-header {
     display: none;
 }
 
-/* 핫바 아이템 가로 정렬 */
+/* Item List */
 .item-list {
     display: flex;
     flex-direction: row;
@@ -460,15 +569,15 @@ body {
     padding: 0;
     margin: 0;
     width: 100%;
-    min-height: 70px;
+    min-height: 100px;
 }
 
-/* 핫바 슬롯(아이템) */
+/* Item Slots */
 .draggable-item {
-    width: 64px;
-    height: 64px;
+    width: 100px;
+    height: 90px;
     background: var(--slot-bg);
-    border: 2.5px solid var(--slot-border);
+    border: none;
     border-radius: var(--slot-radius);
     display: flex;
     flex-direction: column;
@@ -476,20 +585,16 @@ body {
     justify-content: center;
     font-size: 2rem;
     font-weight: 600;
-    color: #1C1C1C;
+    color: var(--color-text);
     cursor: grab;
     margin: 0;
-    transition:
-            background 0.18s,
-            border 0.18s,
-            box-shadow 0.18s,
-            transform 0.13s;
+    transition: all var(--transition-fast), transform 0.13s;
     box-shadow: var(--slot-shadow);
     outline: none;
     position: relative;
 }
 
-/* 선택/드래그 시 강조 */
+/* Selected/Active states */
 .draggable-item.selected,
 .draggable-item:active,
 .draggable-item.dragging {
@@ -503,82 +608,189 @@ body {
 .draggable-item .item-icon {
     font-size: 2rem;
     margin-bottom: 6px;
-    filter: drop-shadow(0 2px 4px #42602d11);
+    filter: drop-shadow(0 2px 4px rgba(66, 96, 45, 0.1));
+    transition: transform var(--transition-fast);
+}
+
+.draggable-item:hover .item-icon {
+    transform: scale(1.1);
 }
 
 .draggable-item span:last-child {
     font-size: 1.05rem;
     font-weight: 700;
-    color: var(--dancheong-red);
+    color: var(--color-secondary);
     letter-spacing: 1px;
-    text-shadow: 0 1px 0 #fff9, 0 2px 4px #E8392911;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 4px rgba(238, 108, 77, 0.1);
 }
 
-/* 자원/리소스 바 */
+/* Resource Bar */
 .resource-bar {
-    position: absolute; /* 또는 fixed */
+    position: absolute;
     top: 24px;
     left: 50%;
     transform: translateX(-50%);
     min-width: 320px;
     width: auto;
     max-width: 700px;
-    height: 44px;
+    height: 54px;
     padding: 0 36px;
-    background: var(--);
-    border-radius: 18px;
-    border: 2.5px solid
-    box-shadow: 0 4px 18px #3A7D5D22;
+    background: linear-gradient(90deg, rgba(59, 122, 87, 0.85), rgba(59, 122, 87, 0.75));
+    border-radius: var(--radius-lg);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    box-shadow: var(--shadow-md);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 36px;
     z-index: 15;
     font-weight: 700;
-    color:
+    color: var(--color-text-inverse);
     font-size: 1.13rem;
     letter-spacing: 1px;
-    transition: box-shadow 0.2s;
+    transition: all var(--transition-medium);
 }
 
 .resource-bar:hover {
-    box-shadow: 0 8px 24px #3A7D5D44;
-    background: linear-gradient(90deg, var(--dancheong-blue) 55%, var(--dancheong-mint) 100%);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(-50%) translateY(-2px);
 }
 
-/* Weather */
-.weather-panel {
-    width: 90%;
-    min-height: 60px;
-    background: var(--panel-bg);
-    border: 2px solid
-    border-radius:
-    color:
-    font-size: 1.1rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .scene-overlay-add-and-remove {
+        left: 380px;
+        width: 140px;
+    }
+
+    .scene-overlay-upgrade-panel {
+        width: 350px;
+    }
 }
 
-/* Responsive: 모바일에서 패널 크기 조정 */
+@media (max-width: 992px) {
+    .scene-overlay-controls {
+        width: 280px;
+        height: 160px;
+    }
+
+    .scene-overlay-add-and-remove {
+        left: 340px;
+        width: 130px;
+        height: 160px;
+    }
+
+    .overlay-btn {
+        width: 75px;
+        height: 75px;
+    }
+}
+
 @media (max-width: 800px) {
+    .scene-overlay-controls {
+        left: 20px;
+        width: 220px;
+        height: 130px;
+    }
+
+    .scene-overlay-add-and-remove {
+        left: 250px;
+        width: 120px;
+        height: 130px;
+    }
+
     .overlay-item-panel {
         min-width: 95vw;
-        padding: 0 4vw 18px 4vw;
+        padding: 14px 10px 10px;
     }
+
     .item-list {
         gap: 10px;
     }
+
     .draggable-item {
-        width: 70px;
-        height: 70px;
+        width: 80px;
+        height: 80px;
+        font-size: 1.8rem;
+    }
+
+    .scene-overlay-upgrade-panel {
+        width: 300px;
+        right: 20px;
+    }
+
+    .overlay-btn {
+        width: 60px;
+        height: 60px;
         font-size: 1.2rem;
     }
-    .scene-overlay-controls {
-        left: 50vw;
-        width: 120px;
-        height: 120px;
+
+    .overlay-btn[data-category="terrain expansion"],
+    .overlay-btn[data-category="remove"] {
+        width: 90px;
+        height: 40px;
+        font-size: 0.95rem;
     }
 }
 
+@media (max-width: 480px) {
+    .scene-overlay-controls,
+    .scene-overlay-add-and-remove {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        height: auto;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 10px;
+    }
+
+    .scene-overlay-controls {
+        bottom: 28vh;
+    }
+
+    .scene-overlay-add-and-remove {
+        bottom: 18vh;
+        flex-direction: row;
+    }
+
+    .upgrade-item {
+        padding: 10px;
+    }
+
+    .resource-bar {
+        width: 90%;
+        gap: 20px;
+    }
+
+    .scene-overlay-weather {
+        top: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+    }
+
+    .scene-overlay-upgrade-panel {
+        width: 90%;
+        height: 80vh;
+        right: 50%;
+        transform: translateX(50%);
+        top: 10vh;
+    }
+
+    .overlay-btn {
+        position: relative;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        transform: none;
+        width: 50px;
+        height: 50px;
+        font-size: 1.1rem;
+    }
+
+    .overlay-btn:hover {
+        transform: scale(1.05);
+    }
+}
