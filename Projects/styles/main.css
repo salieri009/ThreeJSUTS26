@@ -230,14 +230,35 @@ body {
     gap: 12px;
     justify-content: center;
     align-items: center;
-        padding: 12px 20px;
+    padding: 12px 20px;
     border-radius: var(--radius-md);
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
-    /* flex-wrap: nowrap; */ /* Remove or change this */
-    flex-wrap: wrap;      /* Add this */
+    flex-wrap: wrap;
     transition: background-color 0.3s ease;
 }
 
+/* --- Status Message Styles --- */
+.status-message {
+    position: fixed; /* Keep it in the same spot even if you scroll */
+    bottom: 30px;    /* Position it 30px from the bottom of the viewport */
+    left: 50%;       /* Start it at 50% from the left */
+    transform: translateX(-50%); /* Center it horizontally */
+    background-color: rgba(0, 0, 0, 0.75); /* Dark, semi-transparent background */
+    color: white;    /* White text */
+    padding: 12px 25px; /* Padding inside the message box */
+    border-radius: 8px; /* Slightly rounded corners */
+    font-size: 1.1em; /* Slightly larger font size */
+    z-index: 1000;   /* Ensure it's on top of other elements */
+    opacity: 0;      /* Initially invisible */
+    visibility: hidden; /* Also hidden by default for accessibility */
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; /* Smooth transition */
+}
+
+.status-message.visible {
+    opacity: 1;      /* Fully visible when 'visible' class is added */
+    visibility: visible; /* Make it visible */
+}
+/* --- End Status Message Styles --- */
 
 
 /* Weather Panel */
