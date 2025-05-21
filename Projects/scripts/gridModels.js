@@ -2,7 +2,7 @@ import * as THREE from '../build/three.module.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 import { scene, camera } from './sceneManager.js';
 
-export let highlight, tree, cow, grass, sheep, cloud, barn, fence, chicken, pig, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil, path, pine;
+export let highlight, tree, cow, grass, sheep, cloud, barn, fence, chicken, pig, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil, path, pine, loader;
 let placingMesh;
 let carrotField;
 export let grasses = [];
@@ -60,7 +60,7 @@ export function loadScene() {
 }
 
 function loadModels() { 
-    const loader = new GLTFLoader();
+    loader = new GLTFLoader();
 
     loader.load("models/tree/scene.gltf", (gltf) => {
         tree = gltf.scene;
@@ -84,7 +84,7 @@ function loadModels() {
                 node.material.map = pineTexture;
             } 
         });
-        scene.add(pine);
+        //scene.add(pine);
         pine.name = 'Pine';
         createBox(pine, 10, 10, 10);
     });

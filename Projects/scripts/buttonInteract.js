@@ -71,7 +71,7 @@ export function deleteModel() {
     });
 }
 
-document.querySelector('[data-category="terrain expansion"]').addEventListener('click', () => { if(level < 10) addBlock(); });
+document.querySelector('[data-category="terrain expansion"]').addEventListener('click', () => { if(level < 8) addBlock(); });
 document.querySelector('[data-category="remove"]').addEventListener('click', () => { deleteModel(); });
 
 //props
