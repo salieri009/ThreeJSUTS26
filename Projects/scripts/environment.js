@@ -34,13 +34,6 @@ export function loadClouds() {
     loader.load("models/cloud/scene.gltf", (gltf) => {
         for (let i = 0; i < 11; i++) {
             cloud = gltf.scene.clone();
-                cloud.traverse((node) => {
-                if (node.isMesh && node.material && node.material.color) {
-                    node.material = node.material.clone();
-                    let cloudColour = weather.cloudy ? 0xAAAAAA : 0xffffff;
-                    node.material.color.set(cloudColour); 
-                }
-            });
             let randomScale = Math.random() * 0.15 + 0.1;
             cloud.scale.set(randomScale, randomScale, randomScale);
             cloud.position.set(Math.random() * 100 - 55, Math.random() * 10 + 10, Math.random() * 50 - 30);
@@ -76,3 +69,12 @@ export function sun() {
     //const helper = new THREE.CameraHelper(sunLight.shadow.camera);
     //scene.add(helper);
 }
+/*
+    cloud.traverse((node) => {
+        if (node.isMesh && node.material && node.material.color) {
+            node.material = node.material.clone();
+            let cloudColour = weather.cloudy ? 0xAAAAAA : 0xffffff;
+            node.material.color.set(cloudColour); 
+        }
+    });
+*/

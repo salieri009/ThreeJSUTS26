@@ -3,86 +3,142 @@
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 224,
+      "count": 1256,
       "max": [
-        578.1685180664063,
-        282.6112060546875,
-        451.65478515625
+        3.5311429500579834,
+        3.7738900184631348,
+        16.099536895751953
       ],
       "min": [
-        345.8518371582031,
-        56.58428955078125,
-        13.900848388671875
+        -3.9665920734405518,
+        -3.5097360610961914,
+        2.5890159606933594
       ],
       "type": "VEC3"
     },
     {
       "bufferView": 2,
-      "byteOffset": 2688,
+      "byteOffset": 15072,
       "componentType": 5126,
-      "count": 224,
+      "count": 1256,
       "max": [
-        0.9125688672065735,
-        0.9731144905090332,
-        0.49277201294898987
+        0.9794601798057556,
+        0.9932599067687988,
+        0.98552006483078
       ],
       "min": [
-        -0.9979042410850525,
-        -0.9731569886207581,
-        -1.0
+        -0.9884601831436157,
+        -0.9829704761505127,
+        -0.8990790247917175
       ],
       "type": "VEC3"
     },
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 224,
+      "count": 1256,
       "max": [
-        0.9281399846076965,
-        0.767084002494812
+        0.9999020099639893,
+        0.9999039769172668
       ],
       "min": [
-        0.016070999205112457,
-        0.010714000090956688
+        9.600000339560211e-05,
+        9.600000339560211e-05
       ],
       "type": "VEC2"
     },
     {
       "bufferView": 0,
       "componentType": 5125,
-      "count": 315,
+      "count": 1728,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 30144,
+      "componentType": 5126,
+      "count": 252,
+      "max": [
+        1.0680830478668213,
+        1.082448959350586,
+        15.907447814941406
+      ],
+      "min": [
+        -1.1175730228424072,
+        -1.1056849956512451,
+        0.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 33168,
+      "componentType": 5126,
+      "count": 252,
+      "max": [
+        0.92539381980896,
+        0.9230021834373474,
+        0.9987471699714661
+      ],
+      "min": [
+        -0.9291173815727234,
+        -0.9223397970199585,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 10048,
+      "componentType": 5126,
+      "count": 252,
+      "max": [
+        0.49897900223731995,
+        0.9999380111694336
+      ],
+      "min": [
+        6.199999916134402e-05,
+        5.6000000768108293e-05
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 6912,
+      "componentType": 5125,
+      "count": 396,
       "type": "SCALAR"
     }
   ],
   "asset": {
     "extras": {
-      "author": "sycoinc (https://sketchfab.com/sycoinc)",
+      "author": "Afloat Above the World (https://sketchfab.com/ilikecatsnotdogs)",
       "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
-      "source": "https://sketchfab.com/3d-models/low-poly-tree-concept-e815f8acd6d34528a82feef38d5af880",
-      "title": "Low Poly Tree Concept"
+      "source": "https://sketchfab.com/3d-models/low-poly-pine-107e3eab9dcb4e29a282c6709178752f",
+      "title": "Low Poly Pine"
     },
-    "generator": "Sketchfab-12.67.0",
+    "generator": "Sketchfab-12.68.0",
     "version": "2.0"
   },
   "bufferViews": [
     {
       "buffer": 0,
-      "byteLength": 1260,
+      "byteLength": 8496,
       "name": "floatBufferViews",
       "target": 34963
     },
     {
       "buffer": 0,
-      "byteLength": 1792,
-      "byteOffset": 1260,
+      "byteLength": 12064,
+      "byteOffset": 8496,
       "byteStride": 8,
       "name": "floatBufferViews",
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteLength": 5376,
-      "byteOffset": 3052,
+      "byteLength": 36192,
+      "byteOffset": 20560,
       "byteStride": 12,
       "name": "floatBufferViews",
       "target": 34962
@@ -90,24 +146,39 @@
   ],
   "buffers": [
     {
-      "byteLength": 8428,
+      "byteLength": 56752,
       "uri": "scene.bin"
     }
   ],
   "images": [
     {
-      "uri": "textures/initialShadingGroup_baseColor.png"
+      "uri": "textures/Material.001_baseColor.png"
+    },
+    {
+      "uri": "textures/Material.002_baseColor.png"
     }
   ],
   "materials": [
     {
       "doubleSided": true,
-      "name": "initialShadingGroup",
+      "name": "Material.001",
       "pbrMetallicRoughness": {
         "baseColorTexture": {
           "index": 0
         },
-        "metallicFactor": 0.0
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.8063508326896291
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Material.002",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 1
+        },
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.8063508326896291
       }
     }
   ],
@@ -123,6 +194,21 @@
           },
           "indices": 3,
           "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Object_1",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 5,
+            "POSITION": 4,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 1,
           "mode": 4
         }
       ]
@@ -155,13 +241,18 @@
     },
     {
       "children": [
-        2
+        2,
+        3
       ],
-      "name": "tree_2.obj.cleaner.materialmerger.gles"
+      "name": "Low Poly Pine.obj.cleaner.materialmerger.gles"
     },
     {
       "mesh": 0,
       "name": "Object_2"
+    },
+    {
+      "mesh": 1,
+      "name": "Object_3"
     }
   ],
   "samplers": [
@@ -185,6 +276,10 @@
     {
       "sampler": 0,
       "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
     }
   ]
 }

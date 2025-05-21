@@ -1,6 +1,6 @@
 import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
-import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine, pebble} from './gridModels.js';
+import { grasses, clips, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine, pebble, windmill} from './gridModels.js';
 import { weather,  updateSky } from './environment.js';
 
 let level = 1;
@@ -148,16 +148,18 @@ document.querySelector('[data-category="nature"] .draggable-item:nth-child(3)').
 document.querySelector('[data-category="nature"] .draggable-item:nth-child(4)').addEventListener('click', () => {
     const nPine = pine.clone();
     nPine.position.set(0, 6, 0);
-    scene.add(pine);
+    scene.add(nPine);
     setModel(nPine, { width: modelData["Pine"].width, height: modelData["Pine"].height}, true);
 });
 
 //animals
 document.querySelector('[data-category="animals"] .draggable-item:nth-child(1)').addEventListener('click', () => {
-    const newCOw = cow.clone();
-    newCOw.position.set(0, 6, 0);
-    scene.add(newCOw);
-    setModel(newCOw, { width: modelData["Cow"].width, height: modelData["Cow"].height }, true);
+    const newCow = cow.clone(true);
+    newCow.position.set(0, 6, 0);
+    newCow.scale.set(1.25, 1.25, 1.25);
+    scene.add(newCow);
+
+    setModel(cow, { width: modelData["Cow"].width, height: modelData["Cow"].height }, true);
 });
 
 document.querySelector('[data-category="animals"] .draggable-item:nth-child(2)').addEventListener('click', () => {

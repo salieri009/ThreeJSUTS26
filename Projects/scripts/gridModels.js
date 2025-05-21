@@ -2,8 +2,8 @@ import * as THREE from '../build/three.module.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 import { scene, camera } from './sceneManager.js';
 
-export let highlight, tree, cow, grass, sheep, cloud, barn, fence, chicken, pig, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil, path, pine, loader;
-let placingMesh;
+export let clips, highlight, tree, cow, grass, sheep, cloud, barn, fence, chicken, pig, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil, path, pine, loader, windmill;
+let placingMesh, mixer = null;
 let carrotField;
 export let grasses = [];
 
@@ -37,6 +37,7 @@ export const modelData = {
     "Pine": { width: 1, height: 1}, 
 
     "Path": { width: 1, height: 1},
+    "Windmill": { width: 2, height: 2},
 }
 
 export function loadScene() {
@@ -73,32 +74,33 @@ function loadModels() {
         createBox(tree, 200, 2000, 200);
     });
 
-    const pineTexture = textureLoad.load("models/pine/textures/initialShadingGroup_baseColor.png");
+    const pineTexture = textureLoad.load("models/pine/textures/Material.001_baseColor.png");
     loader.load("models/pine/scene.gltf", (gltf) => {
         pine = gltf.scene;
-        pine.scale.set(10, 10, 10);
+        pine.scale.set(0.4, 0.4, 0.4);
         pine.position.set(0, 6, 0);
         pine.traverse((node) => {
             if(node.isMesh) {
+                console.log(node.name)
                 node.castShadow = true;
-                node.material.map = pineTexture;
+                if(node.name === "Object_2"){
+                    node.material.map = pineTexture;
+                } 
             } 
         });
-        //scene.add(pine);
         pine.name = 'Pine';
-        createBox(pine, 10, 10, 10);
+        createBox(pine, 5, 30, 5);
     });
 
     loader.load("models/cow/scene.gltf", (gltf) => {
         cow = gltf.scene;
-        cow.scale.set(0.4, 0.4, 0.4);
+        cow.scale.set(1.25, 1.25, 1.25);
         cow.position.set(0.5, 6, 0);
-        cow.rotation.set(0, Math.PI / 2, 0);
         cow.traverse((node) => {
             if (node.isMesh) node.castShadow = true;
         });
         cow.name = 'Cow';
-        createBox(cow, 8, 10, 4);
+        createBox(cow, 2, 3, 1.3);
     });
 
     const sheepTexture = textureLoad.load("models/sheep/textures/material_baseColor.png"); //양모델에 문제있음음
@@ -120,7 +122,7 @@ function loadModels() {
 
     loader.load("models/pig/scene.gltf", (gltf) => {
         pig = gltf.scene;
-        pig.scale.set(0.8, 0.8, 1.3);
+        pig.scale.set(0.7, 0.8, 1.2);
         pig.position.set(0, 6, 0);
         pig.rotation.set(0, Math.PI/2, 0);
         pig.traverse((node) => {
@@ -406,6 +408,27 @@ function loadModels() {
     path = new THREE.Mesh(pathGeo, new THREE.MeshBasicMaterial({ color: 0xC4A484 }));
     path.rotation.set(-Math.PI/2, 0, 0);
     path.name = "Path";
+
+    loader.load("models/windmill/scene.gltf", (gltf) => {
+        windmill = gltf.scene;
+        windmill.scale.set(1.5, 2, 1.5);
+        windmill.position.set(0, 6, 0);
+        windmill.traverse(node => {
+            if(node.isMesh) node.castShadow = true;
+        });
+        windmill.rotation.set(0, -Math.PI, 0);
+        windmill.name = "Windmill";
+        createBox(windmill, 1, 1, 1);
+
+        clips = gltf.animations;
+    });
+}
+
+const clock = new THREE.Clock();
+export function animate() {
+    requestAnimationFrame(animate);
+    const delta = clock.getDelta();
+    mixers.forEach(m => m.update(delta)); 
 }
 
 function setupGridInteractions() {
@@ -511,7 +534,7 @@ window.addEventListener("mousedown", (event) => {
             const gridZ = Math.round(point.z / gridSize) * gridSize;
 
             let y = 6; 
-            if (selectedObject.name === "Fence" || selectedObject.name === "Barn") y = 7; 
+            if (selectedObject.name === "Fence" || selectedObject.name === "Barn" ) y = 7; 
             
             selectedObject.position.set(gridX - (selectedSize.width === 2 ? 0.5 : 0), y, gridZ);
             selectedObject.visible = true;
@@ -552,3 +575,21 @@ export function setModel(object, size, placing = true) {
     highlight.geometry.dispose();
     highlight.geometry = new THREE.PlaneGeometry(selectedSize.width * 2, selectedSize.height * 2);
 }
+
+const mixers = [];
+document.querySelector('[data-category="buildings"] .draggable-item:nth-child(3)').addEventListener('click', () => {
+    const nWindmill = windmill.clone();
+    nWindmill.position.set(0, 6, 0);
+    scene.add(nWindmill);
+
+    const nMixer = new THREE.AnimationMixer(nWindmill);
+    mixers.push(nMixer); // 배열에 추가
+
+    const clip = THREE.AnimationClip.findByName(clips, 'Action');
+    if (clip) {
+        const action = nMixer.clipAction(clip);
+        action.play();
+    }
+
+    setModel(nWindmill, { width: modelData["Windmill"].width, height: modelData["Windmill"].height }, true);
+});
