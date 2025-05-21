@@ -172,7 +172,8 @@ body {
 .scene-overlay-controls,
 .scene-overlay-add-and-remove,
 .scene-overlay-upgrade-panel,
-.overlay-item-panel {
+.overlay-item-panel,
+.scene-overlay-weather-controls {
     position: absolute;
     z-index: 10;
     user-select: none;
@@ -217,6 +218,29 @@ body {
     border-radius: var(--radius-xl);
     padding: 16px;
 }
+
+.scene-overlay-weather-controls {
+    position: absolute;
+    bottom: 55vh;
+    left: 48px;
+    max-width: 100%;
+    width: 450px; /* Or adjust as needed */
+    /* height: 80px; */ /* Consider setting to 'auto' or increasing if wrapping occurs */
+    height: auto; /* Allow height to adjust based on content */
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+    /* flex-wrap: nowrap; */ /* Remove or change this */
+    flex-wrap: wrap;      /* Add this */
+    transition: background-color 0.3s ease;
+}
+
+
 
 /* Weather Panel */
 .scene-overlay-weather {
@@ -492,6 +516,54 @@ body {
 .overlay-btn[data-category="buildings"]:hover {
     transform: translateX(-50%) scale(1.05);
 }
+
+.overlay-btn[data-category="sunny"],
+.overlay-btn[data-category="cloudy"],
+.overlay-btn[data-category="rainy"],
+.overlay-btn[data-category="snowy"],
+.overlay-btn[data-category="stormy"] {
+    width: 80px;                /* 더 넓게 */
+    height: 64px;               /* 세로도 약간 더 넉넉하게 */
+    padding: 6px 4px;
+    font-size: 12px;
+    border: none;
+    border-radius: 8px;
+    text-align: center;
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.1s ease;
+    position: relative;
+}
+
+/* 각 날씨별 색상 */
+.overlay-btn[data-category="sunny"] {
+    background-color: #FFD700;
+    color: black;
+}
+
+.overlay-btn[data-category="cloudy"] {
+    background-color: #B0C4DE;
+    color: black;
+}
+
+.overlay-btn[data-category="rainy"] {
+    background-color: #4682B4;
+    color: white;
+}
+
+.overlay-btn[data-category="snowy"] {
+    background-color: #ADD8E6;
+    color: black;
+}
+
+.overlay-btn[data-category="stormy"] {
+    background-color: #4B0082;
+    color: white;
+}
+
 
 /* Rectangle buttons */
 .overlay-btn[data-category="terrain expansion"],
