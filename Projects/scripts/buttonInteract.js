@@ -1,6 +1,6 @@
 import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
-import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine} from './gridModels.js';
+import { grasses, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine, pebble} from './gridModels.js';
 
 let level = 1;
 let isRemoving = false;
@@ -123,14 +123,17 @@ document.querySelector('[data-category="props"] .draggable-item:nth-child(6)').a
 });
 //nature
 document.querySelector('[data-category="nature"] .draggable-item:nth-child(1)').addEventListener('click', () => { 
-    const nRock  =  rock.clone(); // 수정필요요
+    const nRock  = rock.clone(); // 수정필요요
     nRock.position.set(0, 6, 0);
     scene.add(nRock);
     setModel(nRock, { width: modelData["Rock"].width, height: modelData["Rock"].height }, true);
 });
 
 document.querySelector('[data-category="nature"] .draggable-item:nth-child(2)').addEventListener('click', () => {
-    //rock small
+    const sRock = pebble.clone();
+    sRock.position.set(0, 6, 0);
+    scene.add(sRock);
+    setModel(sRock, { width: modelData["SRock"].width, height: modelData["SRock"].height }, true);
 });
 
 document.querySelector('[data-category="nature"] .draggable-item:nth-child(3)').addEventListener('click', () => {

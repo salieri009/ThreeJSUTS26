@@ -76,12 +76,12 @@ function loadModels() {
     const pineTexture = textureLoad.load("models/pine/textures/initialShadingGroup_baseColor.png");
     loader.load("models/pine/scene.gltf", (gltf) => {
         pine = gltf.scene;
-        pine.scale.set(1, 1, 1);
+        pine.scale.set(10, 10, 10);
         pine.position.set(0, 6, 0);
         pine.traverse((node) => {
             if(node.isMesh) {
                 node.castShadow = true;
-                //node.material.map = pineTexture;
+                node.material.map = pineTexture;
             } 
         });
         scene.add(pine);
@@ -210,7 +210,7 @@ function loadModels() {
 
     loader.load("models/pebbles/scene.gltf", (gltf) => {
         pebble = gltf.scene;
-        pebble.scale.set(100, 100, 100);
+        pebble.scale.set(1, 1, 1);
         pebble.position.set(0, 6, 0);
         pebble.traverse(node => {
             if(node.isMesh) {
