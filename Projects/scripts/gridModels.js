@@ -89,7 +89,7 @@ function loadModels() {
     loader.load("models/sheep/scene.gltf", (gltf) => {
         sheep = gltf.scene;
         sheep.scale.set(2.7, 2.5, 2.5);
-        sheep.position.set(0, 5, -3);
+        sheep.position.set(0, 6, 0);
         sheep.rotation.set(0, -Math.PI, 0);
         sheep.traverse((node) => {
             if(node.isMesh) {
