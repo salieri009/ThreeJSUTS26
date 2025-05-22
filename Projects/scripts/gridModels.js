@@ -549,6 +549,7 @@ window.addEventListener("mousedown", (event) => {
 
             let y = 6; 
             if (selectedObject.name === "Fence" || selectedObject.name === "Barn" ) y = 7; 
+            else if(selectedObject.name === "Path") y = 5.1;
             
             selectedObject.position.set(gridX - (selectedSize.width === 2 ? 0.5 : 0), y, gridZ);
             selectedObject.visible = true;

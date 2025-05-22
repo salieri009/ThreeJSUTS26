@@ -117,8 +117,6 @@ document.querySelector('[data-category="props"] .draggable-item:nth-child(5)').a
 
 document.querySelector('[data-category="props"] .draggable-item:nth-child(6)').addEventListener('click', () => {
     const nPath = path.clone();
-    nPath.position.set(0, 5.1, 0);
-    nPath.rotation.set(-Math.PI/2, 0, 0);
     scene.add(nPath);
     setModel(nPath, { width: modelData["Path"].width, height: modelData["Path"].height }, true);
 });
