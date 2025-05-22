@@ -7,19 +7,24 @@ export function setScene() {
     scene = new THREE.Scene();
 
     const aspect = window.innerWidth / window.innerHeight;
-    let ortho = 20;
-    camera = new THREE.OrthographicCamera(-ortho * aspect, ortho * aspect, ortho, -ortho, 0.1, 1000);
+    let ortho = 50; // Increased view volume
 
-    camera.position.set(20, 20, 20);
+    camera = new THREE.OrthographicCamera(
+        -ortho * aspect, ortho * aspect,
+        ortho, -ortho,
+        0.1, 2000 // Increased far plane for cloud visibility
+    );
+
+    camera.position.set(100, 100, 100); // Move camera further back
     camera.lookAt(0, 0, 0);
     
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    // Create the canvas element and append it to the container
+
     const container = document.getElementById('scene-container');
-    container.appendChild(renderer.domElement); // Append renderer to the container
+    container.appendChild(renderer.domElement);
 
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -36,3 +41,4 @@ export function controlCamera() {
     controls.update();
     renderer.render(scene, camera);
 }
+
