@@ -140,7 +140,6 @@ function loadModels() {
         fence = gltf.scene;
         fence.scale.set(0.8, 0.9, 0.6);
         fence.position.set(0, 7, 0);
-        fence.rotation.set(0, Math.PI / 2, 0);
         fence.traverse(node => {
             if (node.isMesh) {
                 node.material.map = fenceTexture;
@@ -524,6 +523,21 @@ window.addEventListener("mousedown", (event) => {
                 highlight.mesh = placingMesh;
                 highlight.geometry.dispose();
                 highlight.geometry = new THREE.PlaneGeometry(selectedSize.width * gridSize, selectedSize.height * gridSize);
+
+
+                highlight.rotation.z = -selectedObject.rotation.y;
+                const rotY = selectedObject.rotation.y % (2 * Math.PI);
+                if (Math.abs(rotY - Math.PI / 2) < 0.01 || Math.abs(rotY - 3 * Math.PI / 2) < 0.01) {
+                    const temp = selectedSize.width;
+                    selectedSize.width = selectedSize.height;
+                    selectedSize.height = temp;
+
+                    highlight.geometry.dispose();
+                    highlight.geometry = new THREE.PlaneGeometry(
+                        selectedSize.width * gridSize,
+                        selectedSize.height * gridSize
+                    );
+                }
             }
         }
     } else {
