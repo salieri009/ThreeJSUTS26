@@ -63,7 +63,7 @@ export function deleteModel() {
             let root = intersects[0].object;
             while (root.parent && root.parent.type !== "Scene")  root = root.parent;
             if (isRemoving) {
-                if(root.name !== "Sky" ) {
+                if(root.name !== "Sky" && root.name !== "Highlight" && root.name !== "Grid" ) {
                     scene.remove(root);
                     isRemoving = false;
                 }

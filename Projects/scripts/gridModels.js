@@ -436,7 +436,7 @@ function setupGridInteractions() {
     highlight.rotation.x = -Math.PI / 2;
     highlight.position.set(0, 6.05, 0);
     scene.add(highlight);
-
+    highlight.name = "Highlight";
     grid.position.set(0, 6, 0);
     scene.add(grid);
 }
@@ -524,7 +524,7 @@ window.addEventListener("mousedown", (event) => {
                 highlight.geometry.dispose();
                 highlight.geometry = new THREE.PlaneGeometry(selectedSize.width * gridSize, selectedSize.height * gridSize);
 
-
+                highlight.name = "Highlight";
                 highlight.rotation.z = -selectedObject.rotation.y;
                 const rotY = selectedObject.rotation.y % (2 * Math.PI);
                 if (Math.abs(rotY - Math.PI / 2) < 0.01 || Math.abs(rotY - 3 * Math.PI / 2) < 0.01) {
@@ -578,6 +578,7 @@ function createBox(model, width, height, depth) {
 
 export function setGrid(newGrid) {
     grid = newGrid;
+    grid.name = "Grid";
 }
 
 export function setModel(object, size, placing = true) {
