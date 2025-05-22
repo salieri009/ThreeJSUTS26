@@ -547,7 +547,7 @@ window.addEventListener("mousedown", (event) => {
 
 function createBox(model, width, height, depth) {
     const boxGeometry = new THREE.BoxGeometry(width, height, depth);
-    const boxMaterial = new THREE.MeshBasicMaterial({ wireframe: true, transparent: true });
+    const boxMaterial = new THREE.MeshBasicMaterial({ wireframe: true, transparent: true, visible: false });
     const box = new THREE.Mesh(boxGeometry, boxMaterial);
 
     if(model == soil) {
