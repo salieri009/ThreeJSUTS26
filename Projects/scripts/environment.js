@@ -138,25 +138,38 @@ export function sun() {
 // ========== Weather Functions ==========
 
 // 비
-export function createRain(scene) {
-    removeRain(scene);
-    const rainCountPerCloud = 200; // 구름 하나당 빗방울 수
+export function createRain() {
+    // if (!scene || clouds.length === 0) {
+    //     console.warn("scene 또는 clouds가 준비되지 않았습니다.");
+    //     return;
+    // }
+
+    removeRain();
+
     const totalRainCount = clouds.length * rainCountPerCloud;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(totalRainCount * 3);
 
     let index = 0;
 
+    // 구름 위치를 카메라 기준 적절히 세팅 (예: 고정 범위 내 랜덤)
     for (const cloud of clouds) {
+        cloud.position.set(
+            Math.random() * 40 - 20,   // x: -20 ~ +20
+            Math.random() * 15 + 35,  // y: 35 ~ 50
+            Math.random() * 20 + 10   // z: 10 ~ 30
+        );
+
         for (let i = 0; i < rainCountPerCloud; i++) {
-            positions[index * 3] = cloud.position.x + (Math.random() * 10 - 5);     // x ±5
-            positions[index * 3 + 1] = cloud.position.y - 2 + Math.random() * 5;    // 구름보다 아래쪽
-            positions[index * 3 + 2] = cloud.position.z + (Math.random() * 10 - 5); // z ±5
+            positions[index * 3] = cloud.position.x + (Math.random() * 10 - 5);
+            positions[index * 3 + 1] = cloud.position.y - 2 + Math.random() * 5;
+            positions[index * 3 + 2] = cloud.position.z + (Math.random() * 10 - 5);
             index++;
         }
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
     const material = new THREE.PointsMaterial({
         color: 0xaaaaaa,
         size: 0.1,
@@ -167,17 +180,24 @@ export function createRain(scene) {
     scene.add(rainParticles);
 }
 
-
 export function updateRain() {
     if (!rainParticles) return;
+
     const positions = rainParticles.geometry.attributes.position.array;
-    for (let i = 0; i < positions.length / 3; i++) {
-        positions[i * 3 + 1] -= 0.5;
-        if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 100 + 50;
+
+    for (let i = 0; i < positions.length; i += 3) {
+        positions[i + 1] -= 0.3;  // Y축 아래로 떨어지는 속도
+
+        // 바닥보다 낮아지면 구름 높이 근처로 위치 재설정
+        if (positions[i + 1] < 0) {
+            positions[i + 1] = Math.random() * 15 + 35;
+        }
     }
+
     rainParticles.geometry.attributes.position.needsUpdate = true;
 }
-export function removeRain(scene) {
+
+export function removeRain() {
     if (rainParticles) {
         scene.remove(rainParticles);
         rainParticles.geometry.dispose();
