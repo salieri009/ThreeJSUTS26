@@ -18,7 +18,7 @@ export const weather = {
     stormy: false
 };
 
-// 하늘 생성
+// Setting up the sky
 export function setBackground() {
     skyMaterial = new THREE.MeshBasicMaterial({
         color: 0x87CEEB,
@@ -30,7 +30,7 @@ export function setBackground() {
     scene.add(skyDome);
 }
 
-// 하늘/조명/구름 색상·강도 업데이트
+// Light update
 export function updateSky() {
     if (!skyMaterial) return;
 
