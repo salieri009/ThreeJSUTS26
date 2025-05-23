@@ -205,23 +205,47 @@ export function removeRain() {
         rainParticles = null;
     }
 }
+//===========================Same logic will be implemented========================================
 
-// 눈
-export function createSnow(scene) {
-    removeSnow(scene);
-    const snowCount = 800;
+// Snow
+export function createSnow() {
+    removeSnow();
+
+    const snowCountPerCloud = 100;
+    const totalSnowCount = clouds.length * snowCountPerCloud;
     const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(snowCount * 3);
-    for (let i = 0; i < snowCount; i++) {
-        positions[i * 3] = Math.random() * 200 - 100;
-        positions[i * 3 + 1] = Math.random() * 100 + 50;
-        positions[i * 3 + 2] = Math.random() * 200 - 100;
+    const positions = new Float32Array(totalSnowCount * 3);
+
+    let index = 0;
+
+    // 구름 위치를 카메라 기준 적절히 세팅 (예: 고정 범위 내 랜덤)
+    for (const cloud of clouds) {
+        cloud.position.set(
+            Math.random() * 40 - 20,   // x: -20 ~ +20
+            Math.random() * 15 + 35,  // y: 35 ~ 50
+            Math.random() * 20 + 10   // z: 10 ~ 30
+        );
+
+        for (let i = 0; i < snowCountPerCloud; i++) {
+            positions[index * 3] = cloud.position.x + (Math.random() * 10 - 5);
+            positions[index * 3 + 1] = cloud.position.y - 2 + Math.random() * 5;
+            positions[index * 3 + 2] = cloud.position.z + (Math.random() * 10 - 5);
+            index++;
+        }
     }
+
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.3, transparent: true });
+
+    const material = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 1.2,
+        transparent: true,
+    });
+
     snowParticles = new THREE.Points(geometry, material);
     scene.add(snowParticles);
 }
+
 export function updateSnow() {
     if (!snowParticles) return;
     const positions = snowParticles.geometry.attributes.position.array;
@@ -232,6 +256,8 @@ export function updateSnow() {
     }
     snowParticles.geometry.attributes.position.needsUpdate = true;
 }
+
+
 export function removeSnow(scene) {
     if (snowParticles) {
         scene.remove(snowParticles);

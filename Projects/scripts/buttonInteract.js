@@ -1,7 +1,7 @@
 import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
 import { grasses, clips, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine, pebble, windmill} from './gridModels.js';
-import {weather, updateSky, weather as Weather, createRain} from './environment.js';
+import {weather, updateSky, weather as Weather, createRain, removeRain, createSnow} from './environment.js';
 
 // import {updateWeatherWidget} from "./UIManager";
 // Don't use yet
@@ -209,6 +209,7 @@ document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)
 document.querySelector('[data-category="cloudy"]').addEventListener('click', () => {
      weather.cloudy = true;
      // updateWeatherWidget();
+    removeRain();
      updateSky();
 });
 
@@ -217,6 +218,7 @@ document.querySelector('[data-category="sunny"]').addEventListener('click', () =
     weather.rainy = false;
     weather.snowy = false;
     weather.stormy = false;
+    removeRain();
     updateSky();
 });
 
@@ -225,7 +227,6 @@ document.querySelector('[data-category="rainy"]').addEventListener('click', () =
     weather.rainy = true;
     weather.snowy = false;
     weather.stormy = false;
-
     createRain();
     updateSky();
 });
@@ -235,6 +236,7 @@ document.querySelector('[data-category="snowy"]').addEventListener('click', () =
     weather.snowy = true;
     weather.rainy = false;
     weather.stormy = false;
+    createSnow()
     updateSky();
 });
 
