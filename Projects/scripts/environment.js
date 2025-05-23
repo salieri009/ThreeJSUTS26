@@ -250,9 +250,11 @@ export function updateSnow() {
     if (!snowParticles) return;
     const positions = snowParticles.geometry.attributes.position.array;
     for (let i = 0; i < positions.length / 3; i++) {
-        positions[i * 3 + 1] -= 0.15;
-        positions[i * 3] += Math.sin(Date.now() * 0.001 + i) * 0.01;
-        if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 100 + 50;
+        positions[i * 3 + 1] -= 0.15; // 천천히 떨어짐
+        positions[i * 3] += Math.sin(Date.now() * 0.001 + i) * 0.01; // 좌우 흔들림
+        if (positions[i * 3 + 1] < 0) {
+            positions[i * 3 + 1] = Math.random() * 15 + 35; // 구름 높이로 리셋
+        }
     }
     snowParticles.geometry.attributes.position.needsUpdate = true;
 }
@@ -270,16 +272,18 @@ export function removeSnow(scene) {
 // 폭풍 (비+번개)
 export function createStorm(scene) {
     removeStorm(scene);
-    createRain(scene); // 폭풍은 비 포함
+    createRain(scene); // 비 효과 포함
     stormLight = new THREE.PointLight(0xffffff, 2, 500);
     stormLight.position.set(0, 100, 0);
     scene.add(stormLight);
 }
+
 export function updateStorm() {
     updateRain();
     if (!stormLight) return;
     stormLight.intensity = Math.random() > 0.98 ? 8 : 2;
 }
+
 export function removeStorm(scene) {
     removeRain(scene);
     if (stormLight) {
@@ -288,6 +292,7 @@ export function removeStorm(scene) {
         stormLight = null;
     }
 }
+
 
 // 날씨 전환 (상태 동기화)
 export function setWeather(type, scene) {
