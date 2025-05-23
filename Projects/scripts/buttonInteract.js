@@ -23,7 +23,7 @@ export function addBlock() {
             );
             dirt.position.set(-i * 10, 0, -j * 10);
             scene.add(dirt);
-
+            dirt.name = "Grid";
             let newGrass = new THREE.Mesh(
                 new THREE.BoxGeometry(10, 2, 10),
                 new THREE.MeshLambertMaterial({ color: 0x3E5C3A })
@@ -32,6 +32,7 @@ export function addBlock() {
             newGrass.receiveShadow = true;
             scene.add(newGrass);
             grasses.push(newGrass);
+            newGrass.name = "Grass";
 
             let highlight = new THREE.Mesh(
                 new THREE.PlaneGeometry(1, 1),
@@ -63,7 +64,7 @@ export function deleteModel() {
             let root = intersects[0].object;
             while (root.parent && root.parent.type !== "Scene")  root = root.parent;
             if (isRemoving) {
-                if(root.name !== "Sky" && root.name !== "Highlight" && root.name !== "Grid" ) {
+                if(root.name !== "Sky" && root.name !== "Highlight" && root.name !== "Grid" && root.name !== "Dirt" && root.name !== "Grass") {
                     scene.remove(root);
                     isRemoving = false;
                 }
