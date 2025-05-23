@@ -10,6 +10,8 @@ let stormLight = null;
 let clouds = [];
 let cloudMaterials = []; // Different materials for each cloud object
 let clock = new THREE.Clock();
+let lightningTimer = 0;
+
 
 export const weather = {
     cloudy: false,
@@ -281,7 +283,23 @@ export function createStorm(scene) {
 export function updateStorm() {
     updateRain();
     if (!stormLight) return;
-    stormLight.intensity = Math.random() > 0.98 ? 8 : 2;
+
+    // 번개 칠 확률 (2% 확률로 번개)
+    if (Math.random() > 0.98 && lightningTimer <= 0) {
+        stormLight.intensity = 8;
+        // 번개 위치를 랜덤하게 변경
+        stormLight.position.set(
+            Math.random() * 80 - 40, // x: -40 ~ +40
+            80 + Math.random() * 40, // y: 80 ~ 120
+            Math.random() * 60 - 30  // z: -30 ~ +30
+        );
+        lightningTimer = 0.1 + Math.random() * 0.1; // 0.1~0.2초 동안 번개 유지
+    } else if (lightningTimer > 0) {
+        lightningTimer -= 1 / 60; // 60fps 기준
+        if (lightningTimer <= 0) {
+            stormLight.intensity = 2; // 원래 밝기로 복귀
+        }
+    }
 }
 
 export function removeStorm(scene) {

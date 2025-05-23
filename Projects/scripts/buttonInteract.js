@@ -1,7 +1,15 @@
 import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
 import { grasses, clips, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine, pebble, windmill} from './gridModels.js';
-import {weather, updateSky, weather as Weather, createRain, removeRain, createSnow} from './environment.js';
+import {
+    weather,
+    updateSky,
+    weather as Weather,
+    createRain,
+    removeRain,
+    createSnow,
+    createStorm
+} from './environment.js';
 
 // import {updateWeatherWidget} from "./UIManager";
 // Don't use yet
@@ -245,5 +253,6 @@ document.querySelector('[data-category="stormy"]').addEventListener('click', () 
     weather.stormy = true;
     weather.rainy = false;
     weather.snowy = false;
+    // createStorm();
     updateSky();
 });
