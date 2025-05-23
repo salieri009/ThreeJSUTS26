@@ -132,7 +132,7 @@ function initDrag() {
     });
 }
 
-function updateWeatherWidget() {
+export function updateWeatherWidget() {
     const iconEl = document.querySelector('.weather-icon');
     const descEl = document.querySelector('.weather-desc');
     const tempEl = document.querySelector('.weather-temp');

@@ -2,8 +2,9 @@ import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
 import { grasses, clips, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine, pebble, windmill} from './gridModels.js';
 import { weather,  updateSky } from './environment.js';
-import {updateWeatherWidget} from './UIManager';
 
+// import {updateWeatherWidget} from "./UIManager";
+// Don't use yet
 
 let level = 1;
 let isRemoving = false;
@@ -206,7 +207,8 @@ document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)
 });
 
 document.querySelector('[data-category="cloudy"]').addEventListener('click', () => {
-     weather.cloudy = true; 
+     weather.cloudy = true;
+     updateWeatherWidget();
      updateSky();
 });
 
@@ -215,6 +217,7 @@ document.querySelector('[data-category="sunny"]').addEventListener('click', () =
      weather.rainy = false;
      weather.snowy = false;
      weather.stormy = false;
+     // updateWeatherWidget();
      updateSky();
 });
 
