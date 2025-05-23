@@ -212,6 +212,7 @@ document.querySelector('[data-category="sunny"]').addEventListener('click', () =
      weather.cloudy = false;
      weather.rainy = false;
      weather.snowy = false;
+     weather.stormy = false;
      updateSky();
 });
 

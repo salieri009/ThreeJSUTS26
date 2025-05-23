@@ -108,7 +108,8 @@ export function loadClouds() {
             clouds.push(cloud);
             scene.add(cloud);
         }
-        updateSky(); // 구름 생성 후 색상 동기화
+        updateSky();
+
     });
 }
 
@@ -137,19 +138,34 @@ export function sun() {
 // 비
 export function createRain(scene) {
     removeRain(scene);
-    const rainCount = 1000;
+    const rainCountPerCloud = 200; // 구름 하나당 빗방울 수
+    const totalRainCount = clouds.length * rainCountPerCloud;
     const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(rainCount * 3);
-    for (let i = 0; i < rainCount; i++) {
-        positions[i * 3] = Math.random() * 200 - 100;
-        positions[i * 3 + 1] = Math.random() * 100 + 50;
-        positions[i * 3 + 2] = Math.random() * 200 - 100;
+    const positions = new Float32Array(totalRainCount * 3);
+
+    let index = 0;
+
+    for (const cloud of clouds) {
+        for (let i = 0; i < rainCountPerCloud; i++) {
+            positions[index * 3] = cloud.position.x + (Math.random() * 10 - 5);     // x ±5
+            positions[index * 3 + 1] = cloud.position.y - 2 + Math.random() * 5;    // 구름보다 아래쪽
+            positions[index * 3 + 2] = cloud.position.z + (Math.random() * 10 - 5); // z ±5
+            index++;
+        }
     }
+
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const material = new THREE.PointsMaterial({ color: 0xaaaaaa, size: 0.1, transparent: true });
+    const material = new THREE.PointsMaterial({
+        color: 0xaaaaaa,
+        size: 0.1,
+        transparent: true,
+    });
+
     rainParticles = new THREE.Points(geometry, material);
     scene.add(rainParticles);
 }
+
+
 export function updateRain() {
     if (!rainParticles) return;
     const positions = rainParticles.geometry.attributes.position.array;
