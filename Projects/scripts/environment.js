@@ -91,7 +91,7 @@ export function sun() {
 
 
 export function createRain(scene) {
-    removeRain(scene); // 중복 방지
+    removeRain(scene); //remove the rain scene before it rain
     const rainCount = 1000;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(rainCount * 3);
@@ -100,8 +100,13 @@ export function createRain(scene) {
         positions[i * 3 + 1] = Math.random() * 100 + 50;
         positions[i * 3 + 2] = Math.random() * 200 - 100;
     }
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const material = new THREE.PointsMaterial({ color: 0xaaaaaa, size: 0.1, transparent: true });
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+
+    const material = new THREE.PointsMaterial({
+        color: 0xaaaaaa,
+        size: 0.1,
+        transparent: true });
+
     rainParticles = new THREE.Points(geometry, material);
     scene.add(rainParticles);
 }
