@@ -208,37 +208,38 @@ document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)
 
 document.querySelector('[data-category="cloudy"]').addEventListener('click', () => {
      weather.cloudy = true;
-     updateWeatherWidget();
-     updateSky();
-});
-
-document.querySelector('[data-category="sunny"]').addEventListener('click', () => {
-     weather.cloudy = false;
-     weather.rainy = false;
-     weather.snowy = false;
-     weather.stormy = false;
      // updateWeatherWidget();
      updateSky();
 });
 
+document.querySelector('[data-category="sunny"]').addEventListener('click', () => {
+    weather.cloudy = false;
+    weather.rainy = false;
+    weather.snowy = false;
+    weather.stormy = false;
+    updateSky();
+});
+
 document.querySelector('[data-category="rainy"]').addEventListener('click', () => {
-    weather.cloudy = true; //
+    weather.cloudy = true;
     weather.rainy = true;
     weather.snowy = false;
     weather.stormy = false;
-    updateSky(); // update the sky
+    updateSky();
 });
 
 document.querySelector('[data-category="snowy"]').addEventListener('click', () => {
     weather.cloudy = true;
     weather.snowy = true;
-    weather.stormy = false;
     weather.rainy = false;
+    weather.stormy = false;
     updateSky();
-})
+});
 
 document.querySelector('[data-category="stormy"]').addEventListener('click', () => {
     weather.cloudy = true;
-    weather.stormy= true;
+    weather.stormy = true;
+    weather.rainy = false;
+    weather.snowy = false;
     updateSky();
-})
+});
