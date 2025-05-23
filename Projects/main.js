@@ -1,6 +1,11 @@
 import { setScene, controlCamera} from "./scripts/sceneManager.js";
 import { animate, loadScene } from "./scripts/gridModels.js";
-import {  cloudMove, loadClouds, setBackground, sun } from "./scripts/environment.js";
+
+import {  cloudMove, loadClouds, setBackground, sun, createRain, updateRain, removeRain,
+    createSnow, updateSnow, removeSnow,
+    createStorm, updateStorm, removeStorm,
+    setWeather} from "./scripts/environment.js";
+
 import { init } from "./scripts/UIManager.js";
 import { addBlock, deleteModel } from "./scripts/buttonInteract.js";
 

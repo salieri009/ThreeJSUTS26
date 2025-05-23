@@ -4,6 +4,14 @@ import { loader } from './gridModels.js';
 
 let skyMaterial, skyDome, sunLight;
 
+//Added weather//==
+let rainParticles = null;
+let snowParticles = null;
+let stormParticles = null;
+let stormLight = null;
+//==============================
+
+
 export const weather = {
     cloudy: false,
 
@@ -79,3 +87,124 @@ export function sun() {
         }
     });
 */
+
+
+
+export function createRain(scene) {
+    removeRain(scene); // 중복 방지
+    const rainCount = 1000;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(rainCount * 3);
+    for (let i = 0; i < rainCount; i++) {
+        positions[i * 3] = Math.random() * 200 - 100;
+        positions[i * 3 + 1] = Math.random() * 100 + 50;
+        positions[i * 3 + 2] = Math.random() * 200 - 100;
+    }
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({ color: 0xaaaaaa, size: 0.1, transparent: true });
+    rainParticles = new THREE.Points(geometry, material);
+    scene.add(rainParticles);
+}
+
+export function updateRain() {
+    if (!rainParticles) return;
+    const positions = rainParticles.geometry.attributes.position.array;
+    for (let i = 0; i < positions.length / 3; i++) {
+        positions[i * 3 + 1] -= 0.5;
+        if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 100 + 50;
+    }
+    rainParticles.geometry.attributes.position.needsUpdate = true;
+}
+
+export function removeRain(scene) {
+    if (rainParticles) {
+        scene.remove(rainParticles);
+        rainParticles.geometry.dispose();
+        rainParticles.material.dispose();
+        rainParticles = null;
+    }
+}
+
+
+export function createSnow(scene) {
+    removeSnow(scene);
+    const snowCount = 800;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(snowCount * 3);
+    for (let i = 0; i < snowCount; i++) {
+        positions[i * 3] = Math.random() * 200 - 100;
+        positions[i * 3 + 1] = Math.random() * 100 + 50;
+        positions[i * 3 + 2] = Math.random() * 200 - 100;
+    }
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.3, transparent: true });
+    snowParticles = new THREE.Points(geometry, material);
+    scene.add(snowParticles);
+}
+
+export function updateSnow() {
+    if (!snowParticles) return;
+    const positions = snowParticles.geometry.attributes.position.array;
+    for (let i = 0; i < positions.length / 3; i++) {
+        positions[i * 3 + 1] -= 0.15;
+        positions[i * 3] += Math.sin(Date.now() * 0.001 + i) * 0.01;
+        if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 100 + 50;
+    }
+    snowParticles.geometry.attributes.position.needsUpdate = true;
+}
+
+export function removeSnow(scene) {
+    if (snowParticles) {
+        scene.remove(snowParticles);
+        snowParticles.geometry.dispose();
+        snowParticles.material.dispose();
+        snowParticles = null;
+    }
+}
+
+
+export function createStorm(scene) {
+    removeStorm(scene);
+    createRain(scene); // 폭풍은 비도 포함
+    stormLight = new THREE.PointLight(0xffffff, 2, 500);
+    stormLight.position.set(0, 100, 0);
+    scene.add(stormLight);
+}
+
+export function updateStorm() {
+    updateRain();
+    if (!stormLight) return;
+    if (Math.random() > 0.98) {
+        stormLight.intensity = 8;
+    } else {
+        stormLight.intensity = 2;
+    }
+}
+
+export function removeStorm(scene) {
+    removeRain(scene);
+    if (stormLight) {
+        scene.remove(stormLight);
+        stormLight.dispose();
+        stormLight = null;
+    }
+}
+
+export function setWeather(type, scene) {
+    removeRain(scene);
+    removeSnow(scene);
+    removeStorm(scene);
+
+    if (type === 'rainy') createRain(scene);
+    if (type === 'snowy') createSnow(scene);
+    if (type === 'stormy') createStorm(scene);
+}
+
+
+function animate() {
+    requestAnimationFrame(animate);
+    updateRain();
+    updateSnow();
+    updateStorm();
+}
+animate();
