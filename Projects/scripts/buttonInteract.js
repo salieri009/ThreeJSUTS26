@@ -209,7 +209,9 @@ document.querySelector('[data-category="cloudy"]').addEventListener('click', () 
 });
 
 document.querySelector('[data-category="sunny"]').addEventListener('click', () => {
-     weather.cloudy = false; 
+     weather.cloudy = false;
+     weather.rainy = false;
+     weather.snowy = false;
      updateSky();
 });
 
