@@ -32,10 +32,57 @@ export function setBackground() {
 }
 
 export function updateSky() {
-    if (!skyMaterial) return; 
-    const newColor = weather.cloudy ? 0x778899 : 0x87CEEB;
-    sunLight.intensity = weather.cloudy ? 0.5 : 1;
+    if (!skyMaterial) return;
+
+    // 하늘색, 태양 밝기, 구름 색상/강도 기본값
+    let newColor = 0x87CEEB;
+    let sunIntensity = 1;
+    let cloudColor = 0xffffff;
+    let cloudIntensity = 1.0; // 1.0=밝음, 0.5=어두움
+
+    if (weather.stormy) {
+        newColor = 0x444466;
+        sunIntensity = 0.2;
+        cloudColor = 0x888899;
+        cloudIntensity = 0.45; // 폭풍: 구름 어둡고 탁함
+    } else if (weather.rainy) {
+        newColor = 0x6e7b8b;
+        sunIntensity = 0.5;
+        cloudColor = 0xbbbbbb;
+        cloudIntensity = 0.65; // 비: 구름 약간 어둡고 탁함
+    } else if (weather.snowy) {
+        newColor = 0xe0e8f3;
+        sunIntensity = 0.7;
+        cloudColor = 0xf7f7f7;
+        cloudIntensity = 0.95; // 눈: 구름 밝고 하얗게
+    } else if (weather.cloudy) {
+        newColor = 0x778899;
+        sunIntensity = 0.5;
+        cloudColor = 0xcccccc;
+        cloudIntensity = 0.75; // 흐림: 구름 중간 밝기
+    }
+
     skyMaterial.color.setHex(newColor);
+    if (sunLight) sunLight.intensity = sunIntensity;
+
+    // 구름 색상 + intensity(밝기) 조절
+    for (let cloud of clouds) {
+        cloud.traverse((node) => {
+            if (node.isMesh && node.material && node.material.color) {
+                node.material = node.material.clone(); // 공유 방지
+                node.material.color.setHex(cloudColor);
+                // intensity는 emissive 또는 opacity로 구현 가능
+                if ('emissive' in node.material) {
+                    node.material.emissive.setHex(cloudColor);
+                    node.material.emissiveIntensity = cloudIntensity;
+                }
+                if ('opacity' in node.material) {
+                    node.material.opacity = cloudIntensity;
+                    node.material.transparent = cloudIntensity < 1.0;
+                }
+            }
+        });
+    }
 }
 
 let cloud
