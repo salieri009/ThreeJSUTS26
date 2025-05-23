@@ -2,6 +2,8 @@ import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
 import { grasses, clips, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine, pebble, windmill} from './gridModels.js';
 import { weather,  updateSky } from './environment.js';
+import {updateWeatherWidget} from './UIManager';
+
 
 let level = 1;
 let isRemoving = false;
