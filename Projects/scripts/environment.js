@@ -99,9 +99,11 @@ export function loadClouds() {
             let randomScale = Math.random() * 0.15 + 0.1;
             cloud.scale.set(randomScale, randomScale, randomScale);
             //position changes
-            cloud.position.set(Math.random() * 100 - 55,
-                                Math.random() * 10 + 10,
-                                Math.random() * 50 - 30
+            cloud.position.set(
+                Math.random() * 100 - 55,
+                Math.random() * 10 + 10,
+                Math.random() * 50 - 30
+
             );
 
             cloud.userData.speed = Math.random() * 1 + 1.4;
