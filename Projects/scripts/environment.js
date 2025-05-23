@@ -4,7 +4,7 @@ import { loader } from './gridModels.js';
 
 let skyMaterial, skyDome, sunLight;
 
-//Added weather//==
+//Added weather//===========
 let rainParticles = null;
 let snowParticles = null;
 let stormParticles = null;
@@ -14,7 +14,10 @@ let stormLight = null;
 
 export const weather = {
     cloudy: false,
-
+    //code added //
+    rainy: false,
+    snowy: false,
+    stormy: false,
 }
 
 export function setBackground() {
@@ -89,7 +92,7 @@ export function sun() {
 */
 
 
-
+//========================Weather function===================================
 export function createRain(scene) {
     removeRain(scene); //remove the rain scene before it rain
     const rainCount = 1000;
