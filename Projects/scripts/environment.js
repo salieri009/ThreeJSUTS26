@@ -17,7 +17,7 @@ export const weather = {
     //code added //
     rainy: false,
     snowy: false,
-    stormy: false,
+    stormy: false
 }
 
 export function setBackground() {

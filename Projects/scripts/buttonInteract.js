@@ -6,6 +6,7 @@ import { weather,  updateSky } from './environment.js';
 let level = 1;
 let isRemoving = false;
 
+//===================================
 export function addBlock() {
     if (grid) scene.remove(grid);
 
@@ -44,6 +45,8 @@ export function addBlock() {
     }
     level++;
 }
+
+//==================================================
 
 export function deleteModel() {
     isRemoving = true;
@@ -211,5 +214,20 @@ document.querySelector('[data-category="sunny"]').addEventListener('click', () =
 });
 
 document.querySelector('[data-category="rainy"]').addEventListener('click', () => {
-    weather.
+    weather.cloudy = true; //
+    weather.rainy = true;
+    updateSky(); // update the sky
+});
+
+document.querySelector('[data-category="snowy"]').addEventListener('click', () => {
+    weather.cloudy = true;
+    weather.snowy = true;
+    updateSky();
+
+})
+
+document.querySelector('[data-category="stormy"]').addEventListener('click', () => {
+    weather.cloudy = true;
+    weather.snowy = true;
+    updateSky();
 })
