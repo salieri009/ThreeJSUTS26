@@ -143,7 +143,7 @@ export function createRain() {
     //     console.warn("scene 또는 clouds가 준비되지 않았습니다.");
     //     return;
     // }
-
+    const rainCountPerCloud = 100;
     removeRain();
 
     const totalRainCount = clouds.length * rainCountPerCloud;
@@ -172,7 +172,7 @@ export function createRain() {
 
     const material = new THREE.PointsMaterial({
         color: 0xaaaaaa,
-        size: 0.1,
+        size: 4.0,
         transparent: true,
     });
 
