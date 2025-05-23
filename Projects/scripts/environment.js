@@ -2,24 +2,23 @@ import * as THREE from '../build/three.module.js';
 import { scene } from './sceneManager.js';
 import { loader } from './gridModels.js';
 
+// 전역 변수
 let skyMaterial, skyDome, sunLight;
-
-//Added weather//===========
 let rainParticles = null;
 let snowParticles = null;
-let stormParticles = null;
 let stormLight = null;
-//==============================
-
+let clouds = [];
+let cloudMaterials = []; // 구름별 개별 material 저장
+let clock = new THREE.Clock();
 
 export const weather = {
     cloudy: false,
-    //code added //
     rainy: false,
     snowy: false,
     stormy: false
-}
+};
 
+// 하늘 생성
 export function setBackground() {
     skyMaterial = new THREE.MeshBasicMaterial({
         color: 0x87CEEB,
@@ -31,47 +30,36 @@ export function setBackground() {
     scene.add(skyDome);
 }
 
+// 하늘/조명/구름 색상·강도 업데이트
 export function updateSky() {
     if (!skyMaterial) return;
 
-    // 하늘색, 태양 밝기, 구름 색상/강도 기본값
-    let newColor = 0x87CEEB;
-    let sunIntensity = 1;
-    let cloudColor = 0xffffff;
-    let cloudIntensity = 1.0; // 1.0=밝음, 0.5=어두움
-
+    // 상태별 색상·강도
+    let newColor = 0x87CEEB, sunIntensity = 1, cloudColor = 0xffffff, cloudIntensity = 1.0;
     if (weather.stormy) {
-        newColor = 0x444466;
-        sunIntensity = 0.2;
-        cloudColor = 0x888899;
-        cloudIntensity = 0.45; // 폭풍: 구름 어둡고 탁함
+        newColor = 0x444466; sunIntensity = 0.2; cloudColor = 0x888899; cloudIntensity = 0.45;
     } else if (weather.rainy) {
-        newColor = 0x6e7b8b;
-        sunIntensity = 0.5;
-        cloudColor = 0xbbbbbb;
-        cloudIntensity = 0.65; // 비: 구름 약간 어둡고 탁함
+        newColor = 0x6e7b8b; sunIntensity = 0.5; cloudColor = 0xbbbbbb; cloudIntensity = 0.65;
     } else if (weather.snowy) {
-        newColor = 0xe0e8f3;
-        sunIntensity = 0.7;
-        cloudColor = 0xf7f7f7;
-        cloudIntensity = 0.95; // 눈: 구름 밝고 하얗게
+        newColor = 0xe0e8f3; sunIntensity = 0.7; cloudColor = 0xf7f7f7; cloudIntensity = 0.95;
     } else if (weather.cloudy) {
-        newColor = 0x778899;
-        sunIntensity = 0.5;
-        cloudColor = 0xcccccc;
-        cloudIntensity = 0.75; // 흐림: 구름 중간 밝기
+        newColor = 0x778899; sunIntensity = 0.5; cloudColor = 0xcccccc; cloudIntensity = 0.75;
     }
 
     skyMaterial.color.setHex(newColor);
     if (sunLight) sunLight.intensity = sunIntensity;
 
-    // 구름 색상 + intensity(밝기) 조절
-    for (let cloud of clouds) {
-        cloud.traverse((node) => {
+    // 구름 색상/강도 일괄 적용 (최초 1회만 clone, 이후 재활용)
+    for (let i = 0; i < clouds.length; i++) {
+        clouds[i].traverse((node) => {
             if (node.isMesh && node.material && node.material.color) {
-                node.material = node.material.clone(); // 공유 방지
+                // 최초 1회만 clone
+                if (!cloudMaterials[i]) {
+                    cloudMaterials[i] = node.material.clone();
+                    node.material = cloudMaterials[i];
+                }
                 node.material.color.setHex(cloudColor);
-                // intensity는 emissive 또는 opacity로 구현 가능
+                // 밝기: emissive가 있으면 사용, 아니면 opacity
                 if ('emissive' in node.material) {
                     node.material.emissive.setHex(cloudColor);
                     node.material.emissiveIntensity = cloudIntensity;
@@ -85,63 +73,52 @@ export function updateSky() {
     }
 }
 
-let cloud
-let clouds = [] ;
-let clock = new THREE.Clock();
+// 구름 생성
 export function loadClouds() {
+    // 기존 구름 제거
+    for (let c of clouds) scene.remove(c);
+    clouds = [];
+    cloudMaterials = [];
+
     loader.load("models/cloud/scene.gltf", (gltf) => {
         for (let i = 0; i < 11; i++) {
-            cloud = gltf.scene.clone();
+            let cloud = gltf.scene.clone();
             let randomScale = Math.random() * 0.15 + 0.1;
-            
             cloud.scale.set(randomScale, randomScale, randomScale);
             cloud.position.set(Math.random() * 100 - 55, Math.random() * 10 + 10, Math.random() * 50 - 30);
             cloud.userData.speed = Math.random() * 1 + 1.4;
-
             clouds.push(cloud);
             scene.add(cloud);
         }
+        updateSky(); // 구름 생성 후 색상 동기화
     });
 }
 
+// 구름 이동
 export function cloudMove() {
     requestAnimationFrame(cloudMove);
     const delta = clock.getDelta();
-    for (cloud of clouds) {
+    for (let cloud of clouds) {
         cloud.position.x += delta * cloud.userData.speed;
-        if (cloud.position.x > 60) {
-            cloud.position.x = -100;
-        }
+        if (cloud.position.x > 60) cloud.position.x = -100;
     }
 }
 
+// 태양광 생성
 export function sun() {
     sunLight = new THREE.DirectionalLight(0xffffff, 1);
     sunLight.castShadow = true;
-
     sunLight.shadow.mapSize.set(2048, 2048);
     sunLight.shadow.camera.top = 50;
-
-    sunLight.position.set(50, 30, 0); 
+    sunLight.position.set(50, 30, 0);
     scene.add(sunLight);
-
-    //const helper = new THREE.CameraHelper(sunLight.shadow.camera);
-    //scene.add(helper);
 }
-/*
-    cloud.traverse((node) => {
-        if (node.isMesh && node.material && node.material.color) {
-            node.material = node.material.clone();
-            let cloudColour = weather.cloudy ? 0xAAAAAA : 0xffffff;
-            node.material.color.set(cloudColour); 
-        }
-    });
-*/
 
+// ========== Weather Functions ==========
 
-//========================Weather function===================================
+// 비
 export function createRain(scene) {
-    removeRain(scene); //remove the rain scene before it rain
+    removeRain(scene);
     const rainCount = 1000;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(rainCount * 3);
@@ -150,17 +127,11 @@ export function createRain(scene) {
         positions[i * 3 + 1] = Math.random() * 100 + 50;
         positions[i * 3 + 2] = Math.random() * 200 - 100;
     }
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-
-    const material = new THREE.PointsMaterial({
-        color: 0xaaaaaa,
-        size: 0.1,
-        transparent: true });
-
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({ color: 0xaaaaaa, size: 0.1, transparent: true });
     rainParticles = new THREE.Points(geometry, material);
     scene.add(rainParticles);
 }
-
 export function updateRain() {
     if (!rainParticles) return;
     const positions = rainParticles.geometry.attributes.position.array;
@@ -170,7 +141,6 @@ export function updateRain() {
     }
     rainParticles.geometry.attributes.position.needsUpdate = true;
 }
-
 export function removeRain(scene) {
     if (rainParticles) {
         scene.remove(rainParticles);
@@ -180,7 +150,7 @@ export function removeRain(scene) {
     }
 }
 
-
+// 눈
 export function createSnow(scene) {
     removeSnow(scene);
     const snowCount = 800;
@@ -192,14 +162,10 @@ export function createSnow(scene) {
         positions[i * 3 + 2] = Math.random() * 200 - 100;
     }
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const material = new THREE.PointsMaterial({
-        color: 0xffffff,
-        size: 0.3,
-        transparent: true });
+    const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.3, transparent: true });
     snowParticles = new THREE.Points(geometry, material);
     scene.add(snowParticles);
 }
-
 export function updateSnow() {
     if (!snowParticles) return;
     const positions = snowParticles.geometry.attributes.position.array;
@@ -210,7 +176,6 @@ export function updateSnow() {
     }
     snowParticles.geometry.attributes.position.needsUpdate = true;
 }
-
 export function removeSnow(scene) {
     if (snowParticles) {
         scene.remove(snowParticles);
@@ -220,26 +185,19 @@ export function removeSnow(scene) {
     }
 }
 
-///test//
-
+// 폭풍 (비+번개)
 export function createStorm(scene) {
     removeStorm(scene);
-    createRain(scene); // storm include rain//
+    createRain(scene); // 폭풍은 비 포함
     stormLight = new THREE.PointLight(0xffffff, 2, 500);
     stormLight.position.set(0, 100, 0);
     scene.add(stormLight);
 }
-
 export function updateStorm() {
     updateRain();
     if (!stormLight) return;
-    if (Math.random() > 0.98) {
-        stormLight.intensity = 8;
-    } else {
-        stormLight.intensity = 2;
-    }
+    stormLight.intensity = Math.random() > 0.98 ? 8 : 2;
 }
-
 export function removeStorm(scene) {
     removeRain(scene);
     if (stormLight) {
@@ -249,17 +207,34 @@ export function removeStorm(scene) {
     }
 }
 
+// 날씨 전환 (상태 동기화)
 export function setWeather(type, scene) {
+    // 모든 상태 false로 초기화
+    weather.cloudy = false;
+    weather.rainy = false;
+    weather.snowy = false;
+    weather.stormy = false;
+
+    // 효과 제거
     removeRain(scene);
     removeSnow(scene);
     removeStorm(scene);
 
-    if (type === 'rainy') createRain(scene);
-    if (type === 'snowy') createSnow(scene);
-    if (type === 'stormy') createStorm(scene);
+    // 해당 날씨만 true
+    if (type === 'rainy') weather.rainy = true;
+    else if (type === 'snowy') weather.snowy = true;
+    else if (type === 'stormy') weather.stormy = true;
+    else if (type === 'cloudy') weather.cloudy = true;
+
+    // 효과 생성
+    if (weather.rainy) createRain(scene);
+    if (weather.snowy) createSnow(scene);
+    if (weather.stormy) createStorm(scene);
+    // sky, cloud, sun 동기화
+    updateSky();
 }
 
-
+// 애니메이션 루프
 function animate() {
     requestAnimationFrame(animate);
     updateRain();
