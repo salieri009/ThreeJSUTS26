@@ -2,13 +2,13 @@ import * as THREE from '../build/three.module.js';
 import { scene } from './sceneManager.js';
 import { loader } from './gridModels.js';
 
-// 전역 변수
+//
 let skyMaterial, skyDome, sunLight;
 let rainParticles = null;
 let snowParticles = null;
 let stormLight = null;
 let clouds = [];
-let cloudMaterials = []; // 구름별 개별 material 저장
+let cloudMaterials = []; // Different materials for each cloud object
 let clock = new THREE.Clock();
 
 export const weather = {
@@ -30,20 +30,33 @@ export function setBackground() {
     scene.add(skyDome);
 }
 
-// Light update
+//
 export function updateSky() {
     if (!skyMaterial) return;
 
-    // 상태별 색상·강도
+    // Changes the intensity align with the weather
+
     let newColor = 0x87CEEB, sunIntensity = 1, cloudColor = 0xffffff, cloudIntensity = 1.0;
     if (weather.stormy) {
-        newColor = 0x444466; sunIntensity = 0.2; cloudColor = 0x888899; cloudIntensity = 0.45;
+        newColor = 0x444466;
+        sunIntensity = 0.2;
+        cloudColor = 0x888899;
+        cloudIntensity = 0.45;
     } else if (weather.rainy) {
-        newColor = 0x6e7b8b; sunIntensity = 0.5; cloudColor = 0xbbbbbb; cloudIntensity = 0.65;
+        newColor = 0x6e7b8b;
+        sunIntensity = 0.5;
+        cloudColor = 0xbbbbbb;
+        cloudIntensity = 0.65;
     } else if (weather.snowy) {
-        newColor = 0xe0e8f3; sunIntensity = 0.7; cloudColor = 0xf7f7f7; cloudIntensity = 0.95;
+        newColor = 0xe0e8f3;
+        sunIntensity = 0.7;
+        cloudColor = 0xf7f7f7;
+        cloudIntensity = 0.95;
     } else if (weather.cloudy) {
-        newColor = 0x778899; sunIntensity = 0.5; cloudColor = 0xcccccc; cloudIntensity = 0.75;
+        newColor = 0x778899;
+        sunIntensity = 0.5;
+        cloudColor = 0xcccccc;
+        cloudIntensity = 0.75;
     }
 
     skyMaterial.color.setHex(newColor);
