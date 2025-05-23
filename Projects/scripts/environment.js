@@ -142,7 +142,10 @@ export function createSnow(scene) {
         positions[i * 3 + 2] = Math.random() * 200 - 100;
     }
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.3, transparent: true });
+    const material = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.3,
+        transparent: true });
     snowParticles = new THREE.Points(geometry, material);
     scene.add(snowParticles);
 }
@@ -167,10 +170,11 @@ export function removeSnow(scene) {
     }
 }
 
+///test//
 
 export function createStorm(scene) {
     removeStorm(scene);
-    createRain(scene); // 폭풍은 비도 포함
+    createRain(scene); // storm include rain//
     stormLight = new THREE.PointLight(0xffffff, 2, 500);
     stormLight.position.set(0, 100, 0);
     scene.add(stormLight);
