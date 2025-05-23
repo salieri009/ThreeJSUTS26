@@ -230,6 +230,6 @@ document.querySelector('[data-category="snowy"]').addEventListener('click', () =
 
 document.querySelector('[data-category="stormy"]').addEventListener('click', () => {
     weather.cloudy = true;
-    weather.snowy = true;
+    weather.stormy= true;
     updateSky();
 })
