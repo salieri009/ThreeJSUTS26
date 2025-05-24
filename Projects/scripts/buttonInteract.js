@@ -8,7 +8,7 @@ import {
     createRain,
     removeRain,
     createSnow,
-    createStorm
+    createStorm, setWeather
 } from './environment.js';
 
 // import {updateWeatherWidget} from "./UIManager";
@@ -215,10 +215,7 @@ document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)
 });
 
 document.querySelector('[data-category="cloudy"]').addEventListener('click', () => {
-     weather.cloudy = true;
-     // updateWeatherWidget();
-     removeRain();
-     updateSky();
+     setWeather('cloudy')
 });
 
 document.querySelector('[data-category="sunny"]').addEventListener('click', () => {
@@ -231,28 +228,13 @@ document.querySelector('[data-category="sunny"]').addEventListener('click', () =
 });
 
 document.querySelector('[data-category="rainy"]').addEventListener('click', () => {
-    weather.cloudy = true;
-    weather.rainy = true;
-    weather.snowy = false;
-    weather.stormy = false;
-    createRain();
-    updateSky();
+    setWeather('rainy')
 });
 
 document.querySelector('[data-category="snowy"]').addEventListener('click', () => {
-    weather.cloudy = true;
-    weather.snowy = true;
-    weather.rainy = false;
-    weather.stormy = false;
-    createSnow()
-    updateSky();
+    setWeather('snowy')
 });
 
 document.querySelector('[data-category="stormy"]').addEventListener('click', () => {
-    weather.cloudy = true;
-    weather.stormy = true;
-    weather.rainy = false;
-    weather.snowy = false;
-    // createStorm();
-    updateSky();
+    setWeather('stormy')
 });
