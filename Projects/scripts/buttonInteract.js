@@ -217,7 +217,7 @@ document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)
 document.querySelector('[data-category="cloudy"]').addEventListener('click', () => {
      weather.cloudy = true;
      // updateWeatherWidget();
-    removeRain();
+     removeRain();
      updateSky();
 });
 
