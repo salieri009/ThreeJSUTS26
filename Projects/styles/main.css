@@ -238,9 +238,9 @@ body {
     transition: background-color 0.3s ease;
 }
 
-scene-overlay-season-controls{
+.scene-overlay-season-controls{
     position: absolute;
-    bottom: 55vh;
+    bottom: 65vh;
     left: 48px;
     max-width: 100%;
     width: 450px; /* Or adjust as needed */
@@ -618,7 +618,7 @@ scene-overlay-season-controls{
 }
 
 .overlay-btn[data-category="autumn"] {
-    background-color: #D2691E; /* 초콜릿 브라운, 가을 낙엽색 */
+    background-color: #00CED1; /* Dark Turquoise - 청량한 터쿼이즈 */
     color: white;
 }
 
