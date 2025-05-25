@@ -607,6 +607,26 @@ scene-overlay-season-controls{
     color: white;
 }
 
+.overlay-btn[data-category="spring"] {
+    background-color: #77DD77; /* 연두빛 봄 느낌 */
+    color: #2F4F4F; /* 진한 회색톤 */
+}
+
+.overlay-btn[data-category="summer"] {
+    background-color: #FF7F50; /* 산호빛, 여름의 따뜻함 */
+    color: white;
+}
+
+.overlay-btn[data-category="autumn"] {
+    background-color: #D2691E; /* 초콜릿 브라운, 가을 낙엽색 */
+    color: white;
+}
+
+.overlay-btn[data-category="winter"] {
+    background-color: #4682B4; /* 스틸블루, 겨울 느낌 차분하게 */
+    color: white;
+}
+
 
 /* Rectangle buttons */
 .overlay-btn[data-category="terrain expansion"],
