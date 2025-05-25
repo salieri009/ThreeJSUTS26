@@ -207,7 +207,7 @@ document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)
     setModel(nBarn, { width: modelData["Barn"].width, height: modelData["Barn"].height}, true);
 });
 //=================Seasons==========================================
-document.querySelector('[data-category="spring"]').addEventListener('click', () => {
+docgument.querySelector('[data-category="spring"]').addEventListener('click', () => {
     env.setSeason('spring');
 });
 
@@ -222,8 +222,6 @@ document.querySelector('[data-category="autumn"]').addEventListener('click', () 
 document.querySelector('[data-category="winter"]').addEventListener('click', () => {
     env.setSeason('winter');
 });
-
-
 
 //============weather ================================================
 document.querySelector('[data-category="cloudy"]').addEventListener('click', () => {
