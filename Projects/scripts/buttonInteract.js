@@ -1,11 +1,23 @@
 import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
 import { grasses, clips, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine, pebble, windmill} from './gridModels.js';
-import { weather,  updateSky } from './environment.js';
+import {
+    weather,
+    updateSky,
+    weather as Weather,
+    createRain,
+    removeRain,
+    createSnow,
+    createStorm, setWeather
+} from './environment.js';
+
+// import {updateWeatherWidget} from "./UIManager";
+// Don't use yet
 
 let level = 1;
 let isRemoving = false;
 
+//===================================
 export function addBlock() {
     if (grid) scene.remove(grid);
 
@@ -45,6 +57,8 @@ export function addBlock() {
     }
     level++;
 }
+
+//==================================================
 
 export function deleteModel() {
     isRemoving = true;
@@ -200,11 +214,26 @@ document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)
 });
 
 document.querySelector('[data-category="cloudy"]').addEventListener('click', () => {
-     weather.cloudy = true; 
-     updateSky();
+     setWeather('cloudy')
 });
 
 document.querySelector('[data-category="sunny"]').addEventListener('click', () => {
-     weather.cloudy = false; 
-     updateSky();
+    weather.cloudy = false;
+    weather.rainy = false;
+    weather.snowy = false;
+    weather.stormy = false;
+    removeRain();
+    updateSky();
+});
+
+document.querySelector('[data-category="rainy"]').addEventListener('click', () => {
+    setWeather('rainy')
+});
+
+document.querySelector('[data-category="snowy"]').addEventListener('click', () => {
+    setWeather('snowy')
+});
+
+document.querySelector('[data-category="stormy"]').addEventListener('click', () => {
+    setWeather('stormy')
 });

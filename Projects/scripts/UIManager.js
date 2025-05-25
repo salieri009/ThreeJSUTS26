@@ -131,3 +131,44 @@ function initDrag() {
         }
     });
 }
+
+export function updateWeatherWidget() {
+    const iconEl = document.querySelector('.weather-icon');
+    const descEl = document.querySelector('.weather-desc');
+    const tempEl = document.querySelector('.weather-temp');
+    const minmaxEl = document.querySelector('.weather-minmax');
+    const extraEl = document.querySelector('.weather-extra');
+
+    if (weather.stormy) {
+        iconEl.textContent = '⛈️';
+        descEl.textContent = '폭풍';
+        tempEl.textContent = '18°';
+        minmaxEl.textContent = '최고 20° · 최저 14°';
+        extraEl.textContent = '강풍 주의';
+    } else if (weather.snowy) {
+        iconEl.textContent = '🌨️';
+        descEl.textContent = '눈';
+        tempEl.textContent = '-2°';
+        minmaxEl.textContent = '최고 0° · 최저 -5°';
+        extraEl.textContent = '빙판길 주의';
+    } else if (weather.rainy) {
+        iconEl.textContent = '🌧️';
+        descEl.textContent = '비';
+        tempEl.textContent = '16°';
+        minmaxEl.textContent = '최고 18° · 최저 12°';
+        extraEl.textContent = '우산 챙기세요';
+    } else if (weather.cloudy) {
+        iconEl.textContent = '⛅';
+        descEl.textContent = '흐림';
+        tempEl.textContent = '20°';
+        minmaxEl.textContent = '최고 22° · 최저 15°';
+        extraEl.textContent = '약간 흐림';
+    } else {
+        // Default: sunny
+        iconEl.textContent = '☀️';
+        descEl.textContent = '맑음';
+        tempEl.textContent = '24°';
+        minmaxEl.textContent = '최고 25° · 최저 16°';
+        extraEl.textContent = '좋은 날씨입니다';
+    }
+}
