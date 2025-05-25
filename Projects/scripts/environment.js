@@ -242,7 +242,7 @@ export function createSnow() {
     geometry.setAttribute('speed', new THREE.BufferAttribute(speeds, 1));
     const material = new THREE.PointsMaterial({
         color: 0xffffff,
-        size: 1.8,
+        size: 5,
         transparent: true,
         opacity: 0.9,
         depthWrite: false
