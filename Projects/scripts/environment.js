@@ -162,56 +162,168 @@ export function updateSky() {
 }
 //=========================================================
 export function createSpringEffect() {
-
-
-
+    removeSpringEffect();
+    const count = 180;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+        positions[i * 3 + 0] = Math.random() * 60 - 30;
+        positions[i * 3 + 1] = Math.random() * 15 + 8;
+        positions[i * 3 + 2] = Math.random() * 30 - 15;
+    }
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({
+        color: 0xffc1e0,
+        size: 1.7,
+        transparent: true,
+        opacity: 0.85
+    });
+    springEffect = new THREE.Points(geometry, material);
+    scene.add(springEffect);
 }
 
 export function updateSpringEffect() {
-
-
+    if (!springEffect) return;
+    const positions = springEffect.geometry.attributes.position.array;
+    for (let i = 0; i < positions.length / 3; i++) {
+        positions[i * 3 + 1] -= 0.037 + Math.random() * 0.012;
+        positions[i * 3 + 0] += Math.sin(Date.now() * 0.0007 + i) * 0.018;
+        if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 10 + 10;
+    }
+    springEffect.geometry.attributes.position.needsUpdate = true;
 }
 
 export function removeSpringEffect() {
-
-
+    if (springEffect) {
+        scene.remove(springEffect);
+        springEffect.geometry.dispose();
+        springEffect.material.dispose();
+        springEffect = null;
+    }
 }
-export function createSummerEffects() {
 
+// === SUMMER: 반딧불이 파티클 ===
+export function createSummerEffect() {
+    removeSummerEffect();
+    const count = 70;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+        positions[i * 3 + 0] = Math.random() * 60 - 30;
+        positions[i * 3 + 1] = Math.random() * 10 + 6;
+        positions[i * 3 + 2] = Math.random() * 30 - 15;
+    }
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({
+        color: 0xffff99,
+        size: 2.5,
+        transparent: true,
+        opacity: 0.8
+    });
+    summerEffect = new THREE.Points(geometry, material);
+    scene.add(summerEffect);
 }
 
 export function updateSummerEffect() {
-
+    if (!summerEffect) return;
+    const positions = summerEffect.geometry.attributes.position.array;
+    for (let i = 0; i < positions.length / 3; i++) {
+        positions[i * 3 + 1] += Math.sin(Date.now() * 0.001 + i) * 0.022;
+    }
+    summerEffect.geometry.attributes.position.needsUpdate = true;
 }
 
 export function removeSummerEffect() {
-
+    if (summerEffect) {
+        scene.remove(summerEffect);
+        summerEffect.geometry.dispose();
+        summerEffect.material.dispose();
+        summerEffect = null;
+    }
 }
 
-
-export function createAutumnEffect(){
-
-
+// === AUTUMN: 낙엽 파티클 ===
+export function createAutumnEffect() {
+    removeAutumnEffect();
+    const count = 140;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+        positions[i * 3 + 0] = Math.random() * 60 - 30;
+        positions[i * 3 + 1] = Math.random() * 14 + 8;
+        positions[i * 3 + 2] = Math.random() * 30 - 15;
+    }
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({
+        color: 0xffa94d,
+        size: 2.1,
+        transparent: true,
+        opacity: 0.8
+    });
+    autumnEffect = new THREE.Points(geometry, material);
+    scene.add(autumnEffect);
 }
 
 export function updateAutumnEffect() {
-
+    if (!autumnEffect) return;
+    const positions = autumnEffect.geometry.attributes.position.array;
+    for (let i = 0; i < positions.length / 3; i++) {
+        positions[i * 3 + 1] -= 0.034 + Math.random() * 0.012;
+        positions[i * 3 + 0] += Math.sin(Date.now() * 0.0008 + i) * 0.017;
+        if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 10 + 10;
+    }
+    autumnEffect.geometry.attributes.position.needsUpdate = true;
 }
 
 export function removeAutumnEffect() {
-
+    if (autumnEffect) {
+        scene.remove(autumnEffect);
+        autumnEffect.geometry.dispose();
+        autumnEffect.material.dispose();
+        autumnEffect = null;
+    }
 }
 
-export function createWinterEffect(){
-
+// === WINTER: 눈 파티클 ===
+export function createWinterEffect() {
+    removeWinterEffect();
+    const count = 200;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+        positions[i * 3 + 0] = Math.random() * 60 - 30;
+        positions[i * 3 + 1] = Math.random() * 16 + 10;
+        positions[i * 3 + 2] = Math.random() * 30 - 15;
+    }
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 2.3,
+        transparent: true,
+        opacity: 0.85
+    });
+    winterEffect = new THREE.Points(geometry, material);
+    scene.add(winterEffect);
 }
 
 export function updateWinterEffect() {
-
+    if (!winterEffect) return;
+    const positions = winterEffect.geometry.attributes.position.array;
+    for (let i = 0; i < positions.length / 3; i++) {
+        positions[i * 3 + 1] -= 0.022 + Math.random() * 0.011;
+        positions[i * 3 + 0] += Math.sin(Date.now() * 0.0005 + i) * 0.013;
+        if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 10 + 10;
+    }
+    winterEffect.geometry.attributes.position.needsUpdate = true;
 }
 
 export function removeWinterEffect() {
-
+    if (winterEffect) {
+        scene.remove(winterEffect);
+        winterEffect.geometry.dispose();
+        winterEffect.material.dispose();
+        winterEffect = null;
+    }
 }
 
 //===========================================================
