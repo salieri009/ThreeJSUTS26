@@ -638,6 +638,33 @@ export function setWeather(type) {
     updateSky();
 }
 
+//계절 변환//
+export function setSeason(type) {
+    // 모든 계절 이펙트 비활성화 및 제거
+    season.spring = season.summer = season.autumn = season.winter = false;
+    removeSpringEffect();
+    removeSummerEffect();
+    removeAutumnEffect();
+    removeWinterEffect();
+
+    // 선택된 계절 이펙트 적용
+    if (type === 'spring') {
+        season.spring = true;
+        createSpringEffect();
+    } else if (type === 'summer') {
+        season.summer = true;
+        createSummerEffect();
+    } else if (type === 'autumn') {
+        season.autumn = true;
+        createAutumnEffect();
+    } else if (type === 'winter') {
+        season.winter = true;
+        createWinterEffect();
+    }
+    // skybox, 조명 등 계절별 추가 효과가 있다면 여기에 추가
+    updateSkyForSeason(type);
+}
+
 // 메인 애니메이션 루프
 function animate() {
     requestAnimationFrame(animate);
