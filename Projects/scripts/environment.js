@@ -16,7 +16,10 @@ let puddleMesh = null;
 let lodQuality = 1.0; // 1.0 ~ 0.3 (LOD)
 
 //Particles===============
-let seasonalParticle = null;
+let springEffect = null;
+let summerEffect = null;
+let autumnEffect = null;
+let winterEffect = null;
 let currentSeason = null;
 let rainParticles = null;
 let snowParticles = null;
@@ -157,7 +160,61 @@ export function updateSky() {
         });
     }
 }
+//=========================================================
+export function createSpringEffect() {
 
+
+
+}
+
+export function updateSpringEffect() {
+
+
+}
+
+export function removeSpringEffect() {
+
+
+}
+export function createSummerEffects() {
+
+}
+
+export function updateSummerEffect() {
+
+}
+
+export function removeSummerEffect() {
+
+}
+
+
+export function createAutumnEffect(){
+
+
+}
+
+export function updateAutumnEffect() {
+
+}
+
+export function removeAutumnEffect() {
+
+}
+
+export function createWinterEffect(){
+
+}
+
+export function updateWinterEffect() {
+
+}
+
+export function removeWinterEffect() {
+
+}
+
+//===========================================================
 // 비 (입자 크기/속도 다양화)
 export function createRain() {
     removeRain();
