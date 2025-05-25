@@ -207,7 +207,7 @@ document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)
     setModel(nBarn, { width: modelData["Barn"].width, height: modelData["Barn"].height}, true);
 });
 //=================Seasons==========================================
-docgument.querySelector('[data-category="spring"]').addEventListener('click', () => {
+document.querySelector('[data-category="spring"]').addEventListener('click', () => {
     env.setSeason('spring');
 });
 
