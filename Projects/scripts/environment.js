@@ -665,6 +665,36 @@ export function setSeason(type) {
     updateSkyForSeason(type);
 }
 
+// 계절별 하늘 업데이트 함수
+function updateSkyForSeason(type) {
+    if (!skyMaterial || !sunLight) return;
+
+    let seasonColor = 0x87CEEB;
+    let sunIntensity = 1.0;
+
+    switch(type) {
+        case 'spring':
+            seasonColor = 0x87CEEB;
+            sunIntensity = 1.0;
+            break;
+        case 'summer':
+            seasonColor = 0x6FB7FF;
+            sunIntensity = 1.2;
+            break;
+        case 'autumn':
+            seasonColor = 0xA0522D;
+            sunIntensity = 0.8;
+            break;
+        case 'winter':
+            seasonColor = 0xE0E8F3;
+            sunIntensity = 0.7;
+            break;
+    }
+
+    skyMaterial.color.setHex(seasonColor);
+    sunLight.intensity = sunIntensity;
+}
+
 // 메인 애니메이션 루프
 function animate() {
     requestAnimationFrame(animate);
