@@ -208,8 +208,23 @@ document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)
 });
 //=================Seasons==========================================
 document.querySelector('[data-category="spring"]').addEventListener('click', () => {
- env.
-}
+    env.setSeason('spring');
+});
+
+document.querySelector('[data-category="summer"]').addEventListener('click', () => {
+    env.setSeason('summer');
+});
+
+document.querySelector('[data-category="autumn"]').addEventListener('click', () => {
+    env.setSeason('autumn');
+});
+
+document.querySelector('[data-category="winter"]').addEventListener('click', () => {
+    env.setSeason('winter');
+});
+
+
+
 //============weather ================================================
 document.querySelector('[data-category="cloudy"]').addEventListener('click', () => {
      env.setWeather('cloudy')
