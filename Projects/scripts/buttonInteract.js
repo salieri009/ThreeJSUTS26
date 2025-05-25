@@ -229,12 +229,7 @@ document.querySelector('[data-category="cloudy"]').addEventListener('click', () 
 });
 
 document.querySelector('[data-category="sunny"]').addEventListener('click', () => {
-    weather.cloudy = false;
-    weather.rainy = false;
-    weather.snowy = false;
-    weather.stormy = false;
-    env.removeRain();
-    env.updateSky();
+    env.setWeather("sunny")
 });
 
 document.querySelector('[data-category="rainy"]').addEventListener('click', () => {
