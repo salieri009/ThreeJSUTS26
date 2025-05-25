@@ -24,6 +24,13 @@ export const weather = {
     foggy: false
 };
 
+export const season = {
+    spring: false,
+    summer: false,
+    autumn: false,
+    winter: false,
+
+}
 // LOD 품질 조정 (예: 성능에 따라 외부에서 lodQuality 조정 가능)
 export function setWeatherLOD(q) {
     lodQuality = Math.max(0.3, Math.min(1.0, q));
