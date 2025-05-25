@@ -3,8 +3,7 @@ import { scene } from './sceneManager.js';
 import { loader } from './gridModels.js';
 
 let skyMaterial, skyDome, sunLight;
-let rainParticles = null;
-let snowParticles = null;
+
 let stormLight = null;
 let clouds = [];
 let cloudMaterials = [];
@@ -16,6 +15,12 @@ let fogMesh = null;
 let puddleMesh = null;
 let lodQuality = 1.0; // 1.0 ~ 0.3 (LOD)
 
+//Particles===============
+let seasonalParticle = null;
+let currentSeason = null;
+let rainParticles = null;
+let snowParticles = null;
+//=============
 export const weather = {
     cloudy: false,
     rainy: false,
