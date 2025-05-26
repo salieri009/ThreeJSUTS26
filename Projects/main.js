@@ -24,7 +24,7 @@ cloudMove();
 //Test Function //
 
 
-weatherAnimate();
+// weatherAnimate();
 
 
 //=====================================================//
