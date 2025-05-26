@@ -1,5 +1,19 @@
 import * as env from '../environment';
 
+//Bring up the api key and controls//
+const API_KEY = '345a78d07f57356c5ddf8042e295cfc2';
+
+navigator.geolocation.getCurrentPosition(success, fail);
+
+function success(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    getWeather(lat, lon);
+}
+function fail() {
+    alert('위치 정보를 가져올 수 없습니다.');
+}
+
 // season sync utility
 
 let currentDate = new Date();
