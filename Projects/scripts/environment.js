@@ -78,6 +78,17 @@ function getCloudCountForWeather(weather) {
     return 5; // 맑음 등 기본값
 }
 
+function getCloudColorForWeather(weather) {
+    // weather 객체의 상태값을 참고하여 구름 색상을 반환합니다.
+    // 반환값은 THREE.js의 color hex 코드입니다.
+    if (weather.stormy) return 0x888899;   // 어두운 회색/보라
+    if (weather.rainy)  return 0xbbbbbb;   // 연한 회색
+    if (weather.snowy)  return 0xf7f7f7;   // 밝은 흰색
+    if (weather.cloudy) return 0xcccccc;   // 중간 회색
+    if (weather.foggy)  return 0xdddddd;   // 연한 회백색
+    return 0xffffff;                       // 맑음(흰색)
+}
+
 function resetCloudScene() {
     // 구름 제거
     for (let c of clouds) scene.remove(c);
@@ -286,7 +297,7 @@ export function createSummerEffect() {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     const material = new THREE.PointsMaterial({
         color: 0xffff99,
-        size: 2.5,
+        size: 4.0
         transparent: true,
         opacity: 0.8
     });
@@ -726,7 +737,8 @@ export function setSeason(type) {
 
     // 선택된 계절 이펙트 적용
     if (type === 'spring') {
-        season.spring = true;
+        season.spring = true
+        fog
         createSpringEffect();
     } else if (type === 'summer') {
         season.summer = true;
