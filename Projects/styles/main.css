@@ -811,10 +811,10 @@ body {
 }
 
 .ruler-container {
-    background-color: #000;
+    background-color: #000000;
     border: 2px solid #333;
     border-radius: 8px;
-    padding: 2px;
+    padding: none;
     margin-bottom: 24px;
 }
 
