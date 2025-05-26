@@ -297,7 +297,7 @@ export function createSummerEffect() {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     const material = new THREE.PointsMaterial({
         color: 0xffff99,
-        size: 4.0
+        size: 4.0,
         transparent: true,
         opacity: 0.8
     });
