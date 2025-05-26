@@ -32,5 +32,5 @@ cloudMove();
 addBlock();
 deleteModel();
 //=====================================================//
-init();
 initClock();
+init();
