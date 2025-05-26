@@ -68,6 +68,33 @@ export function sun() {
 
 
 //==============================clouds=============================
+
+function getCloudCountForWeather(weather) {
+    if (weather.stormy) return 50;
+    if (weather.rainy) return 35;
+    if (weather.snowy) return 25;
+    if (weather.cloudy) return 18;
+    if (weather.foggy) return 10;
+    return 5; // 맑음 등 기본값
+}
+function resetCloudScene() {
+    // 구름 제거
+    for (let c of clouds) scene.remove(c);
+    clouds = [];
+    cloudMaterials = [];
+    // 비, 눈, 기타 이펙트도 필요시 제거
+    if (rainParticles) {
+        scene.remove(rainParticles);
+        rainParticles = null;
+    }
+    if (snowParticles) {
+        scene.remove(snowParticles);
+        snowParticles = null;
+    }
+    // 기타 오브젝트도 필요하면 제거
+}
+
+
 // 구름 생성 (자연스러운 움직임, 투명도 변화)
 // 구름 생성 범위 변수 선언
 let cloudRange = {
@@ -76,20 +103,24 @@ let cloudRange = {
     z: 50     // -30 ~ +20
 };
 
+function addsCloud(){
+
+}
+
 // 구름 생성 함수에서 범위 사용
 export function loadClouds() {
-    for (let c of clouds) scene.remove(c);
-    clouds = [];
-    cloudMaterials = [];
+    resetScene();
+    const cloudCount = getCloudCountForWeather(weather);
+
     loader.load("models/cloud/scene.gltf", (gltf) => {
-        for (let i = 0; i < Math.floor(11 * lodQuality); i++) {
+        for (let i = 0; i < cloudCount; i++) {
             let cloud = gltf.scene.clone();
             let randomScale = Math.random() * 0.15 + 0.1;
             cloud.scale.set(randomScale, randomScale, randomScale);
             cloud.position.set(
-                Math.random() * cloudRange.x - cloudRange.x / 2, // x축
-                Math.random() * cloudRange.y + 10,               // y축
-                Math.random() * cloudRange.z - cloudRange.z / 2  // z축
+                Math.random() * cloudRange.x - cloudRange.x / 2,
+                Math.random() * cloudRange.y + 10,
+                Math.random() * cloudRange.z - cloudRange.z / 2
             );
             cloud.userData = {
                 speed: Math.random() * 1 + 1.4,
@@ -102,6 +133,7 @@ export function loadClouds() {
         updateSky();
     });
 }
+
 
 // 버튼 클릭 시 호출: 범위 확장
 export function addCloudsRange() {
@@ -260,6 +292,7 @@ export function removeSummerEffect() {
     }
 }
 
+
 // === AUTUMN: 낙엽 파티클 ===
 export function createAutumnEffect() {
     removeAutumnEffect();
@@ -347,6 +380,12 @@ export function removeWinterEffect() {
 //===========================================================
 // 비 (입자 크기/속도 다양화)
 export function createRain() {
+    const minCloudCount = 20;
+    if (clouds.length < minCloudCount) {
+        addClouds(minCloudCount - clouds.length);
+    }
+
+
     removeRain();
     const rainCountPerCloud = Math.floor(100 * lodQuality);
     const totalRainCount = clouds.length * rainCountPerCloud;
