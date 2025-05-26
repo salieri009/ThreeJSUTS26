@@ -191,7 +191,7 @@ export function updateSeason(latitude = 37) {
 
     seasons.forEach((season, index) => {
         season.classList.remove('current-season');
-        // 기존 마커 제거
+        // remove the
         const oldMarker = season.querySelector('.season-marker');
         if (oldMarker) oldMarker.remove();
 
