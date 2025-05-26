@@ -108,7 +108,8 @@ function getWeather(lat, lon) {
 
 
 // season sync utility
-
+//==========================================================================
+//Bring up the current date, and data
 let currentDate = new Date();
 let currentSeason = null;
 
@@ -182,18 +183,26 @@ function updateClock() {
 }
 
 // Update season
-export function updateSeason() {
+export function updateSeason(latitude = 37) {
     const now = new Date();
-    const month = now.getMonth();
+    const seasonName = getSeasonByDate(now, latitude); // ✅ 북반구/남반구 구분
+
     const seasons = document.querySelectorAll('.season-mark');
 
-    let currentSeason;
-    if (month >= 2 && month <= 4) currentSeason = 0; // Spring
-    else if (month >= 5 && month <= 7) currentSeason = 1; // Summer
-    else if (month >= 8 && month <= 10) currentSeason = 2; // Fall
-    else currentSeason = 3; // Winter
+    // 계절 인덱스 매핑
+    const seasonIndexMap = {
+        spring: 0,
+        summer: 1,
+        autumn: 2,
+        winter: 3
+    };
+
+    const currentSeason = seasonIndexMap[seasonName];
 
     seasons.forEach((season, index) => {
+        season.classList.remove('current-season');
+        season.querySelector('.season-marker')?.remove(); // 이전 마커 제거
+
         if (index === currentSeason) {
             season.classList.add('current-season');
             const marker = document.createElement('div');
