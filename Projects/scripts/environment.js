@@ -77,6 +77,7 @@ function getCloudCountForWeather(weather) {
     if (weather.foggy) return 10;
     return 5; // 맑음 등 기본값
 }
+
 function resetCloudScene() {
     // 구름 제거
     for (let c of clouds) scene.remove(c);
@@ -103,14 +104,26 @@ let cloudRange = {
     z: 50     // -30 ~ +20
 };
 
-function addsCloud(){
-
+function getCloudSpawnRange(level) {
+    // 블록은 -i*10, -j*10 위치에 생성됨. level*10이 전체 길이.
+    // 구름은 전체 맵을 충분히 덮도록 약간 여유를 둠.
+    const size = level * 10;
+    return {
+        x: size + 40, // 여유를 위해 +40
+        y: 20,        // y는 고정 또는 계절/날씨별로 조정 가능
+        z: size + 40
+    };
 }
 
 // 구름 생성 함수에서 범위 사용
-export function loadClouds() {
-    resetScene();
+// 구름 생성 함수에서 사용
+export function loadClouds(level = 1) {
+    resetCloudScene();
     const cloudCount = getCloudCountForWeather(weather);
+    const cloudColor = getCloudColorByWeather(weather);
+
+    // level을 받아서 범위 계산
+    cloudRange = getCloudSpawnRange(level);
 
     loader.load("models/cloud/scene.gltf", (gltf) => {
         for (let i = 0; i < cloudCount; i++) {
@@ -122,18 +135,25 @@ export function loadClouds() {
                 Math.random() * cloudRange.y + 10,
                 Math.random() * cloudRange.z - cloudRange.z / 2
             );
+            // 이하 동일
             cloud.userData = {
                 speed: Math.random() * 1 + 1.4,
                 baseY: cloud.position.y,
                 opacitySeed: Math.random() * 100
             };
+            cloud.traverse((node) => {
+                if (node.isMesh && node.material && node.material.color) {
+                    node.material = node.material.clone();
+                    node.material.color.setHex(cloudColor);
+                    node.material.transparent = true;
+                }
+            });
             clouds.push(cloud);
             scene.add(cloud);
         }
         updateSky();
     });
 }
-
 
 // 버튼 클릭 시 호출: 범위 확장
 export function addCloudsRange() {
