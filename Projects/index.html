@@ -14,6 +14,17 @@
         <button id="btn-theme-change">Theme Change</button>
     </div>
 
+    <div class="season-dial">
+        <div class="track">
+            <div class="season spring">Spring</div>
+            <div class="season summer">Summer</div>
+            <div class="season autumn">Autumn</div>
+            <div class="season winter">Winter</div>
+            <div class="pointer" id="pointer"></div>
+        </div>
+    </div>
+
+
     <div class="resource-bar">
         <span></span>
         <span></span>
@@ -87,22 +98,61 @@
 
     </div>
 
-    <div class="scene-overlay-weather iphone-weather-widget">
-        <div class="weather-top-row">
-            <span class="weather-location">서울</span>
-            <span class="weather-time">오후 3:12</span>
+    <div class="scene-overlay-weather-container">
+        <div class="ruler-container">
+            <div class="season-marks">
+                <div class="season-mark season-spring">
+                    <div class="season-mark-line"></div>
+                    <span class="season-label">Spring</span>
+                </div>
+                <div class="season-mark season-summer">
+                    <div class="season-mark-line"></div>
+                    <span class="season-label">Summer</span>
+                </div>
+                <div class="season-mark season-fall">
+                    <div class="season-mark-line"></div>
+                    <span class="season-label">Fall</span>
+                </div>
+                <div class="season-mark season-winter">
+                    <div class="season-mark-line"></div>
+                    <span class="season-label">Winter</span>
+                </div>
+            </div>
         </div>
-        <div class="weather-main-row">
-            <span class="weather-icon">🌤️</span>
-            <span class="weather-temp">22°</span>
-            <span class="weather-desc">구름 조금</span>
+
+        <div class="clock">
+            <div id="time" class="time"></div>
+            <div id="date" class="date"></div>
         </div>
-        <div class="weather-bottom-row">
-            <span class="weather-minmax">최고 25° · 최저 16°</span>
-            <span class="weather-extra">미세먼지 좋음</span>
+
+        <div class="weather-display">
+            <div class="weather-info">
+                <div id="location">Seoul</div>
+                <div id="temperature">24°C</div>
+                <div id="condition">Sunny</div>
+            </div>
+            <div class="weather-details">
+                <div class="detail">
+                    <span>Humidity</span>
+                    <span id="humidity">65%</span>
+                </div>
+                <div class="detail">
+                    <span>Wind</span>
+                    <span id="wind">12 km/h</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="forecast-section">
+            <div class="forecast-container" id="forecast">
+                <!-- Forecast items will be added here by JavaScript -->
+            </div>
+            <div class="today-marker"></div>
+            <div class="time-ruler" id="timeRuler">
+                <!-- Time marks will be added here by JavaScript -->
+            </div>
         </div>
     </div>
-
     <!--
     <div class="scene-overlay-upgrade-panel">
         <div class="upgrade-title">업그레이드 센터</div>

@@ -174,7 +174,8 @@ body {
 .scene-overlay-upgrade-panel,
 .overlay-item-panel,
 .scene-overlay-weather-controls,
-.scene-overlay-season-controls {
+.scene-overlay-season-controls,
+.scene-overlay-weather-container {
     position: absolute;
     z-index: 10;
     user-select: none;
@@ -202,6 +203,24 @@ body {
     border-radius: var(--radius-xl);
 }
 
+.scene-overlay-weather-container{
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    width: 400px;
+    height: 600px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.22);
+    backdrop-filter: var(--glass-blur) var(--glass-saturation);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    scrollbar-width: none;
+}
 /* Add and Remove Panel */
 .scene-overlay-add-and-remove {
     position: absolute;
@@ -789,6 +808,484 @@ body {
 .resource-bar:hover {
     box-shadow: var(--shadow-lg);
     transform: translateX(-50%) translateY(-2px);
+}
+
+.ruler-container {
+    background-color: #000;
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 2px;
+    margin-bottom: 24px;
+}
+
+.season-marks {
+    display: flex;
+    height: 60px;
+    position: relative;
+    background-color: #000;
+}
+
+.season-mark {
+    flex: 1;
+    position: relative;
+    border-right: 2px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 8px 0;
+}
+
+.season-mark:last-child {
+    border-right: none;
+}
+
+.season-mark-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 12px;
+    width: 2px;
+    background-color: #444;
+    transform: translateX(-50%);
+}
+
+.season-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.season-spring { background: linear-gradient(to bottom, rgba(145, 255, 139, 0.1), rgba(145, 255, 139, 0.2)); color: #91ff8b; }
+.season-summer { background: linear-gradient(to bottom, rgba(255, 207, 51, 0.1), rgba(255, 207, 51, 0.2)); color: #ffcf33; }
+.season-fall { background: linear-gradient(to bottom, rgba(255, 145, 51, 0.1), rgba(255, 145, 51, 0.2)); color: #ff9133; }
+.season-winter { background: linear-gradient(to bottom, rgba(139, 209, 255, 0.1), rgba(139, 209, 255, 0.2)); color: #8bd1ff; }
+
+.clock {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.time {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.date {
+    font-size: 18px;
+    color: #666;
+}
+
+.weather-display {
+    background-color: black;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.weather-info {
+    text-align: left;
+}
+
+#location {
+    font-size: 18px;
+    color: #999;
+    margin-bottom: 4px;
+}
+
+#temperature {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+#condition {
+    font-size: 18px;
+    color: #666;
+}
+
+.weather-details {
+    display: flex;
+    gap: 24px;
+}
+
+.detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #666;
+}
+
+.detail span:first-child {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.detail span:last-child {
+    font-size: 18px;
+    color: #999;
+}
+
+.forecast-section {
+    position: relative;
+    background-color: black;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #333;
+}
+
+.forecast-container {
+    display: flex;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.forecast-item {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    border-right: 1px solid #333;
+}
+
+.forecast-item:last-child {
+    border-right: none;
+}
+
+.forecast-date {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.forecast-temp {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.today-marker {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    bottom: 0;
+    width: 2px;
+    background-color: #ff4444;
+    z-index: 1;
+}
+
+.time-ruler {
+    height: 40px;
+    display: flex;
+    border-top: 1px solid #333;
+}
+
+.time-mark {
+    flex: 1;
+    position: relative;
+    border-right: 1px solid #333;
+}
+
+.time-mark:last-child {
+    border-right: none;
+}
+
+.time-mark::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    height: 8px;
+    width: 1px;
+    background-color: #444;
+    transform: translateX(-50%);
+}
+
+.time-mark.today::after {
+    background-color: #ff4444;
+    height: 16px;
+    width: 2px;
+}
+
+.time-label {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+}
+
+/* Custom styles for the weather app */
+.ruler-container {
+    background-color: #000;
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 2px;
+    margin-bottom: 1rem;
+}
+
+.ruler-marks {
+    display: flex;
+    position: relative;
+    height: 40px;
+    background-color: #000;
+}
+
+.ruler-mark {
+    flex: 1;
+    border-right: 1px solid #444;
+    height: 100%;
+    position: relative;
+}
+
+.ruler-mark::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    height: 8px;
+    width: 1px;
+    background-color: #444;
+}
+
+.ruler-mark:nth-child(7n)::after {
+    height: 16px;
+    width: 2px;
+}
+
+.season-marks {
+    display: flex;
+    height: 60px;
+    position: relative;
+    background-color: #000;
+}
+
+.season-mark {
+    flex: 1;
+    position: relative;
+    border-right: 2px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 8px 0;
+}
+
+.season-mark:last-child {
+    border-right: none;
+}
+
+.season-mark-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 12px;
+    width: 2px;
+    background-color: #444;
+    transform: translateX(-50%);
+}
+
+.season-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+}
+
+.season-marker {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 20px;
+    background-color: #ff4444;
+}
+
+.season-spring {
+    background: linear-gradient(to bottom, rgba(145, 255, 139, 0.1), rgba(145, 255, 139, 0.2));
+    color: #91ff8b;
+}
+
+.season-summer {
+    background: linear-gradient(to bottom, rgba(255, 207, 51, 0.1), rgba(255, 207, 51, 0.2));
+    color: #ffcf33;
+}
+
+.season-fall {
+    background: linear-gradient(to bottom, rgba(255, 145, 51, 0.1), rgba(255, 145, 51, 0.2));
+    color: #ff9133;
+}
+
+.season-winter {
+    background: linear-gradient(to bottom, rgba(139, 209, 255, 0.1), rgba(139, 209, 255, 0.2));
+    color: #8bd1ff;
+}
+
+.current-season .season-mark-line {
+    background-color: currentColor;
+    height: 16px;
+    width: 3px;
+}
+
+.forecast-section {
+    position: relative;
+    background-color: #000;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.forecast-container {
+    display: flex;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    transition: transform 0.5s ease;
+    position: relative;
+}
+
+.forecast-item {
+    flex: 0 0 14.285%;
+    border-right: 1px solid #333;
+    position: relative;
+    transition: background-color 0.3s ease;
+}
+
+.forecast-item:last-child {
+    border-right: none;
+}
+
+.today-marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #ff4444;
+    z-index: 10;
+}
+
+.time-ruler {
+    height: 40px;
+    background-color: #000;
+    border: 2px solid #333;
+    border-radius: 8px;
+    margin-top: 1rem;
+    position: relative;
+    display: flex;
+}
+
+.time-mark {
+    flex: 1;
+    position: relative;
+    border-right: 1px solid #444;
+    height: 100%;
+}
+
+.time-mark::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    height: 8px;
+    width: 1px;
+    background-color: #444;
+    transform: translateX(-50%);
+}
+
+.time-mark:nth-child(7n)::after {
+    height: 16px;
+    width: 2px;
+    background-color: #666;
+}
+
+.time-mark.today::after {
+    background-color: #ff4444;
+    height: 16px;
+    width: 2px;
+}
+
+.time-label {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: #666;
+    white-space: nowrap;
+}
+
+.time-mark.today .time-label {
+    color: #ff4444;
+    font-weight: bold;
+}
+
+.forecast-section {
+    position: relative;
+}
+
+.forecast-container {
+    display: flex;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    transition: transform 0.5s ease;
+}
+
+.forecast-item {
+    flex: 0 0 25%;
+}
+
+.pointer-container {
+    position: relative;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.pointer-track {
+    width: 80%;
+    height: 4px;
+    background-color: #e5e7eb;
+    border-radius: 2px;
+    position: relative;
+}
+
+.pointer {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: #3B82F6;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: left 0.3s ease;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.pointer::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #3B82F6;
+}
+
+@media (max-width: 640px) {
+    .forecast-item {
+        flex: 0 0 50%;
+    }
 }
 
 /* Responsive Design */
