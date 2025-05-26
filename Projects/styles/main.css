@@ -601,7 +601,9 @@ body {
 .overlay-btn[data-category="spring"],
 .overlay-btn[data-category="summer"],
 .overlay-btn[data-category="autumn"],
-.overlay-btn[data-category="winter"]{
+.overlay-btn[data-category="winter"],
+.overlay-btn[data-category="btn-night"],
+.overlay-btn[data-category="btn-day"]{
     width: 70px;                /* 더 넓게 */
     height: 30px;               /* 세로도 약간 더 넉넉하게 */
     padding: 6px 4px;
@@ -622,6 +624,16 @@ body {
 .overlay-btn[data-category="sunny"] {
     background-color: #FFD700;
     color: black;
+}
+
+.overlay-btn[data-category="btn-night"] {
+    background-color: #2C3E50; /* 어두운 네이비 블루 */
+    color: #ECF0F1; /* 밝은 텍스트 */
+}
+
+.overlay-btn[data-category="btn-day"] {
+    background-color: #F5F5F5; /* 밝은 회색 */
+    color: #2C3E50; /* 어두운 텍스트 */
 }
 
 .overlay-btn[data-category="cloudy"] {
