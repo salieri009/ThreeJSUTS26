@@ -258,18 +258,38 @@ export function updateForecast() {
 }
 
 // Initialize
-export function initClock() {
+export async function initClock() {
     updateClock();
     updateSeason();
     updateForecast();
 
-    // Update mock weather data
-    document.getElementById('temperature').textContent = `${getRandomTemp()}°C`;
-    document.getElementById('condition').textContent = getRandomCondition();
-    document.getElementById('humidity').textContent = `${Math.floor(Math.random() * 100)}%`;
-    document.getElementById('wind').textContent = `${Math.floor(Math.random() * 30)} km/h`;
+    // 위치 기반으로 날씨 데이터 가져오기
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
 
-    // Update clock every second
+            try {
+                const weather = await fetchWeather(lat, lon); // API 호출
+
+                // 실제 날씨 데이터로 UI 갱신
+                document.getElementById('temperature').textContent = `${weather.temperature}°C`;
+                document.getElementById('condition').textContent = weather.condition || 'Unknown';
+                document.getElementById('humidity').textContent = `${weather.humidity}%`;
+                document.getElementById('wind').textContent = `${weather.wind} km/h`;
+            } catch (error) {
+                console.error('날씨 데이터를 가져오는 데 실패했습니다:', error);
+            }
+        }, (err) => {
+            console.warn('위치 접근 거부됨. 랜덤 날씨로 대체합니다.');
+            setRandomWeatherUI(); // fallback
+        });
+    } else {
+        console.warn('Geolocation 미지원. 랜덤 날씨로 대체합니다.');
+        setRandomWeatherUI(); // fallback
+    }
+
+    // 매초 시계 갱신
     setInterval(updateClock, 1000);
 }
 
