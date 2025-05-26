@@ -1,9 +1,9 @@
 import * as env from '../environment';
 
-//Bring up the api key and controls//
+// API 키 설정 (API 키는 보통 env에서 관리하는 게 안전합니다)
 const API_KEY = '345a78d07f57356c5ddf8042e295cfc2';
 
-//Location Object// Sample DATA
+// 샘플 날씨 데이터 (참고용)
 const sydneyWeather = {
     city: "Sydney",
     lat: -33.8688,
@@ -22,7 +22,7 @@ const melbourneWeather = {
     temperature: 16.8,
     clouds: 60,
     weatherMain: "Clouds",
-    rain: { "1h": 0.3 }, // 1시간 강우량 (mm)
+    rain: { "1h": 0.3 },
     snow: null
 };
 
@@ -40,80 +40,69 @@ const tokyoWeather = {
 const seoulWeather = {
     city: "Seoul",
     lat: 37.5665,
-    lon: 126.9780,
+    lon: 126.978,
     temperature: 24.5,
-    clouds: 40, // 흐림 정도 (%)
-    weatherMain: "Clouds", // 또는 "Clear", "Rain", "Snow" 등
-    rain: { "1h": 0.2 }, // 1시간 강우량 (mm), 없으면 null
-    snow: null // 눈이 오지 않으면 null
+    clouds: 40,
+    weatherMain: "Clouds",
+    rain: { "1h": 0.2 },
+    snow: null
 };
-///This const object will be updated as getting API responses
 
-navigator.geolocation.getCurrentPosition(success, fail);
-
-
-
-function success(position) {
-
-    //Test run
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
-
-    //fetch the current locaiton data
-
-    getWeather(lat, lon);
-}
-
-//Fail
-function fail() {
-    alert('위치 정보를 가져올 수 없습니다. Failed to get location data');
-}
-//실패했을때
-
-//Api 호출로 const 오브젝트 형성
-
-
-function getWeather(lat, lon) {
-    fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=en`
-        //현재위치 넣기
-
-    )
-        .then(response => response.json())
-        .then(json => {
-            const weatherData = {
-                city: json.name || "Unknown",
-                lat: lat,
-                lon: lon,
-                temperature: json.main?.temp ?? null,
-                clouds: json.clouds?.all ?? null,
-                weatherMain: json.weather?.[0]?.main ?? null,
-                rain: json.rain ?? null,
-                snow: json.snow ?? null
-            };
-
-            //json files 에서 정보를 줄것임.
-            //참고용 웹사이트 https://openweathermap.org/current
-
-
-            console.log("🌤️ 현재 날씨 정보:", weatherData);
-
-            // 여기서 다른 곳에 전달하거나 저장 가능
-            // 예: updateWeatherUI(weatherData);
-        })
-        .catch(error => {
-            alert('날씨 정보를 불러오는 중 오류 발생: ' + error);
-        });
-}
-
-
-// season sync utility
-//==========================================================================
-//Bring up the current date, and data
+// 현재 날짜 및 계절 상태 전역 변수
 let currentDate = new Date();
 let currentSeason = null;
 
-// (1) 날짜 → 계절 자동 계산 함수
+// 위치 정보 가져오기 (성공시 getWeather 호출)
+navigator.geolocation.getCurrentPosition(success, fail);
+
+function success(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    getWeather(lat, lon);
+}
+
+function fail() {
+    alert('위치 정보를 가져올 수 없습니다. Failed to get location data');
+}
+
+// API 호출하여 날씨 데이터 가져오기 (비동기 함수)
+async function getWeather(lat, lon) {
+    try {
+        const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=en`
+        );
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+        const json = await response.json();
+        const weatherData = {
+            city: json.name || "Unknown",
+            lat: lat,
+            lon: lon,
+            temperature: json.main?.temp ?? null,
+            clouds: json.clouds?.all ?? null,
+            weatherMain: json.weather?.[0]?.main ?? null,
+            rain: json.rain ?? null,
+            snow: json.snow ?? null
+        };
+
+        console.log("🌤️ 현재 날씨 정보:", weatherData);
+
+        // UI 업데이트 함수 호출 예시
+        updateWeatherUI(weatherData);
+
+    } catch (error) {
+        alert('날씨 정보를 불러오는 중 오류 발생: ' + error.message);
+    }
+}
+
+// UI 업데이트 예시 함수
+function updateWeatherUI(weather) {
+    document.getElementById('temperature').textContent = weather.temperature !== null ? `${weather.temperature}°C` : 'N/A';
+    document.getElementById('condition').textContent = weather.weatherMain || 'Unknown';
+    // 강수량, 구름, 눈 등 추가 업데이트 가능
+}
+
+// 날짜로부터 계절 계산 (북반구/남반구 고려)
 export function getSeasonByDate(date, latitude = 37) {
     const month = date.getMonth() + 1;
     const isNorth = latitude >= 0;
@@ -130,7 +119,7 @@ export function getSeasonByDate(date, latitude = 37) {
     }
 }
 
-// (2) 실시간 날짜/계절 동기화 루프
+// 날짜/계절 상태 동기화 (애니메이션 프레임 루프 사용)
 export function syncDateAndSeason({
                                       getDate = () => new Date(),
                                       latitude = 37,
@@ -142,54 +131,55 @@ export function syncDateAndSeason({
         const season = getSeasonByDate(date, latitude);
         if (season !== lastSeason) {
             lastSeason = season;
-            onSeasonChange(season, date); // 계절 바뀔 때마다 콜백 실행
+            onSeasonChange(season, date);
         }
         requestAnimationFrame(update);
     }
     update();
 }
 
-// (3) 날짜/계절 상태를 외부에서 직접 갱신하고 싶을 때
+// 외부에서 날짜 직접 설정하기
 export function setDate(newDate) {
     currentDate = newDate;
     currentSeason = getSeasonByDate(currentDate);
     return currentSeason;
 }
 
-// (4) 현재 계절 반환
+// 현재 계절 반환
 export function getCurrentSeason() {
     return currentSeason;
 }
 
-// Update clock
+// 시계 업데이트 (시, 분, 초, 날짜 등)
 function updateClock() {
     const now = new Date();
     const timeElement = document.getElementById('time');
     const dateElement = document.getElementById('date');
 
-    timeElement.textContent = now.toLocaleTimeString('en-US', {
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    });
+    if (timeElement)
+        timeElement.textContent = now.toLocaleTimeString('en-US', {
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
 
-    dateElement.textContent = now.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    if (dateElement)
+        dateElement.textContent = now.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
 }
 
-// Update season
+// 계절 표시 업데이트 (season-mark 클래스 대상)
 export function updateSeason(latitude = 37) {
     const now = new Date();
-    const seasonName = getSeasonByDate(now, latitude); // ✅ 북반구/남반구 구분
+    const seasonName = getSeasonByDate(now, latitude);
 
     const seasons = document.querySelectorAll('.season-mark');
 
-    // 계절 인덱스 매핑
     const seasonIndexMap = {
         spring: 0,
         summer: 1,
@@ -197,13 +187,15 @@ export function updateSeason(latitude = 37) {
         winter: 3
     };
 
-    const currentSeason = seasonIndexMap[seasonName];
+    const currentSeasonIndex = seasonIndexMap[seasonName];
 
     seasons.forEach((season, index) => {
         season.classList.remove('current-season');
-        season.querySelector('.season-marker')?.remove(); // 이전 마커 제거
+        // 기존 마커 제거
+        const oldMarker = season.querySelector('.season-marker');
+        if (oldMarker) oldMarker.remove();
 
-        if (index === currentSeason) {
+        if (index === currentSeasonIndex) {
             season.classList.add('current-season');
             const marker = document.createElement('div');
             marker.className = 'season-marker';
@@ -212,32 +204,32 @@ export function updateSeason(latitude = 37) {
     });
 }
 
-// Mock weather data
+// 랜덤 온도 생성 (10~44도 사이)
 export function getRandomTemp() {
     return Math.floor(Math.random() * 35) + 10;
 }
 
+// 랜덤 날씨 상태 생성
 export function getRandomCondition() {
-    const conditions = ['Sunny', 'Cloudy', 'Partly Cloudy', 'Rainy', 'Snowy'];
+    const conditions = ['Sunny', 'Cloudy', 'Partly Cloudy', 'Rainy', 'Snowy', 'Stormy'];
     return conditions[Math.floor(Math.random() * conditions.length)];
 }
 
-// Update forecast
+// 예측 일기 업데이트 (7일 간, 과거 3일, 현재, 미래 3일)
 export function updateForecast() {
     const forecastContainer = document.getElementById('forecast');
     const timeRuler = document.getElementById('timeRuler');
     const now = new Date();
 
-    // Clear existing content
+    if (!forecastContainer || !timeRuler) return;
+
     forecastContainer.innerHTML = '';
     timeRuler.innerHTML = '';
 
-    // Generate 7 days of forecast (3 past, today, 3 future)
     for (let i = -3; i <= 3; i++) {
         const date = new Date(now);
         date.setDate(date.getDate() + i);
 
-        // Forecast item
         const forecastItem = document.createElement('div');
         forecastItem.className = `forecast-item${i === 0 ? ' today' : ''}`;
 
@@ -249,7 +241,6 @@ export function updateForecast() {
     `;
         forecastContainer.appendChild(forecastItem);
 
-        // Time ruler mark
         const timeMark = document.createElement('div');
         timeMark.className = `time-mark${i === 0 ? ' today' : ''}`;
         timeMark.innerHTML = `<span class="time-label">${dateStr}</span>`;
@@ -257,39 +248,64 @@ export function updateForecast() {
     }
 }
 
-// Initialize
+// 위치 기반 날씨 데이터 비동기 호출 (initClock 내 사용)
+async function fetchWeather(lat, lon) {
+    try {
+        const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=en`
+        );
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const json = await response.json();
+
+        return {
+            temperature: json.main?.temp ?? null,
+            condition: json.weather?.[0]?.main ?? null,
+            humidity: json.main?.humidity ?? null,
+            wind: json.wind?.speed ?? null,
+        };
+    } catch (error) {
+        throw error;
+    }
+}
+
+// 랜덤 날씨 UI 대체 (위치 정보 없을 때)
+function setRandomWeatherUI() {
+    document.getElementById('temperature').textContent = `${getRandomTemp()}°C`;
+    document.getElementById('condition').textContent = getRandomCondition();
+    document.getElementById('humidity').textContent = `${Math.floor(Math.random() * 100)}%`;
+    document.getElementById('wind').textContent = `${Math.floor(Math.random() * 50)} km/h`;
+}
+
+// 초기화 함수 (시계, 계절, 예보, 날씨)
 export async function initClock() {
     updateClock();
     updateSeason();
     updateForecast();
 
-    // 위치 기반으로 날씨 데이터 가져오기
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (pos) => {
             const lat = pos.coords.latitude;
             const lon = pos.coords.longitude;
 
             try {
-                const weather = await fetchWeather(lat, lon); // API 호출
-
-                // 실제 날씨 데이터로 UI 갱신
-                document.getElementById('temperature').textContent = `${weather.temperature}°C`;
+                const weather = await fetchWeather(lat, lon);
+                document.getElementById('temperature').textContent = weather.temperature !== null ? `${weather.temperature}°C` : 'N/A';
                 document.getElementById('condition').textContent = weather.condition || 'Unknown';
-                document.getElementById('humidity').textContent = `${weather.humidity}%`;
-                document.getElementById('wind').textContent = `${weather.wind} km/h`;
+                document.getElementById('humidity').textContent = weather.humidity !== null ? `${weather.humidity}%` : 'N/A';
+                document.getElementById('wind').textContent = weather.wind !== null ? `${weather.wind} km/h` : 'N/A';
             } catch (error) {
                 console.error('날씨 데이터를 가져오는 데 실패했습니다:', error);
+                setRandomWeatherUI();
             }
         }, (err) => {
             console.warn('위치 접근 거부됨. 랜덤 날씨로 대체합니다.');
-            setRandomWeatherUI(); // fallback
+            setRandomWeatherUI();
         });
     } else {
         console.warn('Geolocation 미지원. 랜덤 날씨로 대체합니다.');
-        setRandomWeatherUI(); // fallback
+        setRandomWeatherUI();
     }
 
     // 매초 시계 갱신
     setInterval(updateClock, 1000);
 }
-
