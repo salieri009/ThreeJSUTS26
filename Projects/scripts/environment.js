@@ -283,35 +283,84 @@ export function removeSpringEffect() {
     }
 }
 
-// === SUMMER: 반딧불이 파티클 ===
+// === SUMMER: 반딧불이 파티클 ================
+let summerEffect, summerOrigins, summerOffsets, summerSpeeds;
+
+//=========================================
 export function createSummerEffect() {
     removeSummerEffect();
+
     const count = 70;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * 3);
+
+    // 각 반딧불이의 '중심 위치' (origin)
+    summerOrigins = [];
+    summerOffsets = [];
+    summerSpeeds = [];
+
     for (let i = 0; i < count; i++) {
-        positions[i * 3 + 0] = Math.random() * 60 - 30;
-        positions[i * 3 + 1] = Math.random() * 10 + 6;
-        positions[i * 3 + 2] = Math.random() * 30 - 15;
+        const x = Math.random() * 60 - 30;
+        const y = Math.random() * 10 + 6;
+        const z = Math.random() * 30 - 15;
+
+        positions[i * 3 + 0] = x;
+        positions[i * 3 + 1] = y;
+        positions[i * 3 + 2] = z;
+
+        summerOrigins.push({ x, y, z });
+        summerOffsets.push({
+            x: Math.random() * Math.PI * 2,
+            y: Math.random() * Math.PI * 2,
+            z: Math.random() * Math.PI * 2,
+        });
+        summerSpeeds.push({
+            x: 0.5 + Math.random() * 0.5,
+            y: 0.5 + Math.random() * 0.5,
+            z: 0.5 + Math.random() * 0.5,
+        });
     }
+
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
     const material = new THREE.PointsMaterial({
-        color: 0xffff99,
-        size: 4.0,
+        color: 0xffffcc,
+        size: 4.5,
         transparent: true,
-        opacity: 0.8
+        opacity: 1.0,
+        sizeAttenuation: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
     });
+
     summerEffect = new THREE.Points(geometry, material);
     scene.add(summerEffect);
 }
 
-export function updateSummerEffect() {
+export function updateSummerEffect(delta) {
     if (!summerEffect) return;
+
     const positions = summerEffect.geometry.attributes.position.array;
-    for (let i = 0; i < positions.length / 3; i++) {
-        positions[i * 3 + 1] += Math.sin(Date.now() * 0.001 + i) * 0.022;
+    const time = performance.now() * 0.001;
+
+    for (let i = 0; i < summerOrigins.length; i++) {
+        const index = i * 3;
+        const origin = summerOrigins[i];
+        const offset = summerOffsets[i];
+        const speed = summerSpeeds[i];
+
+        // 구형 영역 안에서 부드럽게 랜덤 이동
+        const radius = 1.5; // 비행 반경
+
+        positions[index + 0] = origin.x + Math.sin(time * speed.x + offset.x) * radius;
+        positions[index + 1] = origin.y + Math.sin(time * speed.y + offset.y) * radius;
+        positions[index + 2] = origin.z + Math.cos(time * speed.z + offset.z) * radius;
     }
+
     summerEffect.geometry.attributes.position.needsUpdate = true;
+
+    // 깜빡이는 느낌
+    summerEffect.material.opacity = 0.6 + Math.sin(time * 3) * 0.3;
 }
 
 export function removeSummerEffect() {
