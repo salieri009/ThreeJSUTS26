@@ -1,6 +1,6 @@
 import * as env from '../environment';
 
-// API 키 설정 (API 키는 보통 env에서 관리하는 게 안전합니다)
+// API 키 설정
 const API_KEY = '345a78d07f57356c5ddf8042e295cfc2';
 
 // 샘플 날씨 데이터 (참고용)
@@ -55,6 +55,7 @@ let currentSeason = null;
 // 위치 정보 가져오기 (성공시 getWeather 호출)
 navigator.geolocation.getCurrentPosition(success, fail);
 
+//현재 위치 가져오기
 function success(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
@@ -99,7 +100,7 @@ async function getWeather(lat, lon) {
 function updateWeatherUI(weather) {
     document.getElementById('temperature').textContent = weather.temperature !== null ? `${weather.temperature}°C` : 'N/A';
     document.getElementById('condition').textContent = weather.weatherMain || 'Unknown';
-    // 강수량, 구름, 눈 등 추가 업데이트 가능
+    // document.getElementById('')
 }
 
 // 날짜로부터 계절 계산 (북반구/남반구 고려)

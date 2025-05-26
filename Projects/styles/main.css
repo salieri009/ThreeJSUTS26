@@ -857,10 +857,10 @@ body {
     text-transform: uppercase;
 }
 
-.season-spring { background: linear-gradient(to bottom, rgba(145, 255, 139, 0.1), rgba(145, 255, 139, 0.2)); color: #91ff8b; }
-.season-summer { background: linear-gradient(to bottom, rgba(255, 207, 51, 0.1), rgba(255, 207, 51, 0.2)); color: #ffcf33; }
-.season-fall { background: linear-gradient(to bottom, rgba(255, 145, 51, 0.1), rgba(255, 145, 51, 0.2)); color: #ff9133; }
-.season-winter { background: linear-gradient(to bottom, rgba(139, 209, 255, 0.1), rgba(139, 209, 255, 0.2)); color: #8bd1ff; }
+.season-spring { background: linear-gradient(to bottom, rgba(145, 255, 139, 0.1), rgba(145, 255, 139, 0.2)); }
+.season-summer { background: linear-gradient(to bottom, rgba(255, 207, 51, 0.1), rgba(255, 207, 51, 0.2)); }
+.season-fall { background: linear-gradient(to bottom, rgba(255, 145, 51, 0.1), rgba(255, 145, 51, 0.2)); }
+.season-winter { background: linear-gradient(to bottom, rgba(139, 209, 255, 0.1), rgba(139, 209, 255, 0.2)); }
 
 .clock {
     text-align: center;

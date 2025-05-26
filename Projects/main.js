@@ -32,6 +32,7 @@ cloudMove();
 addBlock();
 deleteModel();
 //=============UI Calling=====================================//
+// initSeasonSyncUtil();
 
 // initClock();
 init();
