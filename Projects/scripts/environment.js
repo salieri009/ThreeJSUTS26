@@ -66,7 +66,17 @@ export function sun() {
     scene.add(sunLight);
 }
 
+
+//==============================clouds=============================
 // 구름 생성 (자연스러운 움직임, 투명도 변화)
+// 구름 생성 범위 변수 선언
+let cloudRange = {
+    x: 100,   // -55 ~ +45 (기존)
+    y: 10,    // 10 ~ 20
+    z: 50     // -30 ~ +20
+};
+
+// 구름 생성 함수에서 범위 사용
 export function loadClouds() {
     for (let c of clouds) scene.remove(c);
     clouds = [];
@@ -77,9 +87,9 @@ export function loadClouds() {
             let randomScale = Math.random() * 0.15 + 0.1;
             cloud.scale.set(randomScale, randomScale, randomScale);
             cloud.position.set(
-                Math.random() * 100 - 55,
-                Math.random() * 10 + 10,
-                Math.random() * 50 - 30
+                Math.random() * cloudRange.x - cloudRange.x / 2, // x축
+                Math.random() * cloudRange.y + 10,               // y축
+                Math.random() * cloudRange.z - cloudRange.z / 2  // z축
             );
             cloud.userData = {
                 speed: Math.random() * 1 + 1.4,
@@ -91,6 +101,14 @@ export function loadClouds() {
         }
         updateSky();
     });
+}
+
+// 버튼 클릭 시 호출: 범위 확장
+export function addCloudsRange() {
+    cloudRange.x += 100; // x축 범위 확장
+    cloudRange.y += 10;  // y축 범위 확장
+    cloudRange.z += 50;  // z축 범위 확장
+    // 기존 구름은 그대로 두고, 새로 loadClouds() 하면 넓은 범위에 생성됨
 }
 
 // 구름 애니메이션
