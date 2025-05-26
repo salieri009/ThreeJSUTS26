@@ -3,35 +3,106 @@ import * as env from '../environment';
 //Bring up the api key and controls//
 const API_KEY = '345a78d07f57356c5ddf8042e295cfc2';
 
+//Location Object// Sample DATA
+const sydneyWeather = {
+    city: "Sydney",
+    lat: -33.8688,
+    lon: 151.2093,
+    temperature: 22.3,
+    clouds: 25,
+    weatherMain: "Clear",
+    rain: null,
+    snow: null
+};
+
+const melbourneWeather = {
+    city: "Melbourne",
+    lat: -37.8136,
+    lon: 144.9631,
+    temperature: 16.8,
+    clouds: 60,
+    weatherMain: "Clouds",
+    rain: { "1h": 0.3 }, // 1시간 강우량 (mm)
+    snow: null
+};
+
+const tokyoWeather = {
+    city: "Tokyo",
+    lat: 35.6895,
+    lon: 139.6917,
+    temperature: 27.1,
+    clouds: 10,
+    weatherMain: "Clear",
+    rain: null,
+    snow: null
+};
+
+const seoulWeather = {
+    city: "Seoul",
+    lat: 37.5665,
+    lon: 126.9780,
+    temperature: 24.5,
+    clouds: 40, // 흐림 정도 (%)
+    weatherMain: "Clouds", // 또는 "Clear", "Rain", "Snow" 등
+    rain: { "1h": 0.2 }, // 1시간 강우량 (mm), 없으면 null
+    snow: null // 눈이 오지 않으면 null
+};
+///This const object will be updated as getting API responses
+
 navigator.geolocation.getCurrentPosition(success, fail);
 
+
+
 function success(position) {
+
+    //Test run
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
+
+    //fetch the current locaiton data
+
     getWeather(lat, lon);
 }
+
+//Fail
 function fail() {
-    alert('위치 정보를 가져올 수 없습니다.');
+    alert('위치 정보를 가져올 수 없습니다. Failed to get location data');
 }
+//실패했을때
+
+//Api 호출로 const 오브젝트 형성
+
 
 function getWeather(lat, lon) {
     fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=kr`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=en`
+        //현재위치 넣기
+
     )
         .then(response => response.json())
         .then(json => {
-            // 필요한 데이터 추출
-            const temperature = json.main.temp;
-            const clouds = json.clouds.all; // 0~100 (%)
-            const weatherMain = json.weather[0].main; // 'Clear', 'Clouds', 'Rain', 'Snow' 등
-            const rain = json.rain; // 비 정보
-            const snow = json.snow; // 눈 정보
+            const weatherData = {
+                city: json.name || "Unknown",
+                lat: lat,
+                lon: lon,
+                temperature: json.main?.temp ?? null,
+                clouds: json.clouds?.all ?? null,
+                weatherMain: json.weather?.[0]?.main ?? null,
+                rain: json.rain ?? null,
+                snow: json.snow ?? null
+            };
 
-            // 3D 씬에 반영
-            applyWeatherToScene({ temperature, clouds, weatherMain, rain, snow });
+            //json files 에서 정보를 줄것임.
+            //참고용 웹사이트 https://openweathermap.org/current
+
+
+            console.log("🌤️ 현재 날씨 정보:", weatherData);
+
+            // 여기서 다른 곳에 전달하거나 저장 가능
+            // 예: updateWeatherUI(weatherData);
         })
         .catch(error => {
-            alert(error);
+            alert('날씨 정보를 불러오는 중 오류 발생: ' + error);
         });
 }
 
@@ -178,7 +249,7 @@ export function updateForecast() {
 }
 
 // Initialize
-export function init() {
+export function initClock() {
     updateClock();
     updateSeason();
     updateForecast();

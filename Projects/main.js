@@ -8,6 +8,7 @@ import {  cloudMove, loadClouds, setBackground, sun, createRain, updateRain, rem
 
 import { init } from "./scripts/UIManager.js";
 import { addBlock, deleteModel } from "./scripts/buttonInteract.js";
+import { initClock} from "./scripts/seasonSyncUtil";
 
 //==================================================//
 setScene();
@@ -32,3 +33,4 @@ addBlock();
 deleteModel();
 //=====================================================//
 init();
+initClock();
