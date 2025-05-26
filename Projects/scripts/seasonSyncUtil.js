@@ -14,6 +14,28 @@ function fail() {
     alert('위치 정보를 가져올 수 없습니다.');
 }
 
+function getWeather(lat, lon) {
+    fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=kr`
+    )
+        .then(response => response.json())
+        .then(json => {
+            // 필요한 데이터 추출
+            const temperature = json.main.temp;
+            const clouds = json.clouds.all; // 0~100 (%)
+            const weatherMain = json.weather[0].main; // 'Clear', 'Clouds', 'Rain', 'Snow' 등
+            const rain = json.rain; // 비 정보
+            const snow = json.snow; // 눈 정보
+
+            // 3D 씬에 반영
+            applyWeatherToScene({ temperature, clouds, weatherMain, rain, snow });
+        })
+        .catch(error => {
+            alert(error);
+        });
+}
+
+
 // season sync utility
 
 let currentDate = new Date();
