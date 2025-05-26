@@ -176,7 +176,8 @@ body {
 .scene-overlay-weather-controls,
 .scene-overlay-season-controls,
 .scene-overlay-weather-container,
-.scene-overlay-night-and-days{
+.scene-overlay-night-and-days,
+.scene-overlay-top-section{
     position: absolute;
     z-index: 10;
     user-select: none;
@@ -202,6 +203,24 @@ body {
     background-color: rgba(255, 255, 255, 0.4);
     backdrop-filter: var(--glass-blur) var(--glass-saturation);
     border-radius: var(--radius-xl);
+}
+
+.scene-overlay-top-section{
+    position: absolute;
+    bottom: 90vh;
+    left: 48px;
+    max-width: 100%;
+    width: 450px; /* Or adjust as needed */
+    height: auto; /* Allow height to adjust based on content */
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+    flex-wrap: wrap;
+    transition: background-color 0.3s ease;
 }
 .scene-overlay-night-and-days{
     position: absolute;
@@ -603,7 +622,8 @@ body {
 .overlay-btn[data-category="autumn"],
 .overlay-btn[data-category="winter"],
 .overlay-btn[data-category="btn-night"],
-.overlay-btn[data-category="btn-day"]{
+.overlay-btn[data-category="btn-day"],
+.overlay-btn[data-category="btn-theme-change"]{
     width: 70px;                /* 더 넓게 */
     height: 30px;               /* 세로도 약간 더 넉넉하게 */
     padding: 6px 4px;
