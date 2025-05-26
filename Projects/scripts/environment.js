@@ -17,7 +17,7 @@ let lodQuality = 1.0; // 1.0 ~ 0.3 (LOD)
 
 //Particles===============
 let springEffect = null;
-let summerEffect = null;
+// let summerEffect = null;
 let autumnEffect = null;
 let winterEffect = null;
 let currentSeason = null;
@@ -56,8 +56,20 @@ export function setBackground() {
     scene.add(skyDome);
 }
 
+
+// 태양광은 위에 이미 선언 되어 있음
+let moonLight; // 전역으로 선언
+
 // 태양광
 export function sun() {
+    // 이미 있는 달빛 제거
+    if (moonLight) {
+        scene.remove(moonLight);
+        moonLight.dispose?.(); // 메모리 해제
+        moonLight = null;
+    }
+
+    // 태양빛 생성
     sunLight = new THREE.DirectionalLight(0xffffff, 1);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.set(2048, 2048);
@@ -65,6 +77,25 @@ export function sun() {
     sunLight.position.set(50, 30, 0);
     scene.add(sunLight);
 }
+
+// 달빛
+export function moon() {
+    // 이미 있는 태양빛 제거
+    if (sunLight) {
+        scene.remove(sunLight);
+        sunLight.dispose?.(); // 메모리 해제
+        sunLight = null;
+    }
+
+    // 달빛 생성
+    moonLight = new THREE.DirectionalLight(0xaaaaFF, 0.3);
+    moonLight.castShadow = true;
+    moonLight.shadow.mapSize.set(1024, 1024);
+    moonLight.shadow.camera.top = 30;
+    moonLight.position.set(-30, 20, 10);
+    scene.add(moonLight);
+}
+
 
 
 //==============================clouds=============================

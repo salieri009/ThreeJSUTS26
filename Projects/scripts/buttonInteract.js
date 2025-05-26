@@ -246,3 +246,10 @@ document.querySelector('[data-category="stormy"]').addEventListener('click', () 
 
 //======================================================================================
 
+document.querySelector('[data-category="btn-night"]').addEventListener('click', () => {
+
+})
+
+document.querySelector('[data-category="btn-day"]').addEventListener('click', () => {
+
+})
