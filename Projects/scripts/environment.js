@@ -215,6 +215,27 @@ export function addCloudsRange() {
     // 기존 구름은 그대로 두고, 새로 loadClouds() 하면 넓은 범위에 생성됨
 }
 
+const particleBoxes = [];
+
+//===============Debug box : Finding Rain Creation Point ============================================
+function createDebugBox(color = 0xff0000) {
+    const geometry = new THREE.BoxGeometry(1, 1, 1); // 크기 조정 가능
+    const material = new THREE.MeshBasicMaterial({ color, wireframe: true });
+    const box = new THREE.Mesh(geometry, material);
+    scene.add(box);
+    return box;
+}
+
+///-============================================================================================
+
+const rainDebugBoxes = [];
+const snowDebugBoxes = [];
+
+// for (let i = 0; i < clouds.length; i++) {
+//     rainDebugBoxes.push(createDebugBox(0x0000ff)); // 파란색: 비
+//     snowDebugBoxes.push(createDebugBox(0xff0000)); // 빨간색: 눈
+// }
+
 // 구름 애니메이션
 export function cloudMove() {
     const delta = clock.getDelta();
@@ -242,10 +263,12 @@ export function cloudMove() {
         // rainParticles와 snowParticles가 존재할 때만 위치를 동기화
         if (weather.rainy && rainParticles) {
             rainParticles.position.set(
-                cloud.position.x + 5 ,
-                cloud.position.y - 2, // 구름 아래로 약간 내림
-                cloud.position.z
+                cloud.position.x ,
+                cloud.position.y , // 구름 아래로 약간 내림
+                cloud.position.z + 5
             );
+            // rainParticles.position.copy(rainPos);
+            // rainDebugBoxes[i].position.copy(rainPos); // 박스 위치 동기화
         }
         if (weather.snowy && snowParticles) {
             snowParticles.position.set(
@@ -695,7 +718,7 @@ export function removeWinterEffect() {
 //===========================================================
 // 비 (입자 크기/속도 다양화)
 
-let rainAreaRadius = 10;
+let rainAreaRadius = 2;
 
 export function createRain() {
     const minCloudCount = 20;
@@ -813,11 +836,12 @@ export function updateRain() {
             positions[index + 2] = (Math.random() - 0.5) * BOUNDARY_Z * 1.8;
         }
 
-        // 5. 동적 크기 조절 (낙하 가속도 효과)
-        const fallProgress = 1 - (positions[index + 1] / RESET_HEIGHT);
-        sizes[i] = 1.2 +
-            Math.sin(fallProgress * Math.PI) * 2.5 +
-            Math.random() * 0.3;
+        // // 5. 동적 크기 조절 (낙하 가속도 효과)
+        // Remove for debugging
+        // const fallProgress = 1 - (positions[index + 1] / RESET_HEIGHT);
+        // sizes[i] = 1.2 +
+        //     Math.sin(fallProgress * Math.PI) * 2.5 +
+        //     Math.random() * 0.3;
     }
 
     rainParticles.geometry.attributes.position.needsUpdate = true;
@@ -1028,6 +1052,8 @@ export function setWind(vec3) {
     wind.y = vec3.y;
     wind.z = vec3.z;
 }
+
+
 
 export function setWindStrength(strength) {
     windStrength = Math.max(0, Math.min(3, strength));
