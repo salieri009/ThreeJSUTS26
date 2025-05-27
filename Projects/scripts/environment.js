@@ -785,17 +785,27 @@ export function createFog() {
     scene.background = new THREE.Color(0xcccccc);
 }
 export function updateFog() {
+    // Mesh 안개 애니메이션
     if (fogMesh) {
         fogMesh.material.opacity = 0.12 + Math.abs(Math.sin(clock.elapsedTime * 0.1)) * 0.09;
     }
+    // Three.js Fog 파라미터 변화(선택)
+    if (scene.fog instanceof THREE.Fog) {
+        const t = clock.getElapsedTime();
+        scene.fog.near = 10 + Math.sin(t * 0.2) * 5;
+        scene.fog.far = 120 + Math.sin(t * 0.15) * 10;
+    }
 }
 export function removeFog() {
+    // Mesh 안개 제거
     if (fogMesh) {
         scene.remove(fogMesh);
         fogMesh.geometry.dispose();
         fogMesh.material.dispose();
         fogMesh = null;
     }
+    // Three.js Fog 제거
+    scene.fog = null;
 }
 
 
