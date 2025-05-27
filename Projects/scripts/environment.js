@@ -763,17 +763,36 @@ export function createRain() {
 
 export function updateRain() {
     if (!rainParticles) return;
+
     const positions = rainParticles.geometry.attributes.position.array;
     const speeds = rainParticles.geometry.attributes.speed.array;
     const sizes = rainParticles.geometry.attributes.size.array;
+    const time = Date.now() * 0.001;
+
     for (let i = 0; i < speeds.length; i++) {
-        positions[i * 3 + 1] -= speeds[i] * 2.5;
-        if (positions[i * 3 + 1] < 0) {
-            positions[i * 3 + 1] = Math.random() * 15 + 35;
+        const index = i * 3;
+
+        // 비 낙하 (바람 영향으로 각도 변화)
+        const windDrift = windStrength * 0.4;
+        positions[index + 1] -= speeds[i] * 2.5;
+        positions[index] += windDirection.x * windDrift * (1 + Math.sin(time + i) * 0.2);
+        positions[index + 2] += windDirection.z * windDrift * (1 + Math.sin(time + i) * 0.2);
+
+        // 돌풍 시 더 강한 효과
+        if (isGusty) {
+            const gustStrength = Math.sin(time * 3 + i * 0.1) * 0.3;
+            positions[index] += windDirection.x * gustStrength;
+            positions[index + 2] += windDirection.z * gustStrength;
         }
-        // 입자 크기 변화 (떨어질수록 커짐)
-        sizes[i] = 1.5 + (positions[i * 3 + 1] < 10 ? 2.5 : Math.random() * 2);
+
+        if (positions[index + 1] < 0) {
+            positions[index + 1] = Math.random() * 15 + 35;
+        }
+
+        // 입자 크기 변화
+        sizes[i] = 1.5 + (positions[index + 1] < 10 ? 2.5 : Math.random() * 2);
     }
+
     rainParticles.geometry.attributes.position.needsUpdate = true;
     rainParticles.geometry.attributes.size.needsUpdate = true;
 }
@@ -829,15 +848,40 @@ export function createSnow() {
 
 export function updateSnow() {
     if (!snowParticles) return;
+
     const positions = snowParticles.geometry.attributes.position.array;
     const speeds = snowParticles.geometry.attributes.speed.array;
+    const time = Date.now() * 0.001;
+
     for (let i = 0; i < speeds.length; i++) {
-        positions[i * 3 + 1] -= speeds[i];
-        positions[i * 3] += Math.sin(Date.now() * 0.0009 + i) * 0.04; // Affected by window, not implemented yet
-        if (positions[i * 3 + 1] < 0) {
-            positions[i * 3 + 1] = Math.random() * 15 + 35;
+        const index = i * 3;
+
+        // 기본 낙하
+        positions[index + 1] -= speeds[i];
+
+        // 바람 영향 적용
+        const windEffect = windStrength * (0.8 + Math.random() * 0.4);
+        const turbulence = Math.sin(time * 2 + i * 0.1) * windTurbulence * 0.1;
+
+        positions[index] += (windDirection.x * windEffect + turbulence) * 0.08;
+        positions[index + 2] += (windDirection.z * windEffect + turbulence * 0.5) * 0.08;
+
+        // 돌풍 효과
+        if (isGusty) {
+            const gustEffect = Math.sin(time * 5 + i * 0.05) * 0.15;
+            positions[index] += windDirection.x * gustEffect;
+            positions[index + 2] += windDirection.z * gustEffect;
+        }
+
+        // 자연스러운 흔들림
+        positions[index] += Math.sin(time * 0.5 + i) * 0.013;
+
+        // 리셋
+        if (positions[index + 1] < 0) {
+            positions[index + 1] = Math.random() * 15 + 35;
         }
     }
+
     snowParticles.geometry.attributes.position.needsUpdate = true;
 }
 
@@ -929,7 +973,12 @@ export function removeStorm() {
 ///=============Wind===================
 
 // 예시: wind = { x: 1.2, y: 0, z: 0 } (x축으로 1.2의 속도)
-let wind = { x: 0,
+let windStrength = 1.0; // 바람 강도 (0.0 ~ 3.0)
+let windTurbulence = 0.5; // 바람 난류 정도
+let windGustTimer = 0; // 돌풍 타이머
+let isGusty = false; // 돌풍 상태
+
+let windDirection = { x: 0,
     y: 0,
     z: 0 };
 
@@ -939,6 +988,26 @@ export function setWind(vec3) {
     wind.y = vec3.y;
     wind.z = vec3.z;
 }
+
+export function setWindStrength(strength) {
+    windStrength = Math.max(0, Math.min(3, strength));
+}
+
+export function setWindDirection(x, y, z) {
+    const length = Math.sqrt(x*x + y*y + z*z);
+    if (length > 0) {
+        windDirection = {
+            x: x/length,
+            y: y/length,
+            z: z/length
+        };
+    }
+}
+
+export function setWindTurbulence(turbulence) {
+    windTurbulence = Math.max(0, Math.min(2, turbulence));
+}
+
 // For the test run,
 // export function updateWinterEffect() {
 //     if (!winterEffect) return;
@@ -959,32 +1028,123 @@ export function setWind(vec3) {
 // 바람 효과 (입자)
 export function createWind() {
     removeWind();
-    const windCount = Math.floor(400 * lodQuality);
+
+    const windCount = Math.floor(600 * lodQuality);
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(windCount * 3);
+    const velocities = new Float32Array(windCount * 3);
+
     for (let i = 0; i < windCount; i++) {
-        positions[i * 3] = Math.random() * 100 - 50;
-        positions[i * 3 + 1] = Math.random() * 30 + 10;
-        positions[i * 3 + 2] = Math.random() * 80 - 40;
+        const index = i * 3;
+        positions[index] = Math.random() * 100 - 50;
+        positions[index + 1] = Math.random() * 30 + 5;
+        positions[index + 2] = Math.random() * 80 - 40;
+
+        // 각 파티클의 초기 속도
+        velocities[index] = (Math.random() - 0.5) * 0.1;
+        velocities[index + 1] = (Math.random() - 0.5) * 0.05;
+        velocities[index + 2] = (Math.random() - 0.5) * 0.1;
     }
+
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+
     const material = new THREE.PointsMaterial({
         color: 0xeeeeee,
-        size: 0.8,
+        size: 1.2,
         transparent: true,
-        opacity: 0.12
+        opacity: 0.15,
+        sizeAttenuation: true
     });
+
     windParticles = new THREE.Points(geometry, material);
     scene.add(windParticles);
 }
+
 export function updateWind() {
     if (!windParticles) return;
+
     const positions = windParticles.geometry.attributes.position.array;
+    const velocities = windParticles.geometry.attributes.velocity.array;
+    const time = Date.now() * 0.001;
+
     for (let i = 0; i < positions.length / 3; i++) {
-        positions[i * 3] += 0.18 + Math.sin(i * 0.1) * 0.03;
-        if (positions[i * 3] > 60) positions[i * 3] = -60;
+        const index = i * 3;
+
+        // 바람 방향과 강도 적용
+        const windForce = windStrength * 0.2;
+        const turbulence = Math.sin(time * 2 + i * 0.1) * windTurbulence * 0.05;
+
+        positions[index] += (windDirection.x * windForce + velocities[index] + turbulence);
+        positions[index + 1] += (windDirection.y * windForce * 0.3 + velocities[index + 1]);
+        positions[index + 2] += (windDirection.z * windForce + velocities[index + 2] + turbulence);
+
+        // 돌풍 효과
+        if (isGusty) {
+            const gustEffect = Math.sin(time * 4 + i * 0.05) * 0.1;
+            positions[index] += windDirection.x * gustEffect;
+            positions[index + 2] += windDirection.z * gustEffect;
+        }
+
+        // 경계 처리
+        if (positions[index] > 60) positions[index] = -60;
+        if (positions[index] < -60) positions[index] = 60;
+        if (positions[index + 2] > 40) positions[index + 2] = -40;
+        if (positions[index + 2] < -40) positions[index + 2] = 40;
+        if (positions[index + 1] > 35) positions[index + 1] = 5;
+        if (positions[index + 1] < 5) positions[index + 1] = 35;
     }
+
     windParticles.geometry.attributes.position.needsUpdate = true;
+}
+
+export function updateGustSystem() {
+    windGustTimer += 1/60; // 60fps 기준
+
+    // 랜덤하게 돌풍 발생 (10-30초 간격)
+    if (!isGusty && windGustTimer > 10 + Math.random() * 20) {
+        isGusty = true;
+        windGustTimer = 0;
+
+        // 돌풍 시 바람 강도 일시적 증가
+        const originalStrength = windStrength;
+        windStrength *= 1.5 + Math.random() * 0.5;
+
+        // 2-5초 후 돌풍 종료
+        setTimeout(() => {
+            isGusty = false;
+            windStrength = originalStrength;
+        }, (2 + Math.random() * 3) * 1000);
+    }
+}
+
+export function setWeatherWind(weatherType) {
+    switch(weatherType) {
+        case 'rainy':
+            setWindStrength(1.2);
+            setWindDirection(1, 0, 0.3);
+            setWindTurbulence(0.8);
+            break;
+        case 'stormy':
+            setWindStrength(2.5);
+            setWindDirection(0.8, 0, 0.6);
+            setWindTurbulence(1.5);
+            break;
+        case 'snowy':
+            setWindStrength(0.8);
+            setWindDirection(0.7, 0, 0.7);
+            setWindTurbulence(0.4);
+            break;
+        case 'cloudy':
+            setWindStrength(0.6);
+            setWindDirection(1, 0, 0);
+            setWindTurbulence(0.3);
+            break;
+        default: // clear
+            setWindStrength(0.3);
+            setWindDirection(1, 0, 0);
+            setWindTurbulence(0.2);
+    }
 }
 export function removeWind() {
     if (windParticles) {
@@ -1084,23 +1244,34 @@ export function addPuddle() {
 export function setWeather(type) {
     weather.cloudy = weather.rainy = weather.snowy = weather.stormy = weather.foggy = false;
     removeRain(); removeSnow(); removeStorm(); removeWind(); removeFog(); removePuddle();
+
+    // 날씨별 바람 설정
+    setWeatherWind(type);
+
     if (type === 'rainy') {
         weather.rainy = true;
         createRain();
         createWind();
-        createPuddle(); }
-    else if (type === 'snowy') {
+        createPuddle();
+    } else if (type === 'snowy') {
         weather.snowy = true;
         createSnow();
-        createWind(); }
-    else if (type === 'stormy') {
+        createWind();
+    } else if (type === 'stormy') {
         weather.stormy = true;
         createStorm();
         createWind();
         createFog();
-        createPuddle(); }
-    else if (type === 'cloudy') { weather.cloudy = true; }
-    else if (type === 'foggy') { weather.foggy = true; createFog(); }
+        createPuddle();
+    } else if (type === 'cloudy') {
+        weather.cloudy = true;
+        createWind();
+    } else if (type === 'foggy') {
+        weather.foggy = true;
+        createFog();
+        createWind();
+    }
+
     updateSky();
 }
 
@@ -1174,5 +1345,6 @@ function animate() {
     updateAutumnEffect();
     updateSpringEffect();
     updateWinterEffect();
+    updateGustSystem();
 }
 animate();
