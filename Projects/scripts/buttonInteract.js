@@ -81,13 +81,29 @@ export function deleteModel() {
 }
 
 document.querySelector('[data-category="terrain expansion"]').addEventListener('click', () => {
-    if(level < 8)
-        addBlock();
+        if (level < 8)
+            addBlock();
         env.addCloudsRange();
-        env.loadClouds();
-    //비가 오면 puddle 도 같이 증가
-    if (env.weather.rainy || env.weather.stormy)
-        env.addPuddle();
+
+
+        // 현재 날씨 효과를 다시 적용 (구름, 비, 번개 등 모두)
+        if (env.weather.stormy) {
+            env.setWeather('stormy');
+            env.loadClouds();
+
+        } else if (env.weather.rainy) {
+            env.setWeather('rainy');
+        } else if (env.weather.snowy) {
+            env.setWeather('snowy');
+        } else if (env.weather.cloudy) {
+            env.setWeather('cloudy');
+        } else {
+            env.setWeather('sunny');
+        }
+
+        // 비가 오면 puddle 도 같이 증가
+        if (env.weather.rainy || env.weather.stormy)
+            env.addPuddle();
     }
 
 
@@ -258,10 +274,10 @@ document.querySelector('[data-category="stormy"]').addEventListener('click', () 
 
 //======================================================================================
 
-document.querySelector('[data-category="btn-night"]').addEventListener('click', () => {
-
-})
-
-document.querySelector('[data-category="btn-day"]').addEventListener('click', () => {
-
-})
+// document.querySelector('[data-category="btn-night"]').addEventListener('click', () => {
+//
+// })
+//
+// document.querySelector('[data-category="btn-day"]').addEventListener('click', () => {
+//
+// })

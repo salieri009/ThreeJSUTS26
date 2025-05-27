@@ -101,13 +101,17 @@ export function moon() {
 //==============================clouds=============================
 
 function getCloudCountForWeather(weather) {
-    if (weather.stormy) return 50;
-    if (weather.rainy) return 35;
-    if (weather.snowy) return 25;
-    if (weather.cloudy) return 18;
-    if (weather.foggy) return 10;
-    return 5; // 맑음 등 기본값
+    // base는 weather 상태별 기본값, scale은 반경에 따라 증가
+    let base = 50; // stormy 기준
+    let scale = cloudRange.x / 100; // cloudRange.x가 100일 때 base, 200이면 2*base
+    if (weather.stormy) return Math.floor(base * scale);
+    if (weather.rainy)  return Math.floor(35 * scale);
+    if (weather.snowy)  return Math.floor(25 * scale);
+    if (weather.cloudy) return Math.floor(18 * scale);
+    if (weather.foggy)  return Math.floor(10 * scale);
+    return Math.floor(5 * scale);
 }
+
 
 function getCloudColorForWeather(weather) {
     // weather 객체의 상태값을 참고하여 구름 색상을 반환합니다.
