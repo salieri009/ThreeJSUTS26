@@ -1019,9 +1019,8 @@ let windTurbulence = 0.5; // 바람 난류 정도
 let windGustTimer = 0; // 돌풍 타이머
 let isGusty = false; // 돌풍 상태
 
-let windDirection = { x: 0,
-    y: 0,
-    z: 0 };
+let windDirection = { x: 1, y: 0, z: 0.3 };
+setWindDirection(1, 0, 0.3); // Set wind
 
 // 외부에서 wind 값을 업데이트할 수 있도록 함수 제공
 export function setWind(vec3) {
