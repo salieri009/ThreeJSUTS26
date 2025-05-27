@@ -236,6 +236,23 @@ export function cloudMove() {
                 node.material.transparent = true;
             }
         });
+
+        // === 구름 아래에 비/눈 파티클 위치시키기 ===
+        // rainParticles와 snowParticles가 존재할 때만 위치를 동기화
+        if (weather.rainy && rainParticles) {
+            rainParticles.position.set(
+                cloud.position.x,
+                cloud.position.y-2, // 구름 아래로 약간 내림
+                cloud.position.z
+            );
+        }
+        if (weather.snowy && snowParticles) {
+            snowParticles.position.set(
+                cloud.position.x,
+                cloud.position.y - 8,
+                cloud.position.z
+            );
+        }
     }
 }
 
