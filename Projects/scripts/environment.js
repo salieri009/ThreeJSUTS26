@@ -762,35 +762,62 @@ export function createRain() {
 }
 
 export function updateRain() {
-    if (!rainParticles) return;
+    if (!rainParticles || !rainParticles.geometry) return;
 
     const positions = rainParticles.geometry.attributes.position.array;
     const speeds = rainParticles.geometry.attributes.speed.array;
     const sizes = rainParticles.geometry.attributes.size.array;
-    const time = Date.now() * 0.001;
+    const time = performance.now() * 0.001;
+    const delta = clock.getDelta(); // 프레임 간 시간 차이
+
+    // 경계값 상수 정의
+    const BOUNDARY_X = 75;
+    const BOUNDARY_Z = 75;
+    const RESET_HEIGHT = 45;
+
+    // 바람 파라미터 유효성 검사
+    const safeWindX = windDirection.x || 0;
+    const safeWindZ = windDirection.z || 0;
+    const safeWindStrength = Math.max(windStrength || 0, 0);
 
     for (let i = 0; i < speeds.length; i++) {
         const index = i * 3;
+        const baseSpeed = Math.max(speeds[i] || 1.2, 0.5);
 
-        // 비 낙하 (바람 영향으로 각도 변화)
-        const windDrift = windStrength * 0.4;
-        positions[index + 1] -= speeds[i] * 2.5;
-        positions[index] += windDirection.x * windDrift * (1 + Math.sin(time + i) * 0.2);
-        positions[index + 2] += windDirection.z * windDrift * (1 + Math.sin(time + i) * 0.2);
+        // 1. 물리 기반 낙하 계산
+        positions[index + 1] -= baseSpeed * 3.8 * delta; // 델타 타임 적용
 
-        // 돌풍 시 더 강한 효과
+        // 2. 바람 효과 (방향 벡터 정규화)
+        const windFactor = safeWindStrength * 0.35 * (0.7 + Math.random() * 0.3);
+        const turbulence = Math.cos(time * 1.8 + i) * windTurbulence * 0.15;
+
+        positions[index] += (safeWindX * windFactor + turbulence) * 1.1;
+        positions[index + 2] += (safeWindZ * windFactor + turbulence * 0.6) * 1.1;
+
+        // 3. 돌풍 효과 (방향 일관성 유지)
         if (isGusty) {
-            const gustStrength = Math.sin(time * 3 + i * 0.1) * 0.3;
-            positions[index] += windDirection.x * gustStrength;
-            positions[index + 2] += windDirection.z * gustStrength;
+            const gustPhase = Math.sin(time * 4.2 + i * 0.05) * 0.45;
+            positions[index] += safeWindX * gustPhase;
+            positions[index + 2] += safeWindZ * gustPhase;
         }
 
-        if (positions[index + 1] < 0) {
-            positions[index + 1] = Math.random() * 15 + 35;
+        // 4. 3D 경계 박스 재활용 시스템
+        const shouldReset =
+            positions[index + 1] < -15 ||
+            Math.abs(positions[index]) > BOUNDARY_X ||
+            Math.abs(positions[index + 2]) > BOUNDARY_Z;
+
+        if (shouldReset) {
+            positions[index] = (Math.random() - 0.5) * BOUNDARY_X * 1.8;
+            positions[index + 1] = Math.random() * 20 + RESET_HEIGHT;
+            positions[index + 2] = (Math.random() - 0.5) * BOUNDARY_Z * 1.8;
         }
 
-        // 입자 크기 변화
-        sizes[i] = 1.5 + (positions[index + 1] < 10 ? 2.5 : Math.random() * 2);
+        // 5. 동적 크기 조절 (낙하 가속도 효과)
+        const fallProgress = 1 - (positions[index + 1] / RESET_HEIGHT);
+        sizes[i] = 1.2 +
+            Math.sin(fallProgress * Math.PI) * 2.5 +
+            Math.random() * 0.3;
     }
 
     rainParticles.geometry.attributes.position.needsUpdate = true;
@@ -847,38 +874,52 @@ export function createSnow() {
 }
 
 export function updateSnow() {
-    if (!snowParticles) return;
+    if (!snowParticles || !snowParticles.geometry) return;
 
     const positions = snowParticles.geometry.attributes.position.array;
     const speeds = snowParticles.geometry.attributes.speed.array;
-    const time = Date.now() * 0.001;
+    const time = performance.now() * 0.001;
+    const baseWindX = windDirection.x || 0; // NaN 방지
+    const baseWindZ = windDirection.z || 0;
+
+    // 화면 경계값 설정
+    const horizontalBoundary = 50;
+    const verticalStart = 35;
 
     for (let i = 0; i < speeds.length; i++) {
         const index = i * 3;
+        const currentSpeed = Math.max(speeds[i] || 0.5, 0.1); // 최소 속도 보장
 
-        // 기본 낙하
-        positions[index + 1] -= speeds[i];
+        // 1. 위치 업데이트
+        positions[index + 1] -= currentSpeed * 0.8; // 프레임 독립적 속도
 
-        // 바람 영향 적용
-        const windEffect = windStrength * (0.8 + Math.random() * 0.4);
-        const turbulence = Math.sin(time * 2 + i * 0.1) * windTurbulence * 0.1;
+        // 2. 바람 효과 (유효성 검사 추가)
+        const windEffect = (windStrength || 0) * (0.6 + Math.random() * 0.4);
+        const turbulence = Math.sin(time * 2 + i * 0.1) * (windTurbulence || 0) * 0.1;
 
-        positions[index] += (windDirection.x * windEffect + turbulence) * 0.08;
-        positions[index + 2] += (windDirection.z * windEffect + turbulence * 0.5) * 0.08;
+        positions[index] += (baseWindX * windEffect + turbulence) * 0.05;
+        positions[index + 2] += (baseWindZ * windEffect + turbulence * 0.7) * 0.05;
 
-        // 돌풍 효과
+        // 3. 돌풍 효과 (활성화 시에만)
         if (isGusty) {
-            const gustEffect = Math.sin(time * 5 + i * 0.05) * 0.15;
-            positions[index] += windDirection.x * gustEffect;
-            positions[index + 2] += windDirection.z * gustEffect;
+            const gustFactor = Math.sin(time * 4.5 + i * 0.05) * 0.18;
+            positions[index] += baseWindX * gustFactor;
+            positions[index + 2] += baseWindZ * gustFactor;
         }
 
-        // 자연스러운 흔들림
-        positions[index] += Math.sin(time * 0.5 + i) * 0.013;
+        // 4. 자연스러운 흔들림 (주기 조정)
+        positions[index] += Math.cos(time * 0.3 + i) * 0.015;
+        positions[index + 2] += Math.sin(time * 0.35 + i) * 0.015;
 
-        // 리셋
-        if (positions[index + 1] < 0) {
-            positions[index + 1] = Math.random() * 15 + 35;
+        // 5. 파티클 재활용 시스템
+        if (
+            positions[index + 1] < -10 ||
+            Math.abs(positions[index]) > horizontalBoundary ||
+            Math.abs(positions[index + 2]) > horizontalBoundary
+        ) {
+            positions[index] = (Math.random() - 0.5) * horizontalBoundary * 2;
+            positions[index + 1] = Math.random() * 15 + verticalStart;
+            positions[index + 2] = (Math.random() - 0.5) * horizontalBoundary * 2;
         }
     }
 
@@ -973,7 +1014,7 @@ export function removeStorm() {
 ///=============Wind===================
 
 // 예시: wind = { x: 1.2, y: 0, z: 0 } (x축으로 1.2의 속도)
-let windStrength = 1.0; // 바람 강도 (0.0 ~ 3.0)
+let windStrength = 0.5; // 바람 강도 (0.0 ~ 3.0)
 let windTurbulence = 0.5; // 바람 난류 정도
 let windGustTimer = 0; // 돌풍 타이머
 let isGusty = false; // 돌풍 상태

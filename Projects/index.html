@@ -36,6 +36,21 @@
 <!--        <button class="overlay-btn" data-category="btn-day">Day Mode</button>-->
     </div>
 
+    <div>
+        <label>바람 세기: <input type="range" min="0" max="3" step="0.01" value="1" id="windStrengthSlider"></label>
+        <span id="windStrengthValue">1.0</span>
+    </div>
+    <div>
+        <label>바람 난류: <input type="range" min="0" max="2" step="0.01" value="0.5" id="windTurbulenceSlider"></label>
+        <span id="windTurbulenceValue">0.5</span>
+    </div>
+    <div>
+        <label>바람 방향 (x, z):
+            <input type="number" step="0.1" value="1" id="windDirX">
+            <input type="number" step="0.1" value="0" id="windDirZ">
+        </label>
+    </div>
+
     <div class="scene-overlay-season-controls">
         <button class="overlay-btn" data-category="spring">🌸 Spring</button>
         <button class="overlay-btn" data-category="summer">☀️ Summer</button>
