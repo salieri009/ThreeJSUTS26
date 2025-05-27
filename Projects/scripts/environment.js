@@ -392,6 +392,14 @@ export function createMoon() {
     return moon;
 }
 
+let moonOrbitAngle = 0;
+export function updateMoon(moon, deltaTime) {
+    moonOrbitAngle += deltaTime * 0.2; // 0.2rad/s 속도
+    moon.position.x = 200 * Math.cos(moonOrbitAngle);
+    moon.position.z = 200 * Math.sin(moonOrbitAngle);
+    moon.rotation.y += deltaTime * 0.05; // 자전 애니메이션
+}
+
 //
 // function removeMoon(){
 //
@@ -1412,6 +1420,7 @@ function updateSkyForSeason(type) {
 function animate() {
     requestAnimationFrame(animate);
     cloudMove();
+    updateMoon();
     updateRain();
     updateSnow();
     updateStorm();
