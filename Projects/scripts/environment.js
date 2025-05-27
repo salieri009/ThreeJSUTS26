@@ -23,6 +23,9 @@ let winterEffect = null;
 let currentSeason = null;
 let rainParticles = null;
 let snowParticles = null;
+
+//This is for the weather area//
+let snowAreaRadius , rainAreasRadius, windAreaRadius = 5;
 //=============
 export const weather = {
     cloudy: false,
@@ -597,15 +600,14 @@ export function createSnow() {
     const speeds = new Float32Array(totalSnowCount);
     let index = 0;
     for (const cloud of clouds) {
-        cloud.position.set(
-            Math.random() * 40 - 20,
-            Math.random() * 15 + 35,
-            Math.random() * 20 + 10
-        );
+        // 구름의 중심 위치는 그대로 사용 (cloud.position)
         for (let i = 0; i < snowCountPerCloud; i++) {
-            positions[index * 3] = cloud.position.x + (Math.random() * 10 - 5);
+            // 구름 아래에서 눈 입자를 퍼뜨릴 반경을 snowAreaRadius로 조절
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.random() * snowAreaRadius;
+            positions[index * 3]     = cloud.position.x + Math.cos(angle) * radius;
             positions[index * 3 + 1] = cloud.position.y - 2 + Math.random() * 5;
-            positions[index * 3 + 2] = cloud.position.z + (Math.random() * 10 - 5);
+            positions[index * 3 + 2] = cloud.position.z + Math.sin(angle) * radius;
             sizes[index] = Math.random() * 2 + 1.2;
             speeds[index] = Math.random() * 0.13 + 0.07;
             index++;
