@@ -385,6 +385,7 @@ export function createSummerEffect() {
 
     summerEffect = new THREE.Points(geometry, material);
     scene.add(summerEffect);
+
 }
 
 export function updateSummerEffect(delta) {
@@ -866,7 +867,6 @@ export function setSeason(type) {
     // 선택된 계절 이펙트 적용
     if (type === 'spring') {
         season.spring = true
-        fog
         createSpringEffect();
     } else if (type === 'summer') {
         season.summer = true;
@@ -921,5 +921,9 @@ function animate() {
     updateStorm();
     updateWind();
     updateFog();
+    updateSummerEffect();
+    updateAutumnEffect();
+    updateSpringEffect();
+    updateWinterEffect();
 }
 animate();
