@@ -25,7 +25,8 @@ let rainParticles = null;
 let snowParticles = null;
 
 //This is for the weather area//
-let snowAreaRadius , rainAreasRadius, windAreaRadius = 5;
+// let snowAreaRadius , rainAreaRadius, windAreaRadius = 5;
+let snowAreaRadius = 10;
 //=============
 export const weather = {
     cloudy: false,
@@ -105,7 +106,7 @@ export function moon() {
 
 function getCloudCountForWeather(weather) {
     // base는 weather 상태별 기본값, scale은 반경에 따라 증가
-    let base = 50; // stormy 기준
+    let base = 30; // stormy 기준
     let scale = cloudRange.x / 100; // cloudRange.x가 100일 때 base, 200이면 2*base
     if (weather.stormy) return Math.floor(base * scale);
     if (weather.rainy)  return Math.floor(35 * scale);
@@ -119,7 +120,7 @@ function getCloudCountForWeather(weather) {
 function getCloudColorForWeather(weather) {
     // weather 객체의 상태값을 참고하여 구름 색상을 반환합니다.
     // 반환값은 THREE.js의 color hex 코드입니다.
-    if (weather.stormy) return 0x888899;   // 어두운 회색/보라
+    if (weather.stormy) return 0x6D4A7A;   // 어두운 회색/보라
     if (weather.rainy)  return 0xbbbbbb;   // 연한 회색
     if (weather.snowy)  return 0xf7f7f7;   // 밝은 흰색
     if (weather.cloudy) return 0xcccccc;   // 중간 회색
@@ -517,17 +518,21 @@ export function removeWinterEffect() {
 
 //===========================================================
 // 비 (입자 크기/속도 다양화)
+
+let rainAreaRadius = 10;
+
 export function createRain() {
     const minCloudCount = 20;
-
     if (clouds.length < minCloudCount) {
         addCloudsRange(minCloudCount - clouds.length);
     }
 
-
     removeRain();
+
     const rainCountPerCloud = Math.floor(100 * lodQuality);
     const totalRainCount = clouds.length * rainCountPerCloud;
+    if (clouds.length === 0 || rainCountPerCloud === 0 || totalRainCount === 0) return;
+
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(totalRainCount * 3);
     const sizes = new Float32Array(totalRainCount);
@@ -535,20 +540,37 @@ export function createRain() {
 
     let index = 0;
     for (const cloud of clouds) {
-        cloud.position.set(
-            Math.random() * 40 - 20,
-            Math.random() * 15 + 35,
-            Math.random() * 20 + 10
-        );
+        if (!cloud.position ||
+            isNaN(cloud.position.x) ||
+            isNaN(cloud.position.y) ||
+            isNaN(cloud.position.z)) {
+            console.error('cloud.position is invalid', cloud.position);
+            continue;
+        }
         for (let i = 0; i < rainCountPerCloud; i++) {
-            positions[index * 3] = cloud.position.x + (Math.random() * 10 - 5);
-            positions[index * 3 + 1] = cloud.position.y - 2 + Math.random() * 5;
-            positions[index * 3 + 2] = cloud.position.z + (Math.random() * 10 - 5);
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.random() * rainAreaRadius;
+            if (isNaN(angle) || isNaN(radius)) {
+                console.error('angle or radius is NaN', angle, radius);
+                continue;
+            }
+            const x = cloud.position.x + Math.cos(angle) * radius;
+            const y = cloud.position.y - 2 + Math.random() * 5;
+            const z = cloud.position.z + Math.sin(angle) * radius;
+            if (isNaN(x) || isNaN(y) || isNaN(z)) {
+                console.error('Computed position is NaN', x, y, z);
+                continue;
+            }
+            positions[index * 3]     = x;
+            positions[index * 3 + 1] = y;
+            positions[index * 3 + 2] = z;
             sizes[index] = Math.random() * 3 + 1.5;
             speeds[index] = Math.random() * 0.4 + 0.25;
             index++;
         }
     }
+
+
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
     geometry.setAttribute('speed', new THREE.BufferAttribute(speeds, 1));
@@ -774,14 +796,13 @@ export function createFog() {
     const fogMaterial = new THREE.MeshBasicMaterial({
         color: 0xcccccc,
         transparent: true,
-        opacity: 0.3
+        opacity: 0.002
     });
 
     fogMesh = new THREE.Mesh(fogGeometry, fogMaterial);
     fogMesh.rotation.x = -Math.PI / 2;
     fogMesh.position.y = 2.5;
     scene.add(fogMesh);
-
     scene.fog = new THREE.Fog(0xcccccc, 10, 40); // 색상, 시작, 끝
 }
 export function updateFog() {
