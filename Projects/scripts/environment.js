@@ -512,8 +512,9 @@ export function removeWinterEffect() {
 // 비 (입자 크기/속도 다양화)
 export function createRain() {
     const minCloudCount = 20;
+
     if (clouds.length < minCloudCount) {
-        addClouds(minCloudCount - clouds.length);
+        addCloudsRange(minCloudCount - clouds.length);
     }
 
 
