@@ -770,31 +770,32 @@ export function removeWind() {
 export function createFog() {
     removeFog();
 
-    const fogGeometry = new THREE.BoxGeometry(150, 150, 100, 5, 5, 5);
+    const fogGeometry = new THREE.BoxGeometry(140, 140, 140, 30, 30, 30);
     const fogMaterial = new THREE.MeshBasicMaterial({
         color: 0xcccccc,
         transparent: true,
-        opacity: 0.18
+        opacity: 0.3
     });
+
     fogMesh = new THREE.Mesh(fogGeometry, fogMaterial);
     fogMesh.rotation.x = -Math.PI / 2;
     fogMesh.position.y = 2.5;
     scene.add(fogMesh);
 
-    scene.fog = new THREE.Fog(0xcccccc, 10, 120); // 색상, 시작, 끝
-    scene.background = new THREE.Color(0xcccccc);
+    scene.fog = new THREE.Fog(0xcccccc, 10, 40); // 색상, 시작, 끝
 }
 export function updateFog() {
     // Mesh 안개 애니메이션
     if (fogMesh) {
-        fogMesh.material.opacity = 0.12 + Math.abs(Math.sin(clock.elapsedTime * 0.1)) * 0.09;
+        fogMesh.material.opacity = 0.12 + Math.abs(Math.sin(clock.elapsedTime * 0.1)) * 0.3;
     }
     // Three.js Fog 파라미터 변화(선택)
-    if (scene.fog instanceof THREE.Fog) {
-        const t = clock.getElapsedTime();
-        scene.fog.near = 10 + Math.sin(t * 0.2) * 5;
-        scene.fog.far = 120 + Math.sin(t * 0.15) * 10;
-    }
+    //
+    // if (scene.fog instanceof THREE.Fog) {
+    //     const t = clock.getElapsedTime();
+    //     scene.fog.near = 10 + Math.sin(t * 0.2) * 5;
+    //     scene.fog.far = 120 + Math.sin(t * 0.15) * 10;
+    // }
 }
 export function removeFog() {
     // Mesh 안개 제거
