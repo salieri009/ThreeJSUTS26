@@ -769,7 +769,8 @@ export function removeWind() {
 // 안개 효과 (셰이더 기반)
 export function createFog() {
     removeFog();
-    const fogGeometry = new THREE.PlaneGeometry(200, 200);
+
+    const fogGeometry = new THREE.BoxGeometry(150, 150, 100, 5, 5, 5);
     const fogMaterial = new THREE.MeshBasicMaterial({
         color: 0xcccccc,
         transparent: true,
@@ -779,6 +780,9 @@ export function createFog() {
     fogMesh.rotation.x = -Math.PI / 2;
     fogMesh.position.y = 2.5;
     scene.add(fogMesh);
+
+    scene.fog = new THREE.Fog(0xcccccc, 10, 120); // 색상, 시작, 끝
+    scene.background = new THREE.Color(0xcccccc);
 }
 export function updateFog() {
     if (fogMesh) {
