@@ -2,6 +2,8 @@ import * as THREE from '../build/three.module.js';
 import { scene } from './sceneManager.js';
 import { loader } from './gridModels.js';
 import { level } from './buttonInteract.js'
+// import * as dat from 'dat.gui';
+
 
 let skyMaterial, skyDome, sunLight;
 
@@ -748,6 +750,13 @@ export function removeStorm() {
     for (let line of lightningLines) scene.remove(line);
     lightningLines = [];
 }
+///=============Wind===================
+
+let wind = {
+    x: 0.5, // 동서 방향
+    z: 0.1  // 남북 방향
+};
+
 
 // 바람 효과 (입자)
 export function createWind() {
@@ -796,19 +805,19 @@ export function createFog() {
     const fogMaterial = new THREE.MeshBasicMaterial({
         color: 0xcccccc,
         transparent: true,
-        opacity: 0.002
+        opacity: 1.1
     });
 
     fogMesh = new THREE.Mesh(fogGeometry, fogMaterial);
     fogMesh.rotation.x = -Math.PI / 2;
     fogMesh.position.y = 2.5;
     scene.add(fogMesh);
-    scene.fog = new THREE.Fog(0xcccccc, 10, 40); // 색상, 시작, 끝
+    scene.fog = new THREE.Fog(0xcccccc, 15, 50); // 색상, 시작, 끝
 }
 export function updateFog() {
     // Mesh 안개 애니메이션
     if (fogMesh) {
-        fogMesh.material.opacity = 0.12 + Math.abs(Math.sin(clock.elapsedTime * 0.1)) * 0.3;
+        fogMesh.material.opacity = 0.12 + Math.abs(Math.sin(clock.elapsedTime * 0.1)) * 0.05;
     }
     // Three.js Fog 파라미터 변화(선택)
     //
