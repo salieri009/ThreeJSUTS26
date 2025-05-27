@@ -795,8 +795,8 @@ export function updateRain() {
 
     // 경계값 상수 정의
     const BOUNDARY_X = 75;
-    const BOUNDARY_Z = 75;
-    const RESET_HEIGHT = 45;
+    const BOUNDARY_Z = 120;
+    const RESET_HEIGHT = 0.4;
 
     // 바람 파라미터 유효성 검사
     const safeWindX = windDirection.x || 0;
