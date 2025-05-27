@@ -2,6 +2,7 @@ import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
 import { grasses, clips, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine, pebble, windmill} from './gridModels.js';
 import * as env from './environment.js';
+import {addCloudsRange} from "./environment.js";
 
 
 // import {updateWeatherWidget} from "./UIManager";
@@ -82,9 +83,13 @@ export function deleteModel() {
 document.querySelector('[data-category="terrain expansion"]').addEventListener('click', () => {
     if(level < 8)
         addBlock();
+        env.addCloudsRange();
+    //비가 오면 puddle 도 같이 증가
     if (env.weather.rainy || env.weather.stormy)
         env.addPuddle();
     }
+
+
 );
 document.querySelector('[data-category="remove"]').addEventListener('click', () => { deleteModel(); });
 
