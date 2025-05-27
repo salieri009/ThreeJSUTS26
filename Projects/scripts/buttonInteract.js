@@ -10,6 +10,8 @@ import {addCloudsRange} from "./environment.js";
 
 export let level = 1;
 let isRemoving = false;
+//For the real time changer,
+let isRealtimeMode = false;
 
 //===================================
 export function addBlock() {
