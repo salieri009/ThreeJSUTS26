@@ -231,6 +231,7 @@ export function cloudMove() {
                     cloudMaterials[i] = node.material.clone();
                     node.material = cloudMaterials[i];
                 }
+                //Clones
                 let baseOpacity = 0.45 + Math.sin(clock.elapsedTime * 0.15 + cloud.userData.opacitySeed) * 0.2;
                 node.material.opacity = Math.max(0.25, baseOpacity);
                 node.material.transparent = true;
@@ -241,15 +242,15 @@ export function cloudMove() {
         // rainParticles와 snowParticles가 존재할 때만 위치를 동기화
         if (weather.rainy && rainParticles) {
             rainParticles.position.set(
-                cloud.position.x,
-                cloud.position.y-2, // 구름 아래로 약간 내림
+                cloud.position.x + 5 ,
+                cloud.position.y - 2, // 구름 아래로 약간 내림
                 cloud.position.z
             );
         }
         if (weather.snowy && snowParticles) {
             snowParticles.position.set(
                 cloud.position.x,
-                cloud.position.y - 8,
+                cloud.position.y - 4,
                 cloud.position.z
             );
         }
@@ -304,21 +305,177 @@ export function updateSky() {
 //Ever since the day is the default value, I only need to add the night
 let isDay = true;
 let stars = null;
+let nightAmbient = null;
 
-function createStars(){
+// 밤 모드로 전환
+export function setNightMode() {
+    isDay = false;
 
+    // 하늘색을 밤색(그라데이션 효과 포함)으로 변경
+    if (skyMaterial) {
+        skyMaterial.color.setHex(0x0b1020); // 진한 남색
+        if (skyMaterial.emissive) skyMaterial.emissive.setHex(0x181d30); // 약간의 빛
+    }
+
+    // 태양(light) 숨기기
+    if (sunLight) sunLight.visible = false;
+
+    // 달(light) 보이기 및 색상 조정
+    if (moonLight) {
+        moonLight.visible = true;
+        moonLight.intensity = 0.6;
+        moonLight.color.setHex(0xddeeff);
+        moonLight.position.set(0, 100, -80); // 하늘 위쪽에 위치
+    }
+
+    // 밤 전용 주변광 추가 (차가운 색)
+    if (!nightAmbient) {
+        nightAmbient = new THREE.AmbientLight(0x223344, 0.6);
+        nightAmbient.name = "NightAmbient";
+        scene.add(nightAmbient);
+    }
+
+    // 별 생성
+    createStars();
+
+    // 구름 색상 밤에 맞게 변경 (회색/푸른빛)
+    if (clouds) {
+        clouds.forEach(cloud => {
+            cloud.traverse(node => {
+                if (node.isMesh && node.material) {
+                    node.material.color.setHex(0x8a9bbd); // 푸른 회색
+                    node.material.opacity = 0.35;
+                }
+            });
+        });
+    }
+
+    // 기타 밤 효과
+    createNightEffect();
+}
+//===========================================
+// function createMooon(){
+//     removeMoon();
+//     const MoonCount = 1;
+//     const geo
+// }
+//
+// function removeMoon(){
+//
+// }
+//======================================================
+// 별 생성 함수
+function createStars() {
+    removeStars();
+    const starCount = 700;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(starCount * 3);
+    const colors = new Float32Array(starCount * 3);
+    const sizes = new Float32Array(starCount);
+
+    // 다양한 별 색상 팔레트 (흰색, 노란색, 푸른색, 붉은색 등)
+    const palette = [
+        new THREE.Color(0xffffff), // pure white
+        new THREE.Color(0xfff7cc), // yellowish
+        new THREE.Color(0xbfdfff), // blueish
+        new THREE.Color(0xffcccc), // reddish
+        new THREE.Color(0xe0e0ff), // pale blue
+        new THREE.Color(0xffeedd), // warm white
+        new THREE.Color(0xf8f7ff)  // cool white
+    ];
+
+    for (let i = 0; i < starCount; i++) {
+        // 구면 좌표계로 별 위치 배치
+        const r = 180 + Math.random() * 15;
+        const theta = Math.random() * Math.PI;
+        const phi = Math.random() * Math.PI * 2;
+        positions[i * 3 + 0] = r * Math.sin(theta) * Math.cos(phi);
+        positions[i * 3 + 1] = r * Math.cos(theta);
+        positions[i * 3 + 2] = r * Math.sin(theta) * Math.sin(phi);
+
+        // 색상 팔레트에서 랜덤 선택
+        const baseColor = palette[Math.floor(Math.random() * palette.length)];
+        // 밝기(채도) 랜덤 조정
+        const brightness = 0.7 + Math.random() * 0.3; // 0.7~1.0
+        colors[i * 3 + 0] = baseColor.r * brightness;
+        colors[i * 3 + 1] = baseColor.g * brightness;
+        colors[i * 3 + 2] = baseColor.b * brightness;
+
+        // 별의 크기(밝기) 랜덤 지정
+        sizes[i] = 0.8 + Math.random() * 1.7; // 0.8~2.5
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1)); // 커스텀 셰이더 사용 시
+
+    // 별 텍스처 사용 (선택)
+    // const textureLoader = new THREE.TextureLoader();
+    // const starTexture = textureLoader.load('/images/star.png');
+
+    const material = new THREE.PointsMaterial({
+        size: 2.0, // 기본값, 셰이더로 개별 크기 조정 가능
+        // map: starTexture,
+        transparent: true,
+        // alphaMap: starTexture,
+        depthWrite: false,
+        vertexColors: true // 별마다 색상 다르게
+    });
+
+    stars = new THREE.Points(geometry, material);
+    stars.name = "Stars";
+    scene.add(stars);
 }
 
-export function createNightEffect(){
-
+// 밤에만 나타나는 특수 효과 (예: 희미한 안개, 달빛 반사 등)
+export function createNightEffect() {
+    // 예시: 밤에만 보이는 얕은 안개 추가
+    if (scene.fog) {
+        scene.fog.color.setHex(0x10131a);
+        scene.fog.density = 0.012;
+    }
+    // 달빛 반사, 반딧불 등 추가 가능
 }
 
-function removeStars(){
+// 별 제거
+function removeStars() {
+    if (stars) {
+        scene.remove(stars);
+        stars.geometry.dispose();
+        stars.material.dispose();
+        stars = null;
+    }
+}
 
+// 밤 효과 제거 (낮으로 돌아갈 때)
+function removeNightEffect() {
+    // 밤 전용 주변광 제거
+    if (nightAmbient) {
+        scene.remove(nightAmbient);
+        nightAmbient = null;
+    }
+    // 별 제거
+    removeStars();
+    // 구름 색상 원래대로 복원
+    if (clouds) {
+        clouds.forEach(cloud => {
+            cloud.traverse(node => {
+                if (node.isMesh && node.material) {
+                    node.material.color.setHex(0xffffff);
+                    node.material.opacity = 0.45;
+                }
+            });
+        });
+    }
+    // 안개 색상 복원
+    if (scene.fog) {
+        scene.fog.color.setHex(0x87ceeb);
+        scene.fog.density = 0.008;
+    }
 }
 
 
-//=========================================================
+//=============================Spring =========================
 export function createSpringEffect() {
     removeSpringEffect();
     const count = 180;
@@ -332,7 +489,7 @@ export function createSpringEffect() {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     const material = new THREE.PointsMaterial({
         color: 0xffc1e0,
-        size: 1.7,
+        size: 4.0,
         transparent: true,
         opacity: 0.85
     });
@@ -556,7 +713,7 @@ export function createRain() {
     const positions = new Float32Array(totalRainCount * 3);
     const sizes = new Float32Array(totalRainCount);
     const speeds = new Float32Array(totalRainCount);
-
+    //Finding NaN erros
     let index = 0;
     for (const cloud of clouds) {
         if (!cloud.position ||
@@ -646,9 +803,11 @@ export function createSnow() {
             // 구름 아래에서 눈 입자를 퍼뜨릴 반경을 snowAreaRadius로 조절
             const angle = Math.random() * Math.PI * 2;
             const radius = Math.random() * snowAreaRadius;
+            //Snows
             positions[index * 3]     = cloud.position.x + Math.cos(angle) * radius;
             positions[index * 3 + 1] = cloud.position.y - 2 + Math.random() * 5;
             positions[index * 3 + 2] = cloud.position.z + Math.sin(angle) * radius;
+
             sizes[index] = Math.random() * 2 + 1.2;
             speeds[index] = Math.random() * 0.13 + 0.07;
             index++;
@@ -674,7 +833,7 @@ export function updateSnow() {
     const speeds = snowParticles.geometry.attributes.speed.array;
     for (let i = 0; i < speeds.length; i++) {
         positions[i * 3 + 1] -= speeds[i];
-        positions[i * 3] += Math.sin(Date.now() * 0.0009 + i) * 0.04; // 바람 영향
+        positions[i * 3] += Math.sin(Date.now() * 0.0009 + i) * 0.04; // Affected by window, not implemented yet
         if (positions[i * 3 + 1] < 0) {
             positions[i * 3 + 1] = Math.random() * 15 + 35;
         }
