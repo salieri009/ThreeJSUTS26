@@ -305,3 +305,10 @@ function updateWindDirection() {
 }
 document.getElementById('windDirX').addEventListener('input', updateWindDirection);
 document.getElementById('windDirZ').addEventListener('input', updateWindDirection);
+//===================================================== Real Time Changer =========== Will be added
+// window.addEventListener('keydown', (e) => {
+//     if (e.ctrlKey && (e.key === 'e' || e.key === 'E')) {
+//         loadRealTimeWeather();
+//     }
+// });
+//====================================================================================

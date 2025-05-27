@@ -6,6 +6,7 @@ import { level } from './buttonInteract.js'
 
 
 let skyMaterial, skyDome, sunLight;
+let Supermoon = null;
 
 let stormLight = null;
 let clouds = [];
@@ -360,6 +361,10 @@ export function setNightMode() {
 
     // 별 생성
     createStars();
+    createMoon();
+    if (Supermoon) Supermoon.visible = true;
+
+
 
     // 구름 색상 밤에 맞게 변경 (회색/푸른빛)
     if (clouds) {
@@ -377,22 +382,29 @@ export function setNightMode() {
     createNightEffect();
 }
 //===========================================
+
+
+
 export function createMoon() {
+    if(Supermoon) return Supermoon; // 이미 존재시 재생성 방지
+
     const geometry = new THREE.SphereGeometry(15, 32, 32);
     const material = new THREE.MeshStandardMaterial({
-        map: moonTexture,
-        normalMap: moonNormalMap,
+        map: null,
+        normalMap: null,
         roughness: 0.8,
         metalness: 0.05
     });
 
-    const moon = new THREE.Mesh(geometry, material);
-    moon.position.set(200, 0, 0);
-    scene.add(moon);
-    return moon;
+    const Supermoon = new THREE.Mesh(geometry, material);
+    Supermoon.position.set(200, 0, 0);
+    scene.add(Supermoon);
+    return Supermoon;
 }
 
+
 let moonOrbitAngle = 0;
+
 export function updateMoon(moon, deltaTime) {
     moonOrbitAngle += deltaTime * 0.2; // 0.2rad/s 속도
     moon.position.x = 200 * Math.cos(moonOrbitAngle);
@@ -1420,7 +1432,8 @@ function updateSkyForSeason(type) {
 function animate() {
     requestAnimationFrame(animate);
     cloudMove();
-    updateMoon();
+    // updateMoon();
+
     updateRain();
     updateSnow();
     updateStorm();
