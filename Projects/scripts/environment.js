@@ -350,9 +350,9 @@ export function createSummerEffect() {
     summerSpeeds = [];
 
     for (let i = 0; i < count; i++) {
-        const x = Math.random() * 60 - 30;
-        const y = Math.random() * 10 + 6;
-        const z = Math.random() * 30 - 15;
+        const x = Math.random() * 90 - 30;
+        const y = Math.random() * 50 + 6;
+        const z = Math.random() * 90 - 15;
 
         positions[i * 3 + 0] = x;
         positions[i * 3 + 1] = y;
@@ -401,7 +401,7 @@ export function updateSummerEffect(delta) {
         const speed = summerSpeeds[i];
 
         // 구형 영역 안에서 부드럽게 랜덤 이동
-        const radius = 1.5; // 비행 반경
+        const radius = 3; // 비행 반경
 
         positions[index + 0] = origin.x + Math.sin(time * speed.x + offset.x) * radius;
         positions[index + 1] = origin.y + Math.sin(time * speed.y + offset.y) * radius;
