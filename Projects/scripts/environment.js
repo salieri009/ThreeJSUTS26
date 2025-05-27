@@ -13,7 +13,6 @@ let lightningTimer = 0;
 let lightningLines = [];
 let windParticles = null;
 let fogMesh = null;
-let puddleMesh = null;
 let lodQuality = 1.0; // 1.0 ~ 0.3 (LOD)
 
 //Particles===============
@@ -788,24 +787,12 @@ export function removeFog() {
     }
 }
 
-// 물 웅덩이 반사(간단한 반사 재질)
-export function createPuddle() {
-    removePuddle();
-    const geo = new THREE.CircleGeometry(12, 32);
-    const mat = new THREE.MeshPhysicalMaterial({
-        color: 0x336699,
-        metalness: 0.7,
-        roughness: 0.2,
-        transparent: true,
-        opacity: 0.45,
-        reflectivity: 0.9,
-        clearcoat: 1
-    });
-    puddleMesh = new THREE.Mesh(geo, mat);
-    puddleMesh.rotation.x = -Math.PI / 2;
-    puddleMesh.position.set(0, 0.11, 0);
-    scene.add(puddleMesh);
-}
+
+
+let puddleMesh = null;
+let puddleSize = 15; // 초기 크기
+
+// 기존 퍼들을 제거
 export function removePuddle() {
     if (puddleMesh) {
         scene.remove(puddleMesh);
@@ -815,11 +802,43 @@ export function removePuddle() {
     }
 }
 
+// 퍼들 하나 생성 (현재 크기 사용)
+export function createPuddle() {
+    removePuddle(); // 기존 퍼들 제거
+
+    const geo = new THREE.CircleGeometry(puddleSize, 64);
+    const mat = new THREE.MeshPhysicalMaterial({
+        color: 0x336699,
+        metalness: 0.7,
+        roughness: 0.2,
+        transparent: true,
+        opacity: 0.45,
+        reflectivity: 0.9,
+        clearcoat: 1
+    });
+
+    puddleMesh = new THREE.Mesh(geo, mat);
+    puddleMesh.rotation.x = -Math.PI / 2;
+    puddleMesh.position.set(0, 0.11, 0);
+    scene.add(puddleMesh);
+}
+
+// 버튼 누를 때마다 퍼들을 키움
+export function addPuddle() {
+    puddleSize += 5; // 반지름 증가
+    createPuddle();  // 새로운 크기로 퍼들 생성
+}
+
+
 // 날씨 전환
 export function setWeather(type) {
     weather.cloudy = weather.rainy = weather.snowy = weather.stormy = weather.foggy = false;
     removeRain(); removeSnow(); removeStorm(); removeWind(); removeFog(); removePuddle();
-    if (type === 'rainy') { weather.rainy = true; createRain(); createWind(); createPuddle(); }
+    if (type === 'rainy') {
+        weather.rainy = true;
+        createRain();
+        createWind();
+        createPuddle(); }
     else if (type === 'snowy') { weather.snowy = true; createSnow(); createWind(); }
     else if (type === 'stormy') { weather.stormy = true; createStorm(); createWind(); createFog(); createPuddle(); }
     else if (type === 'cloudy') { weather.cloudy = true; }
