@@ -84,6 +84,7 @@ document.querySelector('[data-category="terrain expansion"]').addEventListener('
     if(level < 8)
         addBlock();
         env.addCloudsRange();
+        env.loadClouds();
     //비가 오면 puddle 도 같이 증가
     if (env.weather.rainy || env.weather.stormy)
         env.addPuddle();
