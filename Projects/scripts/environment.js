@@ -250,7 +250,7 @@ export function cloudMove() {
         if (weather.snowy && snowParticles) {
             snowParticles.position.set(
                 cloud.position.x,
-                cloud.position.y - 4,
+                cloud.position.y + 2 ,
                 cloud.position.z
             );
         }
