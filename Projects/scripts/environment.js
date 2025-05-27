@@ -769,10 +769,32 @@ export function removeStorm() {
 }
 ///=============Wind===================
 
-let wind = {
-    x: 0.5, // 동서 방향
-    z: 0.1  // 남북 방향
-};
+// 예시: wind = { x: 1.2, y: 0, z: 0 } (x축으로 1.2의 속도)
+let wind = { x: 0,
+    y: 0,
+    z: 0 };
+
+// 외부에서 wind 값을 업데이트할 수 있도록 함수 제공
+export function setWind(vec3) {
+    wind.x = vec3.x;
+    wind.y = vec3.y;
+    wind.z = vec3.z;
+}
+// For the test run,
+// export function updateWinterEffect() {
+//     if (!winterEffect) return;
+//     const positions = winterEffect.geometry.attributes.position.array;
+//     for (let i = 0; i < positions.length / 3; i++) {
+//         positions[i * 3 + 1] -= 0.022 + Math.random() * 0.011; // 아래로 낙하
+//         positions[i * 3 + 0] += wind.x * 0.06; // 바람의 x축 영향
+//         positions[i * 3 + 2] += wind.z * 0.06; // 바람의 z축 영향
+//         // 자연스러운 흔들림 추가
+//         positions[i * 3 + 0] += Math.sin(Date.now() * 0.0005 + i) * 0.013;
+//         // 바닥에 닿으면 다시 위로
+//         if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 10 + 10;
+//     }
+//     winterEffect.geometry.attributes.position.needsUpdate = true;
+// }
 
 
 // 바람 효과 (입자)
