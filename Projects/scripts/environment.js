@@ -839,8 +839,16 @@ export function setWeather(type) {
         createRain();
         createWind();
         createPuddle(); }
-    else if (type === 'snowy') { weather.snowy = true; createSnow(); createWind(); }
-    else if (type === 'stormy') { weather.stormy = true; createStorm(); createWind(); createFog(); createPuddle(); }
+    else if (type === 'snowy') {
+        weather.snowy = true;
+        createSnow();
+        createWind(); }
+    else if (type === 'stormy') {
+        weather.stormy = true;
+        createStorm();
+        createWind();
+        createFog();
+        createPuddle(); }
     else if (type === 'cloudy') { weather.cloudy = true; }
     else if (type === 'foggy') { weather.foggy = true; createFog(); }
     updateSky();
