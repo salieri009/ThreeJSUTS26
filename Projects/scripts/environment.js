@@ -377,11 +377,21 @@ export function setNightMode() {
     createNightEffect();
 }
 //===========================================
-// function createMooon(){
-//     removeMoon();
-//     const MoonCount = 1;
-//     const geo
-// }
+export function createMoon() {
+    const geometry = new THREE.SphereGeometry(15, 32, 32);
+    const material = new THREE.MeshStandardMaterial({
+        map: moonTexture,
+        normalMap: moonNormalMap,
+        roughness: 0.8,
+        metalness: 0.05
+    });
+
+    const moon = new THREE.Mesh(geometry, material);
+    moon.position.set(200, 0, 0);
+    scene.add(moon);
+    return moon;
+}
+
 //
 // function removeMoon(){
 //
