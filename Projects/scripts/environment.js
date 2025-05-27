@@ -1,6 +1,7 @@
 import * as THREE from '../build/three.module.js';
 import { scene } from './sceneManager.js';
 import { loader } from './gridModels.js';
+import { level } from './buttonInteract.js'
 
 let skyMaterial, skyDome, sunLight;
 
@@ -162,7 +163,7 @@ function getCloudSpawnRange(level) {
 export function loadClouds(level = 1) {
     resetCloudScene();
     const cloudCount = getCloudCountForWeather(weather);
-    const cloudColor = getCloudColorByWeather(weather);
+    const cloudColor = getCloudColorForWeather(weather);
 
     // level을 받아서 범위 계산
     cloudRange = getCloudSpawnRange(level);
@@ -272,6 +273,25 @@ export function updateSky() {
         });
     }
 }
+
+//===============Day and Night=============================
+//Ever since the day is the default value, I only need to add the night
+let isDay = true;
+let stars = null;
+
+function createStars(){
+
+}
+
+export function createNightEffect(){
+
+}
+
+function removeStars(){
+
+}
+
+
 //=========================================================
 export function createSpringEffect() {
     removeSpringEffect();

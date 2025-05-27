@@ -7,7 +7,7 @@ import * as env from './environment.js';
 // import {updateWeatherWidget} from "./UIManager";
 // Don't use yet
 
-let level = 1;
+export let level = 1;
 let isRemoving = false;
 
 //===================================
