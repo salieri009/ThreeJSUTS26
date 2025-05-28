@@ -411,7 +411,7 @@ export function setNightMode() {
 // 환경 파일 상단에 선언
 let moonOrbitAngle = 0;
 const moonCenter = new THREE.Vector3(0, 5, 0); // 중앙 grass 좌표
-let orbitVec = new THREE.Vector3(-15, 30, 12); // 초기 위치에서 중심까지의 벡터
+let orbitVec = new THREE.Vector3(-80, 30, 12); // 초기 위치에서 중심까지의 벡터
 const orbitRadius = orbitVec.length(); // 공전 반지름 계산
 const orbitNormal = new THREE.Vector3().crossVectors(orbitVec, new THREE.Vector3(0, 1, 0)).normalize(); // 궤도 평면 법선
 
