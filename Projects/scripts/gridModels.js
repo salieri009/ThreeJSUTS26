@@ -2,7 +2,7 @@ import * as THREE from '../build/three.module.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 import { scene, camera } from './sceneManager.js';
 
-export let clips, highlight, tree, cow, grass, sheep, cloud, barn, fence, chicken, pig, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil, path, pine, loader, windmill;
+export let clips, highlight, tree, cow, grass, sheep, cloud, barn, fence, chicken, pig, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil, path, pine, loader, windmill, grassRandom;
 let placingMesh, mixer = null;
 let carrotField;
 export let grasses = [];
@@ -420,6 +420,13 @@ function loadModels() {
         createBox(windmill, 1, 1, 1);
 
         clips = gltf.animations;
+    });
+
+    loader.load("models/grass/scene.gltf", (gltf) => {
+        grassRandom = gltf.scene;
+        grassRandom.scale.set(0.045, 0.045, 0.05);
+        grassRandom.position.set(0.5, 8.5, 0);
+        scene.add(grassRandom);
     });
 }
 
