@@ -963,7 +963,7 @@ export function removeAutumnEffect() {
 
 // === WINTER: Aurora ======//
 let auroraMesh = null;
-
+// const clock = new THREE.Clock();
 
 const auroraShader = {
     uniforms: {
@@ -1028,11 +1028,11 @@ const auroraShader = {
     `
 };
 
-export function createAurora(moonPosition) {
-    if (auroraMesh) return; //Avoid duplicates
+// 오로라 생성 (달 위치 없으면 기본값 사용)
+export function createAurora(moonPosition = new THREE.Vector3(0, 50, -100)) {
+    if (auroraMesh) return;
 
-
-    const geometry = new THREE.PlaneGeometry(200, 100, 64, 64);
+    const geometry = new THREE.PlaneGeometry(250, 120, 64, 64);
     const material = new THREE.ShaderMaterial({
         vertexShader: auroraShader.vertexShader,
         fragmentShader: auroraShader.fragmentShader,
@@ -1045,9 +1045,11 @@ export function createAurora(moonPosition) {
     material.uniforms.moonPos.value.copy(moonPosition);
     auroraMesh = new THREE.Mesh(geometry, material);
     auroraMesh.rotation.x = -Math.PI / 2;
+    auroraMesh.position.copy(moonPosition).add(new THREE.Vector3(0, 30, 0));
     scene.add(auroraMesh);
 }
 
+// 오로라 효과 업데이트
 export function updateAuroraEffect() {
     if (!auroraMesh) return;
 
@@ -1056,16 +1058,22 @@ export function updateAuroraEffect() {
 
     material.uniforms.time.value += deltaTime * 0.5;
 
-    if (Supermoon) {
+    // 달 위치 동기화 (있을 경우)
+    if (Supermoon && Supermoon.position) {
         material.uniforms.moonPos.value.copy(Supermoon.position);
-        auroraMesh.position.copy(Supermoon.position);
-        auroraMesh.position.y += 30;
+        auroraMesh.position.copy(Supermoon.position).add(new THREE.Vector3(0, 30, 0));
+    } else {
+        // 독립적 움직임 (원형 경로)
+        auroraMesh.position.x += Math.sin(deltaTime) * 0.3;
+        auroraMesh.position.z += Math.cos(deltaTime) * 0.2;
     }
 
+    // 동적 파라미터
     material.uniforms.distortion.value = 2.5 + Math.sin(Date.now() * 0.001) * 0.5;
     material.uniforms.intensity.value = 1.2 + Math.cos(Date.now() * 0.0007) * 0.3;
 }
 
+// 오로라 제거
 export function removeAuroraEffect() {
     if (auroraMesh) {
         scene.remove(auroraMesh);
