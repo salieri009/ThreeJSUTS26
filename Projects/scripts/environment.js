@@ -1447,7 +1447,7 @@ function updateSkyForSeason(type) {
 function animate() {
     requestAnimationFrame(animate);
     cloudMove();
-    // updateMoon();
+     // updateMoon();
 
     updateRain();
     updateSnow();
