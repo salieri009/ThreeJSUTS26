@@ -958,50 +958,25 @@ export function removeAutumnEffect() {
 // === WINTER: 눈 파티클 ===
 export function createWinterEffect() {
     removeWinterEffect();
-    const count = 200;
-    const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-        positions[i * 3 + 0] = Math.random() * 60 - 30;
-        positions[i * 3 + 1] = Math.random() * 16 + 10;
-        positions[i * 3 + 2] = Math.random() * 30 - 15;
-    }
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const material = new THREE.PointsMaterial({
-        color: 0xffffff,
-        size: 2.3,
-        transparent: true,
-        opacity: 0.85
-    });
-    winterEffect = new THREE.Points(geometry, material);
-    scene.add(winterEffect);
+
 }
 
 export function updateWinterEffect() {
     if (!winterEffect) return;
-    const positions = winterEffect.geometry.attributes.position.array;
-    for (let i = 0; i < positions.length / 3; i++) {
-        positions[i * 3 + 1] -= 0.022 + Math.random() * 0.011;
-        positions[i * 3 + 0] += Math.sin(Date.now() * 0.0005 + i) * 0.013;
-        if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 10 + 10;
-    }
-    winterEffect.geometry.attributes.position.needsUpdate = true;
+
 }
 
 export function removeWinterEffect() {
     if (winterEffect) {
-        scene.remove(winterEffect);
-        winterEffect.geometry.dispose();
-        winterEffect.material.dispose();
-        winterEffect = null;
+
     }
 }
 
 //===========================================================
-// 비 (입자 크기/속도 다양화)
-
+//
+// Rainning area around the clouds.
 let rainAreaRadius = 2;
-
+//
 export function createRain() {
     const minCloudCount = 20;
     if (clouds.length < minCloudCount) {
