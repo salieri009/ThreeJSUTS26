@@ -1842,6 +1842,7 @@ export function setWeather(type) {
 //계절 변환//
 export function setSeason(type) {
     // 모든 계절 이펙트 비활성화 및 제거
+    removeAuroraEffect();
     season.spring = season.summer = season.autumn = season.winter = false;
 
     removeSpringEffect();
