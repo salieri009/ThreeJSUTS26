@@ -1806,7 +1806,7 @@ export function setWeather(type) {
         createWind();
     }else if (type === "sunny"){
         sun();
-        removeNightEffects(); // 야간 효과 완전 제거
+        removeNightEffect(); // 야간 효과 완전 제거
         setDayMode(); // 주간 모드 강제 활성화
     }
 
