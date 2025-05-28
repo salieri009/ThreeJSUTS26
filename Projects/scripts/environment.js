@@ -1233,13 +1233,8 @@ export function updateGustSystem() {
 }
 
 export function setWeatherWind(weatherType) {
-    if (
-        (currentSeason === 'summer' && type === 'snowy') ||
-        (currentSeason === 'winter' && type === 'sunny')
-    ) {
-        console.warn("Weather - Season ");
-        return;
-    }
+
+
     switch(weatherType) {
         case 'rainy':
             setWindStrength(1.2);
@@ -1460,8 +1455,9 @@ function updateSkyForSeason(type) {
 // 메인 애니메이션 루프
 function animate() {
     requestAnimationFrame(animate);
-    const deltaTime = clock.getDelta(); // deltaTime 계산
     cloudMove();
+
+    const deltaTime = clock.getDelta(); // deltaTime 계산
     updateMoon(deltaTime);
 
     updateRain();
