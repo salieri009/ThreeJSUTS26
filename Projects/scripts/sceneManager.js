@@ -1,7 +1,10 @@
 import * as THREE from '../build/three.module.js';
 import { OrbitControls } from '../build/controls/OrbitControls.js';
 
-export let camera, controls, renderer, scene;
+export let camera, controls, renderer, scene
+
+
+
 
 export function setScene() {
     scene = new THREE.Scene();

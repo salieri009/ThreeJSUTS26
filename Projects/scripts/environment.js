@@ -1,28 +1,46 @@
 import * as THREE from '../build/three.module.js';
 import { scene, renderer } from './sceneManager.js';
 import { loader, grass,grasses } from './gridModels.js';
-import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer';
+import { GPUComputationRenderer } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/misc/GPUComputationRenderer.js';
 
 
 let gpuCompute;
 let positionVariable, velocityVariable;
 const AURORA_PARTICLES = 512;
 
+// GPU 컴퓨트 초기화 로직 강화
 const initAuroraCompute = () => {
-    gpuCompute = new GPUComputationRenderer(AURORA_PARTICLES, AURORA_PARTICLES, renderer);
+    if (!renderer) {
+        console.warn('렌더러가 초기화되지 않았습니다.');
+        return false;
+    }
 
-    // 위치 데이터 텍스처 초기화
-    const dtPosition = gpuCompute.createTexture();
-    const dtVelocity = gpuCompute.createTexture();
+    try {
+        gpuCompute = new GPUComputationRenderer(AURORA_PARTICLES, AURORA_PARTICLES, renderer);
 
-    positionVariable = gpuCompute.addVariable('uPosition', positionShader, dtPosition);
-    velocityVariable = gpuCompute.addVariable('uVelocity', velocityShader, dtVelocity);
+        const positionTexture = gpuCompute.createTexture();
+        const velocityTexture = gpuCompute.createTexture();
 
-    gpuCompute.setVariableDependencies(positionVariable, [positionVariable, velocityVariable]);
-    gpuCompute.setVariableDependencies(velocityVariable, [positionVariable, velocityVariable]);
+        positionVariable = gpuCompute.addVariable('uPosition', positionShader, positionTexture);
+        velocityVariable = gpuCompute.addVariable('uVelocity', velocityShader, velocityTexture);
 
-    gpuCompute.init();
+        gpuCompute.setVariableDependencies(positionVariable, [positionVariable, velocityVariable]);
+        gpuCompute.setVariableDependencies(velocityVariable, [positionVariable, velocityVariable]);
+
+        const error = gpuCompute.init();
+        if (error !== null) {
+            console.error('GPU Compute 초기화 실패:', error);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('GPU Compute 초기화 중 예외 발생:', error);
+        return false;
+    }
 };
+
+
 
 
 
@@ -1029,7 +1047,7 @@ let axisShockParticles = null;
 let axisShockComputeMaterial = null;
 let positionRenderTarget = null;
 let velocityRenderTarget = null;
-const AXIS_SHOCK_PARTICLES = 1000; // 10만 개의 GPU 파티클
+const AXIS_SHOCK_PARTICLES = 10; // 10만 개의 GPU 파티클
 
 // GPU 컴퓨트 셰이더 (위치/속도 업데이트)
 const computeShader = {
@@ -1077,53 +1095,34 @@ const computeShader = {
 export function createAurora(moonPosition = new THREE.Vector3(0, 50, -100)) {
     if (auroraMesh) return;
 
-    // geometry 생성 시 UV2 속성 추가 (Blender 호환성)
-    const Planegeometry = new THREE.PlaneGeometry(250, 120, 64, 64);
-    geometry.setAttribute('uv2', new THREE.BufferAttribute(
-        new Float32Array(geometry.attributes.uv.array), 2
-    ));
-    //Plane Geometery
+    const planegeometry = new THREE.PlaneGeometry(250, 120, 64, 64);
 
-    // 1. 파티클 데이터 초기화
-    const positions = new Float32Array(AXIS_SHOCK_PARTICLES * 3);
-    const phases = new Float32Array(AXIS_SHOCK_PARTICLES);
-    for (let i = 0; i < AXIS_SHOCK_PARTICLES; i++) {
-        positions[i * 3] = (Math.random() - 0.5) * 100;
-        positions[i * 3 + 1] = Math.random() * 50;
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 100;
-        phases[i] = Math.random() * Math.PI * 2;
+    // UV2 속성 추가 시 에러 체크
+    try {
+        planegeometry.setAttribute('uv2', new THREE.BufferAttribute(
+            new Float32Array(planegeometry.attributes.uv.array),
+            2
+        ));
+    } catch (error) {
+        console.error('UV2 속성 설정 실패:', error);
     }
 
-    // 2. 컴퓨트 셰이더 설정
-    axisShockComputeMaterial = new THREE.ShaderMaterial({
-        uniforms: THREE.UniformsUtils.clone(computeShader.uniforms),
-        vertexShader: computeShader.vertexShader,
-        fragmentShader: computeShader.fragmentShader
-    });
-
-    // 3. 더블 버퍼링 렌더 타겟
-    positionRenderTarget = new THREE.WebGLRenderTarget(512, 512, {
-        type: THREE.FloatType,
-        format: THREE.RGBAFormat
-    });
-    velocityRenderTarget = new THREE.WebGLRenderTarget(512, 512, {
-        type: THREE.FloatType,
-        format: THREE.RGBAFormat
-    });
-
-    // 4. 렌더링용 파티클 시스템
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('phase', new THREE.BufferAttribute(phases, 1));
-
+    // 셰이더 머티리얼 생성 시 에러 처리
     const material = new THREE.ShaderMaterial({
         vertexShader: `
+            attribute vec2 uv;
+            attribute vec2 uv2;
+            attribute vec3 position;
             attribute float phase;
+            
+            uniform mat4 modelViewMatrix;
+            uniform mat4 projectionMatrix;
+            uniform float time;
+            
             varying vec3 vColor;
             varying float vLife;
             
             void main() {
-                // 파동 효과 (플래그 시뮬레이션)
                 vec3 pos = position;
                 pos.y += sin(pos.x * 0.2 + phase + time * 3.0) * 5.0;
                 pos.x += cos(pos.z * 0.15 + phase + time * 2.5) * 3.0;
@@ -1136,15 +1135,15 @@ export function createAurora(moonPosition = new THREE.Vector3(0, 50, -100)) {
             }
         `,
         fragmentShader: `
+            precision mediump float;
+            
             varying vec3 vColor;
             varying float vLife;
             
             void main() {
-                // 에너지 코어 효과
                 float dist = length(gl_PointCoord - 0.5);
                 float intensity = 1.0 - smoothstep(0.3, 0.5, dist);
                 vec3 finalColor = vColor * intensity * vLife * 2.0;
-                
                 gl_FragColor = vec4(finalColor, intensity * 0.8);
             }
         `,
@@ -1157,9 +1156,14 @@ export function createAurora(moonPosition = new THREE.Vector3(0, 50, -100)) {
         transparent: true
     });
 
-    axisShockParticles = new THREE.Points(geometry, material);
-    scene.add(axisShockParticles);
+    // 셰이더 컴파일 체크
+    material.onBeforeCompile = (shader, renderer) => {
+        console.log('셰이더 컴파일 시도 중...');
+    };
+
+    auroraMesh = new THREE.Mesh(planegeometry, material);
 }
+
 
 // 프레임 업데이트
 export function updateAuroraEffect() {
@@ -1183,6 +1187,12 @@ export function updateAuroraEffect() {
 
 // 효과 제거
 export function removeAuroraEffect() {
+    if (gpuCompute) {
+        gpuCompute.dispose();
+        positionRenderTarget?.dispose();
+        velocityRenderTarget?.dispose();
+    }
+
     if (axisShockParticles) {
         scene.remove(axisShockParticles);
         axisShockParticles.geometry.dispose();
