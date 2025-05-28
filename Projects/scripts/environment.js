@@ -81,16 +81,24 @@ export const season = {
 
 //Grass Colour Object
 const GRASS_COLORS = {
-    spring: 0x8be47b,   // 연한 연두
-    summer: 0x3e5c3a,   // 짙은 초록
-    autumn: 0xc2b280,   // 누런 갈색(가을)
-    winter: 0xd3e0ea,   // 창백한 회색(겨울)
-    rainy:  0x4b7f5a,   // 비오는 날 어두운 초록
-    snowy:  0xe0e8f3,   // 눈 내린 잔디(밝은 회색)
+    spring: 0x8be47b,
+    summer: 0x3e5c3a,
+    autumn: 0xc2b280,
+    winter: 0xd3e0ea,
+    rainy:  0x4b7f5a,
+    snowy:  0xe0e8f3,
     default: 0x3e5c3a
 };
 
-// Set Grass Color By key :
+
+/**
+ * Changes the color of all grass meshes in the scene.
+ * This function is called whenever the season or weather changes,
+ * ensuring visual consistency with the current environment.
+ *
+ * @param {string} key - The season or weather key to determine the color.
+ */
+
 export function setGrassColorByKey(key) {
     const color = GRASS_COLORS[key] || GRASS_COLORS.default;
     grasses.forEach(grassMesh => {
