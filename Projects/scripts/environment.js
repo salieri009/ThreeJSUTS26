@@ -92,7 +92,7 @@ const WEATHER_PROBABILITY = [
     { type: 'rainy', weight: 20 },
     { type: 'snowy', weight: 15 },
     { type: 'stormy', weight: 10 }
-];
+]
 
 export function getRandomWeather() {
     const total = WEATHER_PROBABILITY.reduce((acc, cur) => acc + cur.weight, 0);
@@ -106,7 +106,9 @@ export function getRandomWeather() {
     return 'sunny';
 }
 
-// LOD Setting : Coming from the outside
+//====================================================
+
+// LOD Setting : allowing adjustment from the outside controller
 export function setWeatherLOD(q) {
     lodQuality = Math.max(0.3, Math.min(1.0, q));
 }
