@@ -44,7 +44,7 @@ let fogMesh = null;
 let lodQuality = 1.0; // 1.0 ~ 0.3 (LOD)
 // const deltaTime = clock.getDelta(); // deltaTime 계산
 
-//Particles===============
+//========Season Particles===============
 let springEffect = null;
 // let summerEffect = null;
 let autumnEffect = null;
@@ -427,9 +427,12 @@ export function setNightMode() {
     // 별 생성
     createStars();
     createMoon();
+
     if (Supermoon) Supermoon.visible = true;
 
-
+    if (season.summer){
+        createSummerEffect();
+    }
 
     // 구름 색상 밤에 맞게 변경 (회색/푸른빛)
     if (clouds) {
@@ -450,7 +453,11 @@ export function setNightMode() {
 
 
 
-// 환경 파일 상단에 선언
+// === Moon orbital motion using Rodrigues' rotation formula ===
+// This function animates the moon's position along an arbitrary 3D orbit (not just a flat circle).
+// It uses Rodrigues' formula to rotate the moon's position vector around the orbit's normal vector.
+
+
 let moonOrbitAngle = 0;
 const moonCenter = new THREE.Vector3(0, 5, 0); // 중앙 grass 좌표
 let orbitVec = new THREE.Vector3(-80, 30, 12); // 초기 위치에서 중심까지의 벡터
@@ -674,7 +681,7 @@ export function removeSpringEffect() {
     }
 }
 
-// === SUMMER: 반딧불이 파티클 ================
+// === SUMMER: Fireflies ================
 let summerEffect, summerOrigins, summerOffsets, summerSpeeds;
 
 //=========================================
@@ -918,6 +925,9 @@ export function createRain() {
     scene.add(rainParticles);
 }
 
+// === Particle system for rain with wind and turbulence ===
+// This section updates the position of each rain particle, applying gravity, wind, turbulence, and boundary recycling.
+// It ensures realistic rain movement and continuous rainfall without spawning new particles every frame.
 export function updateRain() {
     if (!rainParticles || !rainParticles.geometry) return;
 
@@ -925,7 +935,7 @@ export function updateRain() {
     const speeds = rainParticles.geometry.attributes.speed.array;
     const sizes = rainParticles.geometry.attributes.size.array;
     const time = performance.now() * 0.001;
-    const delta = clock.getDelta(); // 프레임 간 시간 차이
+    const delta = clock.getDelta();
 
     // 경계값 상수 정의
     const BOUNDARY_X = 75;
@@ -1507,6 +1517,7 @@ export function setSeason(type) {
         case 'summer':
             season.summer = true;
             setWeather('sunny'); // 여름: 맑음
+
             removeMoon();
             break;
         case 'autumn':
