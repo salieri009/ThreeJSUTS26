@@ -861,7 +861,7 @@ export function removeSummerEffect() {
 // === AUTUMN: 낙엽 파티클 (개선 버전) ===
 export function createAutumnEffect() {
     removeAutumnEffect();
-    const count = 200; // 파티클 수를 늘려 풍성하게
+    const count = 100;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
