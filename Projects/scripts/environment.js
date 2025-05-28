@@ -90,11 +90,11 @@ const GRASS_COLORS = {
     default: 0x3e5c3a
 };
 
-// 잔디 색상 바꾸기 (모든 grass mesh에 적용)
+// Set Grass Color By key :
 export function setGrassColorByKey(key) {
     const color = GRASS_COLORS[key] || GRASS_COLORS.default;
     grasses.forEach(grassMesh => {
-        // material을 clone해서 할당해야 모든 grass가 독립적으로 색상 변경됨[5]
+        // Materials colne : changes the all the materials accordingly
         grassMesh.material = grassMesh.material.clone();
         grassMesh.material.color.setHex(color);
     });
