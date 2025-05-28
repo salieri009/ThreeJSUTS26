@@ -1,5 +1,5 @@
 import * as THREE from '../build/three.module.js';
-import { scene } from './sceneManager.js';
+import { scene, renderer } from './sceneManager.js';
 import { loader, grass,grasses } from './gridModels.js';
 
 
@@ -75,8 +75,7 @@ export const season = {
     spring: false,
     summer: false,
     autumn: false,
-    winter: false,
-
+    winter: false
 }
 
 //Grass Colour Object
@@ -534,12 +533,11 @@ export function updateMoon(deltaTime) {
 
     // 달 자전 처리 (원본 유지)
     Supermoon.rotation.y += deltaTime * 10.0;
-    if (!auroraMesh) return;
-
     if (auroraMesh && Supermoon.position) {
+
         auroraMesh.position.copy(Supermoon.position);
         auroraMesh.position.y += 30;
-        auroraMesh.material.uniforms.moonPos.value = Supermoon.position;
+        auroraMesh.material.uniforms.moonPos.value.copy(Supermoon.position);
     }
 
 
@@ -1015,8 +1013,15 @@ const computeShader = {
 };
 
 // 축쇽 효과 초기화
-export function createAurora() {
-    if (axisShockParticles) return;
+export function createAurora(moonPosition = new THREE.Vector3(0, 50, -100)) {
+    if (auroraMesh) return;
+
+    // geometry 생성 시 UV2 속성 추가 (Blender 호환성)
+    const Planegeometry = new THREE.PlaneGeometry(250, 120, 64, 64);
+    geometry.setAttribute('uv2', new THREE.BufferAttribute(
+        new Float32Array(geometry.attributes.uv.array), 2
+    ));
+    //Plane Geometery
 
     // 1. 파티클 데이터 초기화
     const positions = new Float32Array(AXIS_SHOCK_PARTICLES * 3);
@@ -1097,7 +1102,7 @@ export function createAurora() {
 
 // 프레임 업데이트
 export function updateAuroraEffect() {
-    if (!axisShockParticles) return;
+    if (!auroraMesh || !renderer) return; // renderer 존재 확인 추가
 
     const delta = clock.getDelta();
     const material = axisShockParticles.material;
@@ -1853,6 +1858,8 @@ function animate() {
     const deltaTime = clock.getDelta();
     updateMoon(deltaTime);
 
+
+
     updateRain();
     updateSnow();
     updateStorm();
@@ -1861,7 +1868,11 @@ function animate() {
     updateSummerEffect();
     updateAutumnEffect();
     updateSpringEffect();
-    updateAuroraEffect(); //It was "Winter Effect" previously//"
+
+
+    //It was "Winter Effect" previously//"
     updateGustSystem();
+
+
 }
 animate();
