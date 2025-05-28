@@ -170,13 +170,11 @@ export function sun() {
     // Remove current moonlight
     if (moonLight) {
         scene.remove(moonLight);
-        moonLight.dispose?.(); // Remove
+        moonLight.dispose?.();
         moonLight = null;
     }
-    if (sunLight) {
-        sunLight.visible = true;
-    } else {
-        // Create sunlights
+    // sunLight가 없거나, 씬에 없는 경우 새로 생성 및 추가
+    if (!sunLight || !scene.children.includes(sunLight)) {
         sunLight = new THREE.DirectionalLight(0xffffff, 1);
         sunLight.castShadow = true;
         sunLight.shadow.mapSize.set(2048, 2048);
@@ -184,6 +182,8 @@ export function sun() {
         sunLight.position.set(50, 30, 0);
         scene.add(sunLight);
     }
+    sunLight.visible = true;
+    sunLight.intensity = 1;
 }
 
 // Moonlight Dummy Data : no-longer user
