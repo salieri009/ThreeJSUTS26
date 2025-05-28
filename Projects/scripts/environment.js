@@ -1,10 +1,24 @@
 import * as THREE from '../build/three.module.js';
 import { scene } from './sceneManager.js';
 import { loader } from './gridModels.js';
-import { level } from './buttonInteract.js'
-// import * as dat from 'dat.gui';
 
-
+/**
+ * environment.js - Weather and Season Simulation Environment using Three.js
+ *
+ * This module implements a real-time, interactive simulation of natural environments
+ * using Three.js. It supports dynamic weather (sunny, cloudy, rain, snow, storm, fog),
+ * seasonal changes (spring, summer, autumn, winter), and day-night cycles.
+ * The system responds to user interactions (buttons, hotkeys) and updates
+ * the 3D scene accordingly.
+ *
+ * Key Features:
+ * - Dynamic cloud, rain, snow, and wind particle systems
+ * - Realistic sun and moon lighting, including transitions for day and night
+ * - Puddle (water accumulation) effects during rain using physically-based materials
+ * - Modular structure for easy extension and maintenance
+ * - Level of Detail (LOD) control for performance optimization
+ */
+// Main animation is at bottom
 let skyMaterial, skyDome, sunLight;
 let Supermoon = null;
 
@@ -32,6 +46,11 @@ let snowParticles = null;
 // let snowAreaRadius , rainAreaRadius, windAreaRadius = 5;
 let snowAreaRadius = 10;
 //=============
+/**
+ * Weather and season state management.
+ * These objects track the current environmental conditions.
+ */
+
 export const weather = {
     cloudy: false,
     rainy: false,
@@ -49,6 +68,12 @@ export const season = {
 }
 
 // Random Weathers ===============================
+
+/**
+ * Random weather event generator.
+ * Uses weighted probabilities to determine the next weather type.
+ */
+//===============================================
 const WEATHER_PROBABILITY = [
     { type: 'sunny', weight: 30 },
     { type: 'cloudy', weight: 25 },
@@ -69,12 +94,18 @@ export function getRandomWeather() {
     return 'sunny';
 }
 
-// LOD 품질 조정 (예: 성능에 따라 외부에서 lodQuality 조정 가능)
+// LOD Setting : Coming from the outside
 export function setWeatherLOD(q) {
     lodQuality = Math.max(0.3, Math.min(1.0, q));
 }
 
-// 스카이 돔
+
+/**
+ * Sky, sun, and moon setup.
+ * The sky dome and lighting are updated according to weather and time of day.
+ */
+
+
 export function setBackground() {
     skyMaterial = new THREE.MeshBasicMaterial({
         color: 0x87CEEB,
@@ -87,19 +118,19 @@ export function setBackground() {
 }
 
 
-// 태양광은 위에 이미 선언 되어 있음
+// Creates moonlight
 let moonLight; // 전역으로 선언
 
-// 태양광
+// Sunlight
 export function sun() {
     // 이미 있는 달빛 제거
     if (moonLight) {
         scene.remove(moonLight);
-        moonLight.dispose?.(); // 메모리 해제
+        moonLight.dispose?.(); // Remove
         moonLight = null;
     }
 
-    // 태양빛 생성
+    // Create sunlights
     sunLight = new THREE.DirectionalLight(0xffffff, 1);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.set(2048, 2048);
@@ -1505,7 +1536,10 @@ function updateSkyForSeason(type) {
     sunLight.intensity = sunIntensity;
 }
 
-// 메인 애니메이션 루프
+/**
+ * Main animation loop.
+ * Updates all dynamic elements in the scene each frame.
+ */
 function animate() {
     requestAnimationFrame(animate);
     cloudMove();
