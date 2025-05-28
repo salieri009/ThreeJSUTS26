@@ -108,23 +108,23 @@ export function sun() {
     scene.add(sunLight);
 }
 
-// 달빛
-export function moon() {
-    // 이미 있는 태양빛 제거
-    if (sunLight) {
-        scene.remove(sunLight);
-        sunLight.dispose?.(); // 메모리 해제
-        sunLight = null;
-    }
-
-    // 달빛 생성
-    moonLight = new THREE.DirectionalLight(0xaaaaFF, 0.3);
-    moonLight.castShadow = true;
-    moonLight.shadow.mapSize.set(1024, 1024);
-    moonLight.shadow.camera.top = 30;
-    moonLight.position.set(-30, 20, 10);
-    scene.add(moonLight);
-}
+// 달빛 Dummy Data
+// export function moon() {
+//     // 이미 있는 태양빛 제거
+//     if (sunLight) {
+//         scene.remove(sunLight);
+//         sunLight.dispose?.(); // 메모리 해제
+//         sunLight = null;
+//     }
+//
+//     // 달빛 생성
+//     moonLight = new THREE.DirectionalLight(0xaaaaFF, 0.3);
+//     moonLight.castShadow = true;
+//     moonLight.shadow.mapSize.set(1024, 1024);
+//     moonLight.shadow.camera.top = 30;
+//     moonLight.position.set(-30, 20, 10);
+//     scene.add(moonLight);
+// }
 
 
 
@@ -420,9 +420,9 @@ export function createMoon() {
     const geometry = new THREE.SphereGeometry(5, 32, 32);
     const material = new THREE.MeshStandardMaterial({
         metalness: 0.05,  // 금속성 감소 (암석 표면)
-        roughness: 0.8,   // 거칠기 증가 (크레이터 효과)
+        roughness: 0.4,   // 거칠기 증가 (크레이터 효과)
         emissive: 0xFFF5E6,  // 부드러운 노란색
-        emissiveIntensity: 0.3, // 발광 세기 감소
+        emissiveIntensity: 0.4, // 발광 세기 감소
         displacementScale: 0.05 // 변위 강도
     });
     Supermoon = new THREE.Mesh(geometry, material); // 전역 변수에 할당
@@ -455,7 +455,27 @@ export function updateMoon(deltaTime) {
 }
 
 //
-// function removeMoon(){
+// function removeMoon() 구현 예시
+function removeMoon() {
+    if (Supermoon) {
+        // 씬에서 달 제거
+        scene.remove(Supermoon);
+
+        // 달에 붙어있는 광원 등도 같이 제거 (예: moonLight)
+        if (moonLight) {
+            scene.remove(moonLight);
+            moonLight = null;
+        }
+
+        // 메모리 해제 (geometry, material)
+        if (Supermoon.geometry) Supermoon.geometry.dispose();
+        if (Supermoon.material) Supermoon.material.dispose();
+
+        // Supermoon 참조 해제
+        Supermoon = null;
+    }
+}
+
 //
 // }
 //======================================================
@@ -1264,26 +1284,31 @@ export function setWeatherWind(weatherType) {
             setWindStrength(1.2);
             setWindDirection(1, 0, 0.3);
             setWindTurbulence(0.8);
+            removeMoon();
             break;
         case 'stormy':
             setWindStrength(2.5);
             setWindDirection(0.8, 0, 0.6);
             setWindTurbulence(1.5);
+            removeMoon();
             break;
         case 'snowy':
             setWindStrength(0.8);
             setWindDirection(0.7, 0, 0.7);
             setWindTurbulence(0.4);
+            removeMoon();
             break;
         case 'cloudy':
             setWindStrength(0.6);
             setWindDirection(1, 0, 0);
             setWindTurbulence(0.3);
+            removeMoon();
             break;
         default: // clear
             setWindStrength(0.3);
             setWindDirection(1, 0, 0);
             setWindTurbulence(0.2);
+            removeMoon();
     }
 }
 export function removeWind() {
@@ -1429,18 +1454,22 @@ export function setSeason(type) {
         case 'spring':
             season.spring = true;
             setWeather('rainy'); // 봄: 비
+            removeMoon();
             break;
         case 'summer':
             season.summer = true;
             setWeather('sunny'); // 여름: 맑음
+            removeMoon();
             break;
         case 'autumn':
             season.autumn = true;
             setWeather('cloudy'); // 가을: 흐림
+            removeMoon();
             break;
         case 'winter':
             season.winter = true;
             setWeather('snowy'); // 겨울: 눈
+            removeMoon();
             break;
     }
     updateSkyForSeason(type);
