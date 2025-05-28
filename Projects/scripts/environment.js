@@ -1,6 +1,30 @@
 import * as THREE from '../build/three.module.js';
 import { scene, renderer } from './sceneManager.js';
 import { loader, grass,grasses } from './gridModels.js';
+import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer';
+
+
+let gpuCompute;
+let positionVariable, velocityVariable;
+const AURORA_PARTICLES = 512;
+
+const initAuroraCompute = () => {
+    gpuCompute = new GPUComputationRenderer(AURORA_PARTICLES, AURORA_PARTICLES, renderer);
+
+    // 위치 데이터 텍스처 초기화
+    const dtPosition = gpuCompute.createTexture();
+    const dtVelocity = gpuCompute.createTexture();
+
+    positionVariable = gpuCompute.addVariable('uPosition', positionShader, dtPosition);
+    velocityVariable = gpuCompute.addVariable('uVelocity', velocityShader, dtVelocity);
+
+    gpuCompute.setVariableDependencies(positionVariable, [positionVariable, velocityVariable]);
+    gpuCompute.setVariableDependencies(velocityVariable, [positionVariable, velocityVariable]);
+
+    gpuCompute.init();
+};
+
+
 
 
 /**
@@ -22,6 +46,8 @@ import { loader, grass,grasses } from './gridModels.js';
 // Main animation is at bottom
 let skyMaterial, skyDome, sunLight;
 let Supermoon = null;
+let auroraMesh = null;
+
 //======================================
 
 
@@ -1895,6 +1921,7 @@ function animate() {
     requestAnimationFrame(animate);
     cloudMove();
     const deltaTime = clock.getDelta();
+
     updateMoon(deltaTime);
 
 
