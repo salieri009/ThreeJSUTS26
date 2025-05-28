@@ -937,12 +937,12 @@ export function updateRain() {
     const time = performance.now() * 0.001;
     const delta = clock.getDelta();
 
-    // 경계값 상수 정의
+    // Boundary
     const BOUNDARY_X = 75;
     const BOUNDARY_Z = 120;
     const RESET_HEIGHT = 0.4;
 
-    // 바람 파라미터 유효성 검사
+    // Wind Parameter input
     const safeWindX = windDirection.x || 0;
     const safeWindZ = windDirection.z || 0;
     const safeWindStrength = Math.max(windStrength || 0, 0);
