@@ -396,10 +396,12 @@ export function createMoon() {
     if (Supermoon) return Supermoon;
     const geometry = new THREE.SphereGeometry(15, 32, 32);
     const material = new THREE.MeshStandardMaterial({
-        roughness: 0.8,
-        metalness: 0.05
+        roughness: 0.2,  // 반사 강도 증가
+        metalness: 0.9,  // 금속성 증가
+        emissive: 0xFFFF99,  // 노란색 발광
+        emissiveIntensity: 2.5  // 발광 세기
     });
-    Supermoon = new THREE.Mesh(geometry, material);
+    Supermoon = new THREE.Mesh(geometry, material); // 전역 변수에 할당
     Supermoon.position.set(-170, -80, 50); // 초기 위치 설정
     scene.add(Supermoon);
     return Supermoon;
@@ -415,16 +417,17 @@ function rotateVector(vec, axis, theta) {
 }
 
 export function updateMoon(moon, deltaTime) {
+    if (!Supermoon) return;
     moonOrbitAngle += deltaTime * 0.2; // 회전 속도
 
     // 현재 벡터를 회전
     const rotatedVec = rotateVector(orbitVec, orbitNormal, moonOrbitAngle);
 
     // 중심점에 회전된 벡터를 더해 위치 업데이트
-    moon.position.copy(moonCenter.clone().add(rotatedVec));
+    Supermoon.position.copy(moonCenter.clone().add(rotatedVec));
 
     // 달 자전 처리 (원본 유지)
-    moon.rotation.y += deltaTime * 0.05;
+    Supermoon.rotation.y += deltaTime * 0.05;
 }
 
 //
@@ -1446,8 +1449,9 @@ function updateSkyForSeason(type) {
 // 메인 애니메이션 루프
 function animate() {
     requestAnimationFrame(animate);
+    const deltaTime = clock.getDelta(); // deltaTime 계산
     cloudMove();
-     // updateMoon();
+    updateMoon(deltaTime);
 
     updateRain();
     updateSnow();
