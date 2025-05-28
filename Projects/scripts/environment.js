@@ -79,6 +79,26 @@ export const season = {
 
 }
 
+const GRASS_COLORS = {
+    spring: 0x8be47b,   // 연한 연두
+    summer: 0x3e5c3a,   // 짙은 초록
+    autumn: 0xc2b280,   // 누런 갈색(가을)
+    winter: 0xd3e0ea,   // 창백한 회색(겨울)
+    rainy:  0x4b7f5a,   // 비오는 날 어두운 초록
+    snowy:  0xe0e8f3,   // 눈 내린 잔디(밝은 회색)
+    default: 0x3e5c3a
+};
+
+// 잔디 색상 바꾸기 (모든 grass mesh에 적용)
+export function setGrassColorByKey(key) {
+    const color = GRASS_COLORS[key] || GRASS_COLORS.default;
+    grasses.forEach(grassMesh => {
+        // material을 clone해서 할당해야 모든 grass가 독립적으로 색상 변경됨[5]
+        grassMesh.material = grassMesh.material.clone();
+        grassMesh.material.color.setHex(color);
+    });
+}
+
 // Random Weathers ===============================
 
 /**
@@ -1569,24 +1589,28 @@ export function setSeason(type) {
             season.spring = true;
             setWeather('rainy'); // 봄: 비
             createSpringEffect();
+            setGrassColorByKey('spring');
             removeMoon();
             break;
         case 'summer':
             season.summer = true;
             setWeather('sunny'); // 여름: 맑음
             createSummerEffect();
+            setGrassColorByKey('summer');
             removeMoon();
             break;
         case 'autumn':
             season.autumn = true;
             setWeather('cloudy'); // 가을: 흐림
             createSpringEffect();
+            setGrassColorByKey('autumn');
             removeMoon();
             break;
         case 'winter':
             season.winter = true;
             setWeather('snowy'); // 겨울: 눈
             createWinterEffect();
+            setGrassColorByKey('winter');
             removeMoon();
             break;
     }
