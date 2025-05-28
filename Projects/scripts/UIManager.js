@@ -131,7 +131,7 @@ function initDrag() {
         }
     });
 }
-
+//Dummy data //=================================
 export function updateWeatherWidget() {
     const iconEl = document.querySelector('.weather-icon');
     const descEl = document.querySelector('.weather-desc');
@@ -171,4 +171,32 @@ export function updateWeatherWidget() {
         minmaxEl.textContent = '최고 25° · 최저 16°';
         extraEl.textContent = '좋은 날씨입니다';
     }
+}
+// 확장======================================
+function renderUpcomingEvents() {
+    const container = document.getElementById('event-list');
+    const now = new Date();
+
+    const events = scheduledEvents
+        .filter(event => event.time > now)
+        .slice(0, 5); // 최대 5개 표시
+
+    container.innerHTML = events.map(event => `
+    <div class="event-card" data-type="${event.type}">
+      <span class="event-time">${event.time.toLocaleTimeString()}</span>
+      <span class="event-icon">${getWeatherIcon(event.type)}</span>
+      <span class="event-duration">${event.duration}시간 지속</span>
+    </div>
+  `).join('');
+}
+
+function getWeatherIcon(type) {
+    const icons = {
+        sunny: '☀️',
+        cloudy: '☁️',
+        rainy: '🌧️',
+        snowy: '❄️',
+        stormy: '⛈️'
+    };
+    return icons[type] || '🌤️';
 }

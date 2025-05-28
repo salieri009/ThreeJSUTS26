@@ -46,6 +46,28 @@ export const season = {
     winter: false,
 
 }
+
+// Random Weathers ===============================
+const WEATHER_PROBABILITY = [
+    { type: 'sunny', weight: 30 },
+    { type: 'cloudy', weight: 25 },
+    { type: 'rainy', weight: 20 },
+    { type: 'snowy', weight: 15 },
+    { type: 'stormy', weight: 10 }
+];
+
+export function getRandomWeather() {
+    const total = WEATHER_PROBABILITY.reduce((acc, cur) => acc + cur.weight, 0);
+    const random = Math.random() * total;
+    let accumulated = 0;
+
+    for (const { type, weight } of WEATHER_PROBABILITY) {
+        accumulated += weight;
+        if (random <= accumulated) return type;
+    }
+    return 'sunny';
+}
+
 // LOD 품질 조정 (예: 성능에 따라 외부에서 lodQuality 조정 가능)
 export function setWeatherLOD(q) {
     lodQuality = Math.max(0.3, Math.min(1.0, q));

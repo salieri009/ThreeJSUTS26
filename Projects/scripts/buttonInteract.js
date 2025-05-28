@@ -308,6 +308,23 @@ function updateWindDirection() {
 document.getElementById('windDirX').addEventListener('input', updateWindDirection);
 document.getElementById('windDirZ').addEventListener('input', updateWindDirection);
 //===================================================== Real Time Changer =========== Will be added
+// buttonInteract.js 확장
+let scheduledEvents = [];
+
+function generateWeatherSchedule(days = 5) {
+    const now = Date.now();
+    const HOUR = 3600000;
+
+    for (let i = 0; i < days * 24; i++) {
+        const timestamp = now + (i * HOUR);
+        const event = {
+            time: new Date(timestamp),
+            type: getRandomWeather(),
+            duration: Math.floor(Math.random() * 3 + 1) // 1-3시간 지속
+        };
+        scheduledEvents.push(event);
+    }
+}
 
 
 //====================================================================================
