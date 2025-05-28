@@ -1,6 +1,7 @@
 import * as THREE from '../build/three.module.js';
 import { scene } from './sceneManager.js';
-import { loader } from './gridModels.js';
+import { loader, grass,grasses } from './gridModels.js';
+
 
 /**
  * environment.js - Weather and Season Simulation Environment using Three.js
@@ -150,7 +151,7 @@ export function sun() {
     scene.add(sunLight);
 }
 
-// 달빛 Dummy Data
+// Moonlight Dummy Data : no-longer user
 // export function moon() {
 //     // 이미 있는 태양빛 제거
 //     if (sunLight) {
@@ -642,34 +643,87 @@ function removeNightEffect() {
 //=============================Spring =========================
 export function createSpringEffect() {
     removeSpringEffect();
-    const count = 180;
+    const count = 15; // Particles
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    const colors = new Float32Array(count * 3); //
+
+    // Cherry Blossom particles
+    const pinkPalette = [
+        new THREE.Color(0xFFB3D9),
+        new THREE.Color(0xFF99C8),
+        new THREE.Color(0xFF80B7),
+        new THREE.Color(0xFF66A6)
+    ];
+
     for (let i = 0; i < count; i++) {
-        positions[i * 3 + 0] = Math.random() * 60 - 30;
-        positions[i * 3 + 1] = Math.random() * 15 + 8;
-        positions[i * 3 + 2] = Math.random() * 30 - 15;
+        positions[i * 3 + 0] = (Math.random() - 0.5) * 80; // -40 ~ +40
+        positions[i * 3 + 1] = Math.random() * 25 + 15;    // 15 ~ 40
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 60; // -30 ~ +30
+
+        sizes[i] = 2.5 + Math.random() * 1.5; // 2.5 ~ 4.0
+
+        //Random colours
+        const color = pinkPalette[Math.floor(Math.random() * pinkPalette.length)];
+        colors[i * 3 + 0] = color.r;
+        colors[i * 3 + 1] = color.g;
+        colors[i * 3 + 2] = color.b;
     }
+
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+
+
+
     const material = new THREE.PointsMaterial({
-        color: 0xffc1e0,
-        size: 4.0,
+        size: 3.5,
         transparent: true,
-        opacity: 0.85
+        opacity: 0.9,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        vertexColors: true
     });
+
     springEffect = new THREE.Points(geometry, material);
     scene.add(springEffect);
 }
 
 export function updateSpringEffect() {
     if (!springEffect) return;
+
     const positions = springEffect.geometry.attributes.position.array;
+    const time = Date.now() * 0.001;
+
     for (let i = 0; i < positions.length / 3; i++) {
-        positions[i * 3 + 1] -= 0.037 + Math.random() * 0.012;
-        positions[i * 3 + 0] += Math.sin(Date.now() * 0.0007 + i) * 0.018;
-        if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 10 + 10;
+        const index = i * 3;
+
+        // 자연스러운 낙하 궤적 (포물선 운동)
+        positions[index + 1] -= 0.08 + Math.sin(time + i) * 0.02;
+
+        // 바람 효과 (X/Z 축 이동)
+        positions[index + 0] += Math.sin(time * 0.5 + i) * 0.03;
+        positions[index + 2] += Math.cos(time * 0.6 + i) * 0.02;
+
+        // 회전 효과
+        const angle = time * 0.5 + i;
+        positions[index + 0] += Math.sin(angle) * 0.02;
+        positions[index + 2] += Math.cos(angle) * 0.02;
+
+        // 리셋 로직
+        if (positions[index + 1] < -5) {
+            positions[index + 0] = (Math.random() - 0.5) * 80;
+            positions[index + 1] = Math.random() * 25 + 25;
+            positions[index + 2] = (Math.random() - 0.5) * 60;
+        }
     }
+
     springEffect.geometry.attributes.position.needsUpdate = true;
+
+    // 크기 동적 변화 (살짝 떨리는 효과)
+    springEffect.material.size = 3.2 + Math.sin(time * 3) * 0.3;
 }
 
 export function removeSpringEffect() {
@@ -1512,22 +1566,25 @@ export function setSeason(type) {
         case 'spring':
             season.spring = true;
             setWeather('rainy'); // 봄: 비
+            createSpringEffect();
             removeMoon();
             break;
         case 'summer':
             season.summer = true;
             setWeather('sunny'); // 여름: 맑음
-
+            createSummerEffect();
             removeMoon();
             break;
         case 'autumn':
             season.autumn = true;
             setWeather('cloudy'); // 가을: 흐림
+            createSpringEffect();
             removeMoon();
             break;
         case 'winter':
             season.winter = true;
             setWeather('snowy'); // 겨울: 눈
+            createWinterEffect();
             removeMoon();
             break;
     }
