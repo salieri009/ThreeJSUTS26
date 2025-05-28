@@ -79,6 +79,7 @@ export const season = {
 
 }
 
+//Grass Colour Object
 const GRASS_COLORS = {
     spring: 0x8be47b,   // 연한 연두
     summer: 0x3e5c3a,   // 짙은 초록
