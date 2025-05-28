@@ -438,7 +438,7 @@ function rotateVector(vec, axis, theta) {
         .add(axis.clone().multiplyScalar(axis.dot(vec) * (1 - cos)));
 }
 
-export function updateMoon(moon, deltaTime) {
+export function updateMoon(Supermoon, deltaTime) {
     if (!Supermoon) return;
     moonOrbitAngle += deltaTime * 0.2; // 회전 속도
 
