@@ -433,6 +433,33 @@ let isDay = true;
 let stars = null;
 let nightAmbient = null;
 
+//=====Set Day mode
+export function setDayMode() {
+    isDay = true;
+    // 야간 효과 리소스 정리
+    if (nightAmbient) {
+        scene.remove(nightAmbient);
+        nightAmbient.dispose();
+        nightAmbient = null;
+    }
+    // 달 관련 리소스 정리
+    if (Supermoon) {
+        scene.remove(Supermoon);
+        Supermoon = null;
+    }
+    // 구름 색상 복원
+    clouds.forEach(cloud => {
+        cloud.traverse(node => {
+            if (node.material) {
+                node.material.color.setHex(0xffffff);
+            }
+        });
+    });
+}
+
+//===================
+
+
 // 밤 모드로 전환
 export function setNightMode() {
     isDay = false;
@@ -666,6 +693,7 @@ function removeNightEffect() {
     }
     // 별 제거
     removeStars();
+    removeMoon();
     // 구름 색상 원래대로 복원
     if (clouds) {
         clouds.forEach(cloud => {
@@ -682,6 +710,7 @@ function removeNightEffect() {
         scene.fog.color.setHex(0x87ceeb);
         scene.fog.density = 0.008;
     }
+
 }
 
 
@@ -1775,6 +1804,10 @@ export function setWeather(type) {
         weather.foggy = true;
         createFog();
         createWind();
+    }else if (type === "sunny"){
+        sun();
+        removeNightEffects(); // 야간 효과 완전 제거
+        setDayMode(); // 주간 모드 강제 활성화
     }
 
     updateSky();
