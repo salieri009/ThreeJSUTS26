@@ -80,7 +80,7 @@ export const season = {
 }
 
 //Grass Colour Object
-const GRASS_COLORS = {
+export const GRASS_COLORS = {
     spring: 0x8be47b,
     summer: 0x3e5c3a,
     autumn: 0xc2b280,
@@ -961,126 +961,166 @@ export function removeAutumnEffect() {
 }
 
 
-// === WINTER: Aurora ======//
-let auroraMesh = null;
-// const clock = new THREE.Clock();
+// === WINTER: Axis Shock Effect (Gundam-style) === //
+let axisShockParticles = null;
+let axisShockComputeMaterial = null;
+let positionRenderTarget = null;
+let velocityRenderTarget = null;
+const AXIS_SHOCK_PARTICLES = 1000; // 10만 개의 GPU 파티클
 
-const auroraShader = {
+// GPU 컴퓨트 셰이더 (위치/속도 업데이트)
+const computeShader = {
     uniforms: {
         time: { value: 0 },
-        color1: { value: new THREE.Color(0.1, 0.8, 0.5) }, // 초록 계열
-        color2: { value: new THREE.Color(0.5, 0.3, 0.8) },  // 보라 계열
-        moonPos: { value: new THREE.Vector3() },
-        distortion: { value: 2.5 },
-        intensity: { value: 1.2 }
+        waveSpeed: { value: 2.5 },
+        amplitude: { value: 3.0 },
+        frequency: { value: 0.8 }
     },
-
     vertexShader: `
-        varying vec2 vUv;
-        void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
+        void main() { gl_Position = vec4(position, 1.0); }
     `,
-
     fragmentShader: `
         uniform float time;
-        uniform vec3 color1;
-        uniform vec3 color2;
-        uniform vec3 moonPos;
-        uniform float distortion;
-        uniform float intensity;
-        varying vec2 vUv;
-
-        float noise(vec3 p) {
-            vec3 i = floor(p);
-            vec4 a = dot(i, vec3(1., 57., 21.)) + vec4(0., 57., 21., 78.);
-            vec3 f = cos((p - i) * acos(-1.)) * (-0.5) + 0.5;
-            a = mix(sin(cos(a)*a), sin(cos(a+1.)*a), f.x);
-            a.xy = mix(a.xz, a.yw, f.y);
-            return mix(a.x, a.y, f.z) * 2.0;
-        }
+        uniform float waveSpeed;
+        uniform float amplitude;
+        uniform float frequency;
 
         void main() {
-            vec2 uv = (vUv - 0.5) * 2.0;
-            uv += moonPos.xz * 0.005;
+            vec2 uv = gl_FragCoord.xy / resolution.xy;
             
-            vec3 pos1 = vec3(uv * 3.0, time * 0.1);
-            vec3 pos2 = vec3(uv * 6.0, time * 0.3);
-            vec3 pos3 = vec3(uv * 12.0, time * 0.4);
+            // 파동 방정식 (플래그 효과)
+            float wave = sin(uv.x * frequency * 10.0 + time * waveSpeed) * amplitude;
             
-            float n1 = noise(pos1) * 0.5;
-            float n2 = noise(pos2) * 0.25;
-            float n3 = noise(pos3) * 0.125;
-            float totalNoise = (n1 + n2 + n3) * distortion;
-
-            float spiral = smoothstep(0.3, 0.7, 
-                length(uv) * sin(atan(uv.y, uv.x)*5.0 + time*2.0)
+            // 위치 업데이트
+            vec3 newPos = vec3(
+                uv.x * 100.0 - 50.0,
+                wave * (1.0 - uv.y) * 10.0,
+                uv.y * 100.0 - 50.0
             );
             
-            vec3 baseColor = mix(color1, color2, spiral);
-            vec3 finalColor = baseColor * (totalNoise * 0.8 + 0.2);
+            // 속도 업데이트 (물리 시뮬레이션)
+            vec3 velocity = vec3(
+                cos(time + uv.x * 5.0) * 0.2,
+                sin(time + uv.y * 3.0) * 0.3,
+                (sin(time * 2.0) + cos(time)) * 0.15
+            );
             
-            float alpha = pow(1.0 - length(uv), 2.0) * 0.7;
-            
-            gl_FragColor = vec4(finalColor * alpha, alpha);
+            gl_FragColor = vec4(newPos + velocity, 1.0);
         }
     `
 };
 
-// 오로라 생성 (달 위치 없으면 기본값 사용)
-export function createAurora(moonPosition = new THREE.Vector3(0, 50, -100)) {
-    if (auroraMesh) return;
+// 축쇽 효과 초기화
+export function createAurora() {
+    if (axisShockParticles) return;
 
-    const geometry = new THREE.PlaneGeometry(250, 120, 64, 64);
-    const material = new THREE.ShaderMaterial({
-        vertexShader: auroraShader.vertexShader,
-        fragmentShader: auroraShader.fragmentShader,
-        uniforms: THREE.UniformsUtils.clone(auroraShader.uniforms),
-        transparent: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
+    // 1. 파티클 데이터 초기화
+    const positions = new Float32Array(AXIS_SHOCK_PARTICLES * 3);
+    const phases = new Float32Array(AXIS_SHOCK_PARTICLES);
+    for (let i = 0; i < AXIS_SHOCK_PARTICLES; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 100;
+        positions[i * 3 + 1] = Math.random() * 50;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 100;
+        phases[i] = Math.random() * Math.PI * 2;
+    }
+
+    // 2. 컴퓨트 셰이더 설정
+    axisShockComputeMaterial = new THREE.ShaderMaterial({
+        uniforms: THREE.UniformsUtils.clone(computeShader.uniforms),
+        vertexShader: computeShader.vertexShader,
+        fragmentShader: computeShader.fragmentShader
     });
 
-    material.uniforms.moonPos.value.copy(moonPosition);
-    auroraMesh = new THREE.Mesh(geometry, material);
-    auroraMesh.rotation.x = -Math.PI / 2;
-    auroraMesh.position.copy(moonPosition).add(new THREE.Vector3(0, 30, 0));
-    scene.add(auroraMesh);
+    // 3. 더블 버퍼링 렌더 타겟
+    positionRenderTarget = new THREE.WebGLRenderTarget(512, 512, {
+        type: THREE.FloatType,
+        format: THREE.RGBAFormat
+    });
+    velocityRenderTarget = new THREE.WebGLRenderTarget(512, 512, {
+        type: THREE.FloatType,
+        format: THREE.RGBAFormat
+    });
+
+    // 4. 렌더링용 파티클 시스템
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('phase', new THREE.BufferAttribute(phases, 1));
+
+    const material = new THREE.ShaderMaterial({
+        vertexShader: `
+            attribute float phase;
+            varying vec3 vColor;
+            varying float vLife;
+            
+            void main() {
+                // 파동 효과 (플래그 시뮬레이션)
+                vec3 pos = position;
+                pos.y += sin(pos.x * 0.2 + phase + time * 3.0) * 5.0;
+                pos.x += cos(pos.z * 0.15 + phase + time * 2.5) * 3.0;
+                
+                vColor = mix(vec3(0.9, 0.2, 0.3), vec3(0.4, 0.1, 0.8), smoothstep(-50.0, 50.0, pos.x));
+                vLife = 1.0 - abs(pos.y) / 50.0;
+                
+                gl_PointSize = 5.0 * (1.0 + sin(phase + time * 5.0) * 0.5);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+            }
+        `,
+        fragmentShader: `
+            varying vec3 vColor;
+            varying float vLife;
+            
+            void main() {
+                // 에너지 코어 효과
+                float dist = length(gl_PointCoord - 0.5);
+                float intensity = 1.0 - smoothstep(0.3, 0.5, dist);
+                vec3 finalColor = vColor * intensity * vLife * 2.0;
+                
+                gl_FragColor = vec4(finalColor, intensity * 0.8);
+            }
+        `,
+        uniforms: {
+            time: { value: 0 },
+            amplitude: { value: 3.0 }
+        },
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        transparent: true
+    });
+
+    axisShockParticles = new THREE.Points(geometry, material);
+    scene.add(axisShockParticles);
 }
 
-// 오로라 효과 업데이트
+// 프레임 업데이트
 export function updateAuroraEffect() {
-    if (!auroraMesh) return;
+    if (!axisShockParticles) return;
 
-    const deltaTime = clock.getDelta();
-    const material = auroraMesh.material;
+    const delta = clock.getDelta();
+    const material = axisShockParticles.material;
 
-    material.uniforms.time.value += deltaTime * 0.5;
+    // 1. 컴퓨트 셰이더 실행
+    axisShockComputeMaterial.uniforms.time.value += delta;
+    renderer.setRenderTarget(positionRenderTarget);
+    renderer.render(axisShockComputeMaterial, scene);
 
-    // 달 위치 동기화 (있을 경우)
-    if (Supermoon && Supermoon.position) {
-        material.uniforms.moonPos.value.copy(Supermoon.position);
-        auroraMesh.position.copy(Supermoon.position).add(new THREE.Vector3(0, 30, 0));
-    } else {
-        // 독립적 움직임 (원형 경로)
-        auroraMesh.position.x += Math.sin(deltaTime) * 0.3;
-        auroraMesh.position.z += Math.cos(deltaTime) * 0.2;
-    }
+    // 2. 파티클 위치 업데이트
+    material.uniforms.time.value += delta;
+    material.uniforms.amplitude.value = 3.0 + Math.sin(Date.now() * 0.001) * 2.0;
 
-    // 동적 파라미터
-    material.uniforms.distortion.value = 2.5 + Math.sin(Date.now() * 0.001) * 0.5;
-    material.uniforms.intensity.value = 1.2 + Math.cos(Date.now() * 0.0007) * 0.3;
+    // 3. 더블 버퍼링 교체
+    [positionRenderTarget, velocityRenderTarget] = [velocityRenderTarget, positionRenderTarget];
 }
 
-// 오로라 제거
+// 효과 제거
 export function removeAuroraEffect() {
-    if (auroraMesh) {
-        scene.remove(auroraMesh);
-        auroraMesh.geometry.dispose();
-        auroraMesh.material.dispose();
-        auroraMesh = null;
+    if (axisShockParticles) {
+        scene.remove(axisShockParticles);
+        axisShockParticles.geometry.dispose();
+        axisShockParticles.material.dispose();
+        axisShockParticles = null;
     }
+    if (positionRenderTarget) positionRenderTarget.dispose();
+    if (velocityRenderTarget) velocityRenderTarget.dispose();
 }
 
 //===========================================================
