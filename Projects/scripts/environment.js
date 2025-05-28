@@ -533,6 +533,12 @@ export function updateMoon(deltaTime) {
 
     // 달 자전 처리 (원본 유지)
     Supermoon.rotation.y += deltaTime * 10.0;
+
+    if (auroraMesh) {
+        auroraMesh.position.copy(Supermoon.position);
+        auroraMesh.position.y += 30; // 달 위쪽에 배치
+        auroraMesh.material.uniforms.moonPos.value = Supermoon.position;
+    }
 }
 
 //
@@ -955,20 +961,117 @@ export function removeAutumnEffect() {
 }
 
 
-// === WINTER: 눈 파티클 ===
-export function createWinterEffect() {
-    removeWinterEffect();
+// === WINTER: Aurora ======//
+let auroraMesh = null;
 
+
+const auroraShader = {
+    uniforms: {
+        time: { value: 0 },
+        color1: { value: new THREE.Color(0.1, 0.8, 0.5) }, // 초록 계열
+        color2: { value: new THREE.Color(0.5, 0.3, 0.8) },  // 보라 계열
+        moonPos: { value: new THREE.Vector3() },
+        distortion: { value: 2.5 },
+        intensity: { value: 1.2 }
+    },
+
+    vertexShader: `
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+
+    fragmentShader: `
+        uniform float time;
+        uniform vec3 color1;
+        uniform vec3 color2;
+        uniform vec3 moonPos;
+        uniform float distortion;
+        uniform float intensity;
+        varying vec2 vUv;
+
+        float noise(vec3 p) {
+            vec3 i = floor(p);
+            vec4 a = dot(i, vec3(1., 57., 21.)) + vec4(0., 57., 21., 78.);
+            vec3 f = cos((p - i) * acos(-1.)) * (-0.5) + 0.5;
+            a = mix(sin(cos(a)*a), sin(cos(a+1.)*a), f.x);
+            a.xy = mix(a.xz, a.yw, f.y);
+            return mix(a.x, a.y, f.z) * 2.0;
+        }
+
+        void main() {
+            vec2 uv = (vUv - 0.5) * 2.0;
+            uv += moonPos.xz * 0.005;
+            
+            vec3 pos1 = vec3(uv * 3.0, time * 0.1);
+            vec3 pos2 = vec3(uv * 6.0, time * 0.3);
+            vec3 pos3 = vec3(uv * 12.0, time * 0.4);
+            
+            float n1 = noise(pos1) * 0.5;
+            float n2 = noise(pos2) * 0.25;
+            float n3 = noise(pos3) * 0.125;
+            float totalNoise = (n1 + n2 + n3) * distortion;
+
+            float spiral = smoothstep(0.3, 0.7, 
+                length(uv) * sin(atan(uv.y, uv.x)*5.0 + time*2.0)
+            );
+            
+            vec3 baseColor = mix(color1, color2, spiral);
+            vec3 finalColor = baseColor * (totalNoise * 0.8 + 0.2);
+            
+            float alpha = pow(1.0 - length(uv), 2.0) * 0.7;
+            
+            gl_FragColor = vec4(finalColor * alpha, alpha);
+        }
+    `
+};
+
+export function createAurora(moonPosition) {
+    if (auroraMesh) return; //Avoid duplicates
+
+
+    const geometry = new THREE.PlaneGeometry(200, 100, 64, 64);
+    const material = new THREE.ShaderMaterial({
+        vertexShader: auroraShader.vertexShader,
+        fragmentShader: auroraShader.fragmentShader,
+        uniforms: THREE.UniformsUtils.clone(auroraShader.uniforms),
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+
+    material.uniforms.moonPos.value.copy(moonPosition);
+    auroraMesh = new THREE.Mesh(geometry, material);
+    auroraMesh.rotation.x = -Math.PI / 2;
+    scene.add(auroraMesh);
 }
 
-export function updateWinterEffect() {
-    if (!winterEffect) return;
+export function updateAuroraEffect() {
+    if (!auroraMesh) return;
 
+    const deltaTime = clock.getDelta();
+    const material = auroraMesh.material;
+
+    material.uniforms.time.value += deltaTime * 0.5;
+
+    if (Supermoon) {
+        material.uniforms.moonPos.value.copy(Supermoon.position);
+        auroraMesh.position.copy(Supermoon.position);
+        auroraMesh.position.y += 30;
+    }
+
+    material.uniforms.distortion.value = 2.5 + Math.sin(Date.now() * 0.001) * 0.5;
+    material.uniforms.intensity.value = 1.2 + Math.cos(Date.now() * 0.0007) * 0.3;
 }
 
-export function removeWinterEffect() {
-    if (winterEffect) {
-
+export function removeAuroraEffect() {
+    if (auroraMesh) {
+        scene.remove(auroraMesh);
+        auroraMesh.geometry.dispose();
+        auroraMesh.material.dispose();
+        auroraMesh = null;
     }
 }
 
@@ -1622,7 +1725,7 @@ export function setSeason(type) {
     removeSpringEffect();
     removeSummerEffect();
     removeAutumnEffect();
-    removeWinterEffect();
+    removeAuroraEffect(); //Was winter effect previously/
 
     switch(type) {
         case 'spring':
@@ -1648,8 +1751,9 @@ export function setSeason(type) {
             break;
         case 'winter':
             season.winter = true;
+            createMoon();
             setWeather('snowy'); // 겨울: 눈
-            createWinterEffect();
+            createAurora();
             setGrassColorByKey('winter');
             removeMoon();
             break;
@@ -1705,7 +1809,7 @@ function animate() {
     updateSummerEffect();
     updateAutumnEffect();
     updateSpringEffect();
-    updateWinterEffect();
+    updateAuroraEffect(); //It was "Winter Effect" previously//"
     updateGustSystem();
 }
 animate();
