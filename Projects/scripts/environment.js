@@ -395,7 +395,7 @@ export function createMoon() {
         metalness: 0.05
     });
     Supermoon = new THREE.Mesh(geometry, material); //moon fix
-    Supermoon.position.set(200, 0, 0);
+    Supermoon.position.set(-170, -80, 50);
     scene.add(Supermoon);
     return Supermoon;
 }
