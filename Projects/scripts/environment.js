@@ -386,8 +386,7 @@ export function setNightMode() {
 
 
 export function createMoon() {
-    if(Supermoon) return Supermoon; // 이미 존재시 재생성 방지
-
+    if (Supermoon) return Supermoon; // Already exists, don't recreate
     const geometry = new THREE.SphereGeometry(15, 32, 32);
     const material = new THREE.MeshStandardMaterial({
         map: null,
@@ -395,8 +394,7 @@ export function createMoon() {
         roughness: 0.8,
         metalness: 0.05
     });
-
-    const Supermoon = new THREE.Mesh(geometry, material);
+    Supermoon = new THREE.Mesh(geometry, material); //moon fix
     Supermoon.position.set(200, 0, 0);
     scene.add(Supermoon);
     return Supermoon;

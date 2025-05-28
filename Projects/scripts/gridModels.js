@@ -5,8 +5,9 @@ import { scene, camera } from './sceneManager.js';
 export let clips, highlight, tree, cow, grass, sheep, cloud, barn, fence, chicken, pig, hay, rock, carrot, potato, tomato, wheat, soil, stonePath, pebble, pSoil, tSoil, wSoil, path, pine, loader, windmill;
 let placingMesh, mixer = null;
 let carrotField;
+//======================
 export let grasses = [];
-
+//======================
 export let grid = new THREE.GridHelper(10, 5);
 const gridSize = 2;
 export let selectedObject ;
@@ -40,6 +41,7 @@ export const modelData = {
     "Windmill": { width: 2, height: 2},
 }
 
+//==========================================
 export function loadScene() {
     const dirt = new THREE.Mesh(
         new THREE.BoxGeometry(10, 8, 10),
