@@ -858,23 +858,57 @@ export function removeSummerEffect() {
 
 
 // === AUTUMN: 낙엽 파티클 ===
+// === AUTUMN: 낙엽 파티클 (개선 버전) ===
 export function createAutumnEffect() {
     removeAutumnEffect();
-    const count = 140;
+    const count = 200; // 파티클 수를 늘려 풍성하게
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    const colors = new Float32Array(count * 3);
+    const rotations = new Float32Array(count); // 낙엽 회전용
+
+    // 가을 낙엽 색상 팔레트 (단풍색 계열)
+    const leafColors = [
+        new THREE.Color(0xffa94d), // 오렌지
+        new THREE.Color(0xff7f50), // 연한 주황
+        new THREE.Color(0xff6347), // 토마토
+        new THREE.Color(0x8b4513), // 갈색
+        new THREE.Color(0xffd700)  // 금색
+    ];
+
     for (let i = 0; i < count; i++) {
-        positions[i * 3 + 0] = Math.random() * 60 - 30;
-        positions[i * 3 + 1] = Math.random() * 14 + 8;
-        positions[i * 3 + 2] = Math.random() * 30 - 15;
+        positions[i * 3 + 0] = Math.random() * 60 - 30;  // X: -30~30
+        positions[i * 3 + 1] = Math.random() * 14 + 8;   // Y: 8~22 (낙엽 높이)
+        positions[i * 3 + 2] = Math.random() * 30 - 15;  // Z: -15~15
+
+        sizes[i] = 1.5 + Math.random() * 1.5; // 크기 1.5~3.0
+
+        // 랜덤 색상 선택
+        const color = leafColors[Math.floor(Math.random() * leafColors.length)];
+        colors[i * 3 + 0] = color.r;
+        colors[i * 3 + 1] = color.g;
+        colors[i * 3 + 2] = color.b;
+
+        // 낙엽 회전 각도 초기화
+        rotations[i] = Math.random() * Math.PI * 2;
     }
+
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('rotation', new THREE.BufferAttribute(rotations, 1));
+
+
     const material = new THREE.PointsMaterial({
-        color: 0xffa94d,
-        size: 2.1,
+        size: 5,
         transparent: true,
-        opacity: 0.8
+        opacity: 0.8,
+        vertexColors: true,
+        depthWrite: false,
+        blending: THREE.NormalBlending
     });
+
     autumnEffect = new THREE.Points(geometry, material);
     scene.add(autumnEffect);
 }
@@ -882,12 +916,33 @@ export function createAutumnEffect() {
 export function updateAutumnEffect() {
     if (!autumnEffect) return;
     const positions = autumnEffect.geometry.attributes.position.array;
+    const rotations = autumnEffect.geometry.attributes.rotation.array;
+    const time = performance.now() * 0.001;
+
     for (let i = 0; i < positions.length / 3; i++) {
-        positions[i * 3 + 1] -= 0.034 + Math.random() * 0.012;
-        positions[i * 3 + 0] += Math.sin(Date.now() * 0.0008 + i) * 0.017;
-        if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 10 + 10;
+        const idx = i * 3;
+        const rot = rotations[i];
+
+        // 낙엽은 아래로 떨어지면서 회전하는 자연스러움
+        positions[idx + 1] -= 0.02 + Math.random() * 0.01; // 낙하 속도
+
+        // 바람에 흔들리는 효과 (X, Z 축)
+        positions[idx + 0] += Math.sin(time * 0.8 + rot) * 0.02;
+        positions[idx + 2] += Math.cos(time * 0.9 + rot) * 0.02;
+
+        // 낙엽 회전 (간단한 회전 효과)
+        rotations[i] += 0.01 + Math.random() * 0.02;
+
+        // 바닥에 닿거나 낮아지면 재생성
+        if (positions[idx + 1] < 0) {
+            positions[idx + 0] = Math.random() * 60 - 30;
+            positions[idx + 1] = Math.random() * 10 + 8; // 다시 높이
+            positions[idx + 2] = Math.random() * 30 - 15;
+            rotations[i] = Math.random() * Math.PI * 2;
+        }
     }
     autumnEffect.geometry.attributes.position.needsUpdate = true;
+    autumnEffect.geometry.attributes.rotation.needsUpdate = true;
 }
 
 export function removeAutumnEffect() {
@@ -898,6 +953,7 @@ export function removeAutumnEffect() {
         autumnEffect = null;
     }
 }
+
 
 // === WINTER: 눈 파티클 ===
 export function createWinterEffect() {
@@ -1480,7 +1536,7 @@ export function updateFog() {
         fogMesh.material.opacity = 0.12 + Math.abs(Math.sin(clock.elapsedTime * 0.1)) * 0.05;
     }
     // Three.js Fog 파라미터 변화(선택)
-    //
+    // Fog paramter adjustment
     // if (scene.fog instanceof THREE.Fog) {
     //     const t = clock.getElapsedTime();
     //     scene.fog.near = 10 + Math.sin(t * 0.2) * 5;
@@ -1611,7 +1667,7 @@ export function setSeason(type) {
         case 'autumn':
             season.autumn = true;
             setWeather('cloudy'); // 가을: 흐림
-            createSpringEffect();
+            createAutumnEffect();
             setGrassColorByKey('autumn');
             removeMoon();
             break;
