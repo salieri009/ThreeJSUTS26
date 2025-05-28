@@ -385,29 +385,46 @@ export function setNightMode() {
 
 
 
+// 환경 파일 상단에 선언
+let moonOrbitAngle = 0;
+const moonCenter = new THREE.Vector3(0, 5, 0); // 중앙 grass 좌표
+let orbitVec = new THREE.Vector3(-170, -85, 50); // 초기 위치에서 중심까지의 벡터
+const orbitRadius = orbitVec.length(); // 공전 반지름 계산
+const orbitNormal = new THREE.Vector3().crossVectors(orbitVec, new THREE.Vector3(0, 1, 0)).normalize(); // 궤도 평면 법선
+
 export function createMoon() {
-    if (Supermoon) return Supermoon; // Already exists, don't recreate
+    if (Supermoon) return Supermoon;
     const geometry = new THREE.SphereGeometry(15, 32, 32);
     const material = new THREE.MeshStandardMaterial({
-        map: null,
-        normalMap: null,
         roughness: 0.8,
         metalness: 0.05
     });
-    Supermoon = new THREE.Mesh(geometry, material); //moon fix
-    Supermoon.position.set(-170, -80, 50);
+    Supermoon = new THREE.Mesh(geometry, material);
+    Supermoon.position.set(-170, -80, 50); // 초기 위치 설정
     scene.add(Supermoon);
     return Supermoon;
 }
 
-
-let moonOrbitAngle = 0;
+// rodrigues rotation formula
+function rotateVector(vec, axis, theta) {
+    const cos = Math.cos(theta);
+    const sin = Math.sin(theta);
+    return vec.clone().multiplyScalar(cos)
+        .add(axis.clone().cross(vec).multiplyScalar(sin))
+        .add(axis.clone().multiplyScalar(axis.dot(vec) * (1 - cos)));
+}
 
 export function updateMoon(moon, deltaTime) {
-    moonOrbitAngle += deltaTime * 0.2; // 0.2rad/s 속도
-    moon.position.x = 200 * Math.cos(moonOrbitAngle);
-    moon.position.z = 200 * Math.sin(moonOrbitAngle);
-    moon.rotation.y += deltaTime * 0.05; // 자전 애니메이션
+    moonOrbitAngle += deltaTime * 0.2; // 회전 속도
+
+    // 현재 벡터를 회전
+    const rotatedVec = rotateVector(orbitVec, orbitNormal, moonOrbitAngle);
+
+    // 중심점에 회전된 벡터를 더해 위치 업데이트
+    moon.position.copy(moonCenter.clone().add(rotatedVec));
+
+    // 달 자전 처리 (원본 유지)
+    moon.rotation.y += deltaTime * 0.05;
 }
 
 //
