@@ -165,20 +165,25 @@ let moonLight; // 전역으로 선언
 
 // Sunlight
 export function sun() {
-    // 이미 있는 달빛 제거
+
+
+    // Remove current moonlight
     if (moonLight) {
         scene.remove(moonLight);
         moonLight.dispose?.(); // Remove
         moonLight = null;
     }
-
-    // Create sunlights
-    sunLight = new THREE.DirectionalLight(0xffffff, 1);
-    sunLight.castShadow = true;
-    sunLight.shadow.mapSize.set(2048, 2048);
-    sunLight.shadow.camera.top = 50;
-    sunLight.position.set(50, 30, 0);
-    scene.add(sunLight);
+    if (sunLight) {
+        sunLight.visible = true;
+    } else {
+        // Create sunlights
+        sunLight = new THREE.DirectionalLight(0xffffff, 1);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.set(2048, 2048);
+        sunLight.shadow.camera.top = 50;
+        sunLight.position.set(50, 30, 0);
+        scene.add(sunLight);
+    }
 }
 
 // Moonlight Dummy Data : no-longer user
@@ -431,6 +436,9 @@ let nightAmbient = null;
 // 밤 모드로 전환
 export function setNightMode() {
     isDay = false;
+    if (sunLight) sunLight.visible = false;
+
+
 
     // 하늘색을 밤색(그라데이션 효과 포함)으로 변경
     if (skyMaterial) {
@@ -438,8 +446,6 @@ export function setNightMode() {
         if (skyMaterial.emissive) skyMaterial.emissive.setHex(0x181d30); // 약간의 빛
     }
 
-    // 태양(light) 숨기기
-    if (sunLight) sunLight.visible = false;
 
     // 달(light) 보이기 및 색상 조정
     if (moonLight) {
