@@ -123,18 +123,16 @@
 
 
     <!-- index.html 추가 -->
-    <div class="weather-timeline">
-        <div class="current-weather">
-            <h2>현재 날씨</h2>
-            <div id="current-weather-icon">☀️</div>
-            <p id="current-weather-text">Sunny</p>
+    <div id="weather-event-panel" class="weather-event-panel">
+        <div class="weather-event-header">
+            <span>예정된 날씨 이벤트</span>
+            <button id="close-weather-event-panel" title="닫기">×</button>
         </div>
-
-        <div class="upcoming-events">
-            <h3>예정된 이벤트 (다음 24시간)</h3>
-            <div id="event-list"></div>
+        <div id="weather-event-list" class="weather-event-list">
+            <!-- JS로 이벤트 카드가 들어갑니다 -->
         </div>
     </div>
+
 
     <!--날씨 패널 아이탬, 당장은 comment out-->
 <!--    <div class="scene-overlay-weather-container">-->
