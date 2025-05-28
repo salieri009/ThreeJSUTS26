@@ -329,12 +329,13 @@ function createDebugBox(color = 0xff0000) {
 const rainDebugBoxes = [];
 const snowDebugBoxes = [];
 
+//Debug Boxes
 // for (let i = 0; i < clouds.length; i++) {
 //     rainDebugBoxes.push(createDebugBox(0x0000ff)); // 파란색: 비
 //     snowDebugBoxes.push(createDebugBox(0xff0000)); // 빨간색: 눈
 // }
 
-// 구름 애니메이션
+// cloudAnimation
 export function cloudMove() {
     const delta = clock.getDelta();
     for (let i = 0; i < clouds.length; i++) {
@@ -533,12 +534,15 @@ export function updateMoon(deltaTime) {
 
     // 달 자전 처리 (원본 유지)
     Supermoon.rotation.y += deltaTime * 10.0;
+    if (!auroraMesh) return;
 
-    if (auroraMesh) {
+    if (auroraMesh && Supermoon.position) {
         auroraMesh.position.copy(Supermoon.position);
-        auroraMesh.position.y += 30; // 달 위쪽에 배치
+        auroraMesh.position.y += 30;
         auroraMesh.material.uniforms.moonPos.value = Supermoon.position;
     }
+
+
 }
 
 //
