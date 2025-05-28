@@ -17,6 +17,7 @@ let lightningLines = [];
 let windParticles = null;
 let fogMesh = null;
 let lodQuality = 1.0; // 1.0 ~ 0.3 (LOD)
+// const deltaTime = clock.getDelta(); // deltaTime 계산
 
 //Particles===============
 let springEffect = null;
@@ -410,21 +411,22 @@ export function setNightMode() {
 // 환경 파일 상단에 선언
 let moonOrbitAngle = 0;
 const moonCenter = new THREE.Vector3(0, 5, 0); // 중앙 grass 좌표
-let orbitVec = new THREE.Vector3(-170, -85, 50); // 초기 위치에서 중심까지의 벡터
+let orbitVec = new THREE.Vector3(-15, 30, 12); // 초기 위치에서 중심까지의 벡터
 const orbitRadius = orbitVec.length(); // 공전 반지름 계산
 const orbitNormal = new THREE.Vector3().crossVectors(orbitVec, new THREE.Vector3(0, 1, 0)).normalize(); // 궤도 평면 법선
 
 export function createMoon() {
     if (Supermoon) return Supermoon;
-    const geometry = new THREE.SphereGeometry(15, 32, 32);
+    const geometry = new THREE.SphereGeometry(5, 32, 32);
     const material = new THREE.MeshStandardMaterial({
-        roughness: 0.2,  // 반사 강도 증가
-        metalness: 0.9,  // 금속성 증가
-        emissive: 0xFFFF99,  // 노란색 발광
-        emissiveIntensity: 2.5  // 발광 세기
+        metalness: 0.05,  // 금속성 감소 (암석 표면)
+        roughness: 0.8,   // 거칠기 증가 (크레이터 효과)
+        emissive: 0xFFF5E6,  // 부드러운 노란색
+        emissiveIntensity: 0.3, // 발광 세기 감소
+        displacementScale: 0.05 // 변위 강도
     });
     Supermoon = new THREE.Mesh(geometry, material); // 전역 변수에 할당
-    Supermoon.position.set(-170, -80, 50); // 초기 위치 설정
+    Supermoon.position.set(-170, 30, 20); // 초기 위치 설정
     scene.add(Supermoon);
     return Supermoon;
 }
@@ -438,9 +440,9 @@ function rotateVector(vec, axis, theta) {
         .add(axis.clone().multiplyScalar(axis.dot(vec) * (1 - cos)));
 }
 
-export function updateMoon(Supermoon, deltaTime) {
+export function updateMoon(deltaTime) {
     if (!Supermoon) return;
-    moonOrbitAngle += deltaTime * 0.2; // 회전 속도
+    moonOrbitAngle += deltaTime * 5; // 회전 속도
 
     // 현재 벡터를 회전
     const rotatedVec = rotateVector(orbitVec, orbitNormal, moonOrbitAngle);
@@ -449,7 +451,7 @@ export function updateMoon(Supermoon, deltaTime) {
     Supermoon.position.copy(moonCenter.clone().add(rotatedVec));
 
     // 달 자전 처리 (원본 유지)
-    Supermoon.rotation.y += deltaTime * 0.05;
+    Supermoon.rotation.y += deltaTime * 10.0;
 }
 
 //
@@ -1478,8 +1480,7 @@ function updateSkyForSeason(type) {
 function animate() {
     requestAnimationFrame(animate);
     cloudMove();
-
-    const deltaTime = clock.getDelta(); // deltaTime 계산
+    const deltaTime = clock.getDelta();
     updateMoon(deltaTime);
 
     updateRain();

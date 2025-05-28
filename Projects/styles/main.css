@@ -226,7 +226,7 @@ body {
 }
 .scene-overlay-night-and-days{
     position: absolute;
-    bottom: 76vh;
+    bottom: 71vh;
     left: 48px;
     max-width: 100%;
     width: 450px; /* Or adjust as needed */
@@ -298,7 +298,7 @@ body {
 
 .scene-overlay-season-controls{
     position: absolute;
-    bottom: 65vh;
+    bottom: 63vh;
     left: 48px;
     max-width: 100%;
     width: 450px; /* Or adjust as needed */
