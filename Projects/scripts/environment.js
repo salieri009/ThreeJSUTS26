@@ -21,7 +21,18 @@ import { loader } from './gridModels.js';
 // Main animation is at bottom
 let skyMaterial, skyDome, sunLight;
 let Supermoon = null;
+//======================================
 
+
+/**
+ * All major objects (clouds, rain, snow, moon, puddle, etc.) are managed as global variables.
+ * Each has corresponding create, update, and remove functions for modular control.
+ *
+ * This modular structure allows for easy extension (e.g., adding new weather effects)
+ * and ensures that memory is properly managed (disposing of geometries and materials
+ * when objects are removed).
+ */
+//================================================
 let stormLight = null;
 let clouds = [];
 let cloudMaterials = [];
@@ -1408,7 +1419,13 @@ export function removePuddle() {
     }
 }
 
-// 퍼들 하나 생성 (현재 크기 사용)
+// Puddles
+/**
+ * Puddle (water accumulation) effect.
+ * When it rains, a reflective, semi-transparent puddle mesh is created on the ground.
+ * Uses MeshPhysicalMaterial for realistic water appearance.
+ */
+//
 export function createPuddle() {
     removePuddle(); // 기존 퍼들 제거
 
