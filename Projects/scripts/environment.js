@@ -1110,7 +1110,7 @@ export function updateAurora() {
         const baseAmp = mat.uniforms.baseAmplitude.value;
         mat.uniforms.amplitude.value = baseAmp + Math.sin(elapsedTime * 0.8) * (baseAmp * 0.3);
 
-        // 3. 계절별 색상 전환
+        // 3. 계절별 색상 전환 // 추가 될 수 있음
         const isWinter = season.winter;
         mat.uniforms.baseColor.value.lerp(
             new THREE.Color(isWinter ? 0x00ff88 : 0xff4488),
