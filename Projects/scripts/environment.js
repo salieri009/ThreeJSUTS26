@@ -1141,20 +1141,18 @@ export function updateAurora() {
 export function removeAuroraEffect() {
     auroraLayers.forEach(layer => {
         layer.traverse(child => {
-            if (child.isMesh) {
-                if (child.geometry) {
-                    child.geometry.dispose();
-                }
-                if (child.material) {
-                    if (Array.isArray(child.material)) {
-                        child.material.forEach(mat => mat.dispose());
+            if (child?.isMesh) { // 옵셔널 체이닝 추가
+                child.geometry?.dispose();
+                if(child.material) {
+                    if(Array.isArray(child.material)) {
+                        child.material.forEach(mat => mat?.dispose());
                     } else {
-                        child.material.dispose();
+                        child.material?.dispose();
                     }
                 }
             }
         });
-        scene.remove(layer);
+        if(layer.parent) scene.remove(layer); //
     });
     auroraLayers = [];
 }
@@ -2001,7 +1999,7 @@ export function setSeason(type) {
             setWeather('snowy'); // 겨울: 눈
             createAurora();
             setGrassColorByKey('winter');
-            removeMoon();
+            updateMoon();
             break;
     }
     updateSkyForSeason(type);
