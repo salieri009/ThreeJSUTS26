@@ -197,7 +197,7 @@ export function setBackground() {
         color: 0x87CEEB,
         side: THREE.BackSide
     });
-    const skyGeometry = new THREE.SphereGeometry(200, 16, 12);
+    const skyGeometry = new THREE.SphereGeometry(400, 16, 12);
     skyDome = new THREE.Mesh(skyGeometry, skyMaterial);
     skyDome.name = "Sky";
     scene.add(skyDome);
@@ -575,7 +575,7 @@ export function setNightMode() {
 
 let moonOrbitAngle = 0;
 const moonCenter = new THREE.Vector3(0, 5, 0); // 중앙 grass 좌표
-let orbitVec = new THREE.Vector3(-80, 30, 12); // 초기 위치에서 중심까지의 벡터
+let orbitVec = new THREE.Vector3(-80, 30, -10); // 초기 위치에서 중심까지의 벡터
 const orbitRadius = orbitVec.length(); // 공전 반지름 계산
 const orbitNormal = new THREE.Vector3().crossVectors(orbitVec, new THREE.Vector3(0, 1, 0)).normalize(); // 궤도 평면 법선
 
@@ -670,7 +670,7 @@ function createStars() {
 
     for (let i = 0; i < starCount; i++) {
         // 구면 좌표계로 별 위치 배치
-        const r = 180 + Math.random() * 15;
+        const r = 360 + Math.random() * 15;
         const theta = Math.random() * Math.PI;
         const phi = Math.random() * Math.PI * 2;
         positions[i * 3 + 0] = r * Math.sin(theta) * Math.cos(phi);
@@ -1082,7 +1082,7 @@ export function createAurora() {
 }
 
 function createAuroraLayer(settings, layerIndex) {
-    const geometry = new THREE.PlaneGeometry(800, 150, 256, 256);
+    const geometry = new THREE.PlaneGeometry(800, 350, 256, 256);
     const pivot = new THREE.Group();
 
     // 랜덤 회전 및 위치 설정
