@@ -741,6 +741,7 @@ function removeNightEffect() {
     // 별 제거
     removeStars();
     removeMoon();
+    removeAuroraEffect();
     // 구름 색상 원래대로 복원
     if (clouds) {
         clouds.forEach(cloud => {
@@ -2018,6 +2019,7 @@ export function setSeason(type) {
             createSummerEffect();
             setGrassColorByKey('summer');
             removeMoon();
+
             break;
         case 'autumn':
             season.autumn = true;
