@@ -1926,9 +1926,15 @@ export function addPuddle() {
     createPuddle();  // 새로운 크기로 퍼들 생성
 }
 
+let isWeatherTransitioning = false;
 
 // 날씨 전환
 export function setWeather(type) {
+
+    if(isWeatherTransitioning) return;
+    isWeatherTransitioning = true;
+
+
     weather.cloudy = weather.rainy = weather.snowy = weather.stormy = weather.foggy = false;
     removeRain(); removeSnow(); removeStorm(); removeWind(); removeFog(); removePuddle();
 
@@ -1964,6 +1970,8 @@ export function setWeather(type) {
     }
 
     updateSky();
+    setTimeout(() => isWeatherTransitioning = false, 500);
+
 }
 
 //계절 변환//
