@@ -1056,7 +1056,9 @@ let auroraLayers = [];
 let auroraClock = new THREE.Clock();
 
 export function createAurora() {
+    if(isDay) return;
     removeAuroraEffect();
+
 
     const layerSettings = Array.from({ length: 5 }, () => ({
         amplitude: THREE.MathUtils.randFloat(3.0, 3.0),
