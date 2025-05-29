@@ -1404,7 +1404,7 @@ export function createRain() {
         color: 0x88bbff,
         size: 3.0,
         transparent: true,
-        opacity: 0.8,
+        opacity: 0.02,
         depthWrite: false
     });
     rainParticles = new THREE.Points(geometry, material);
