@@ -1081,7 +1081,7 @@ export function createAurora() {
 }
 
 function createAuroraLayer(settings, layerIndex) {
-    const geometry = new THREE.PlaneGeometry(150, 150, 128, 128);
+    const geometry = new THREE.PlaneGeometry(800, 150, 256, 256);
     const pivot = new THREE.Group();
 
     // 랜덤 회전 및 위치 설정
