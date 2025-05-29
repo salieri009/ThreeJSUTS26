@@ -1047,7 +1047,7 @@ let auroraLayers = [];
 let auroraClock = new THREE.Clock();
 
 export function createAurora() {
-    removeAurora(); // 기존 오로라 제거
+    removeAuroraEffect(); // 기존 오로라 제거
 
     const layerSettings = [
         { amplitude: 3.0, frequency: 0.02, speed: 0.5, color1: 0x00ff88, color2: 0x4488ff, yPos: 25 },
@@ -1063,11 +1063,13 @@ export function createAurora() {
 }
 
 function createAuroraLayer(settings, layerIndex) {
-    const geometry = new THREE.PlaneGeometry(300, 100, 64, 64);
+    const geometry = new THREE.PlaneGeometry(100, 100, 128, 128);
     const material = new THREE.ShaderMaterial({
         uniforms: {
             time: { value: 0 },
             amplitude: { value: settings.amplitude },
+            baseAmplitude: { value: settings.amplitude },
+
             frequency: { value: settings.frequency },
             speed: { value: settings.speed },
             baseColor: { value: new THREE.Color(settings.color1) },
@@ -1086,37 +1088,49 @@ function createAuroraLayer(settings, layerIndex) {
 
     const mesh = new THREE.Mesh(geometry, material);
     mesh.rotation.x = -Math.PI / 2;
-    mesh.position.set(0, settings.yPos, -layerIndex * 15);
+    mesh.rotation.y = -Math.PI / 2;
+    mesh.rotation.z = -Math.PI;
+
+
+    mesh.position.set(5, settings.yPos, -layerIndex * 15);
+    mesh.userData.layerIndex = layerIndex; // ← 추가
     return mesh;
 }
 
 export function updateAurora() {
     const elapsedTime = auroraClock.getElapsedTime();
 
-    auroraLayers.forEach((layer, index) => {
+    auroraLayers.forEach((layer) => {
         const mat = layer.material;
+
+        // 1. 시간 업데이트
         mat.uniforms.time.value = elapsedTime;
 
-        // 동적 파라미터 업데이트
-        mat.uniforms.amplitude.value = settings[index].amplitude + Math.sin(elapsedTime * 0.5) * 1.2;
+        // 2. 동적 진폭 계산 (기본값 + 변동)
+        const baseAmp = mat.uniforms.baseAmplitude.value;
+        mat.uniforms.amplitude.value = baseAmp + Math.sin(elapsedTime * 0.8) * (baseAmp * 0.3);
 
-        // 계절별 색상 변화
-        if(season.winter) {
-            mat.uniforms.baseColor.value.setHex(0x00ff88);
-            mat.uniforms.accentColor.value.setHex(0x4488ff);
-        } else {
-            mat.uniforms.baseColor.value.setHex(0xff4488);
-            mat.uniforms.accentColor.value.setHex(0x88ff44);
-        }
+        // 3. 계절별 색상 전환
+        const isWinter = season.winter;
+        mat.uniforms.baseColor.value.lerp(
+            new THREE.Color(isWinter ? 0x00ff88 : 0xff4488),
+            0.1
+        );
+        mat.uniforms.accentColor.value.lerp(
+            new THREE.Color(isWinter ? 0x4488ff : 0x88ff44),
+            0.1
+        );
 
-        // 투명도 조절
-        mat.uniforms.opacity.value = isDay
-            ? 0.3 - index * 0.1
-            : 0.9 - index * 0.2;
+        //
+        const targetOpacity = isDay
+            ? 0.3 - layer.userData.layerIndex * 0.1
+            : 0.9 - layer.userData.layerIndex * 0.2;
+        mat.uniforms.opacity.value += (targetOpacity - mat.uniforms.opacity.value) * 0.1;
     });
 }
 
-export function removeAurora() {
+
+export function removeAuroraEffect() {
     auroraLayers.forEach(layer => {
         layer.geometry.dispose();
         layer.material.dispose();
@@ -1970,6 +1984,7 @@ function animate() {
     const deltaTime = clock.getDelta();
 
     updateMoon(deltaTime);
+    updateAurora();
 
 
 
