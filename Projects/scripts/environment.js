@@ -547,6 +547,11 @@ export function setNightMode() {
         scene.fog.color.setHex(0x10131a);
     }
 
+    // 추가: 날씨/계절 변경 시 밤 설정 유지
+    if(weather.rainy || weather.stormy) {
+        scene.fog.color.setHex(0x1a1f2a);
+    }
+
 
 
     // 구름 색상 밤에 맞게 변경 (회색/푸른빛)
@@ -2037,6 +2042,7 @@ export function setSeason(type) {
             updateMoon();
             break;
     }
+    if(!isDay) return;
     updateSkyForSeason(type);
 }
 
