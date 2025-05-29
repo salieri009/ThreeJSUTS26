@@ -85,7 +85,7 @@ export function deleteModel() {
 document.querySelector('[data-category="terrain expansion"]').addEventListener('click', () => {
         if (level < 8)
             addBlock();
-        env.addCloudsRange();
+        env.addCloudsRange(level);
 
 
         // 현재 날씨 효과를 다시 적용 (구름, 비, 번개 등 모두)
