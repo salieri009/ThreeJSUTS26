@@ -1103,79 +1103,79 @@ const computeShader = {
 };
 
 // 축쇽 효과 초기화
-export function createAurora(moonPosition = new THREE.Vector3(0, 50, -100)) {
+export function createAurora() {
     if (auroraMesh) return;
 
-    const planegeometry = new THREE.PlaneGeometry(250, 120, 64, 64);
+    // 고해상도 PlaneGeometry 생성 (파동 효과를 위한 충분한 세그먼트)
+    const geometry = new THREE.PlaneGeometry(250, 120, 128, 128);
 
+    // UV 좌표 설정
+    const uvs = [];
+    for (let i = 0; i <= 128; i++) {
+        for (let j = 0; j <= 128; j++) {
+            uvs.push(i/128, j/128);
+        }
+    }
+    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
 
-    // 셰이더 머티리얼 생성 시 에러 처리
+    // 셰이더 머티리얼 생성
     const material = new THREE.ShaderMaterial({
-
         uniforms: {
             time: { value: 0 },
-            amplitude: { value: 3.0 },
-            moonPos: { value: new THREE.Vector3() } // 추가된 uniform
+            amplitude: { value: 5.0 },
+            baseColor: { value: new THREE.Color(0x4B0082) },
+            highlightColor: { value: new THREE.Color(0x9400D3) }
         },
         vertexShader: `
-            attribute vec2 uv;
-            attribute vec2 uv2;
-            attribute vec3 position;
-            attribute float phase;
-            
-            uniform mat4 modelViewMatrix;
-            uniform mat4 projectionMatrix;
-            uniform float time;
-            
-            varying vec3 vColor;
-            varying float vLife;
-            
-            void main() {
-                vec3 pos = position;
-                pos.y += sin(pos.x * 0.2 + phase + time * 3.0) * 5.0;
-                pos.x += cos(pos.z * 0.15 + phase + time * 2.5) * 3.0;
-                
-                vColor = mix(vec3(0.9, 0.2, 0.3), vec3(0.4, 0.1, 0.8), smoothstep(-50.0, 50.0, pos.x));
-                vLife = 1.0 - abs(pos.y) / 50.0;
-                
-                gl_PointSize = 5.0 * (1.0 + sin(phase + time * 5.0) * 0.5);
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-            }
-        `,
-        fragmentShader: `
-            precision mediump float;
-            
-            varying vec3 vColor;
-            varying float vLife;
-            
-            void main() {
-                float dist = length(gl_PointCoord - 0.5);
-                float intensity = 1.0 - smoothstep(0.3, 0.5, dist);
-                vec3 finalColor = vColor * intensity * vLife * 2.0;
-                gl_FragColor = vec4(finalColor, intensity * 0.8);
-            }
-        `,
+      varying vec2 vUv;
+      uniform float time;
+      uniform float amplitude;
 
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        transparent: true
+      void main() {
+        vUv = uv;
+        vec3 pos = position;
+        
+        // X축 파동 (시간 기반)
+        float waveX = sin(pos.x * 0.1 + time) * amplitude;
+        
+        // Y축 파동 (위치 기반)
+        float waveY = cos(pos.y * 0.2 + time * 1.5) * amplitude * 0.5;
+        
+        // Z축 변위 조합
+        pos.z += (waveX + waveY) * 0.3;
+        
+        // 가장자리 감쇠 효과
+        float edge = 1.0 - smoothstep(0.4, 0.6, length(uv - 0.5));
+        pos.z *= edge;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+      }
+    `,
+        fragmentShader: `
+      varying vec2 vUv;
+      uniform vec3 baseColor;
+      uniform vec3 highlightColor;
+
+      void main() {
+        // UV 기반 그라데이션
+        vec3 color = mix(baseColor, highlightColor, vUv.x);
+        
+        // 중심 투명도 효과
+        float alpha = 1.0 - smoothstep(0.3, 0.7, length(vUv - 0.5));
+        
+        gl_FragColor = vec4(color, alpha * 0.8);
+      }
+    `,
+        transparent: true,
+        blending: THREE.NormalBlending,
+        side: THREE.DoubleSide
     });
 
-    // 셰이더 컴파일 체크
-    material.onBeforeCompile = (shader, renderer) => {
-        console.log('셰이더 컴파일 시도 중...');
-    };
-
-    auroraMesh = new THREE.Mesh(planegeometry, material);
-
-    //Debug Box
-    const boxHelper = new THREE.BoxHelper(auroraMesh, 0x00ff00);
-    scene.add(boxHelper);
-
-    // 좌표축 헬퍼 추가 (X:빨강, Y:초록, Z:파랑)
-    const axesHelper = new THREE.AxesHelper(50);
-    auroraMesh.add(axesHelper);
+    auroraMesh = new THREE.Mesh(geometry, material);
+    auroraMesh.rotation.x = -Math.PI / 2;
+    scene.add(auroraMesh);
 }
+
 
 
 // 프레임 업데이트
@@ -1200,11 +1200,7 @@ export function updateAuroraEffect() {
 
 // 효과 제거
 export function removeAuroraEffect() {
-    if (gpuCompute) {
-        gpuCompute.dispose();
-        positionRenderTarget?.dispose();
-        velocityRenderTarget?.dispose();
-    }
+
 
     if (axisShockParticles) {
         scene.remove(axisShockParticles);
