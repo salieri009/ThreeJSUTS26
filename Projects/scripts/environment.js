@@ -1165,6 +1165,23 @@ export function removeAuroraEffect() {
 
 // ===== 셰이더 코드 =====
 // Aurora Vertex Shader
+
+/**
+ * Aurora Shader
+ *
+ * This shader simulates the aurora (northern lights) effect in a 3D scene.
+ *
+ * - Multiple layered plane meshes use custom GLSL shaders to create the flowing, curtain-like appearance of real auroras.
+ * - The vertex shader applies Simplex noise and a time variable to dynamically deform the mesh, generating the characteristic undulating and waving motion.
+ * - The fragment shader blends several colors (commonly green, purple, cyan) with noise to create the soft gradients and glowing effect of auroras.
+ * - Each layer uses different parameters (amplitude, frequency, speed, color palette), resulting in overlapping, more natural aurora visuals.
+ * - Additive blending and transparency are used so the aurora softly glows and overlaps against the night sky.
+ * - The shape and color smoothly evolve over time, mimicking the organic, ever-changing nature of real auroras.
+ *
+ * Note: Real auroras are caused by charged solar particles colliding with atmospheric gases, emitting light in various colors (e.g., green from oxygen, purple/blue from nitrogen).
+ */
+
+
 const auroraVertexShader = `
 varying vec3 vWorldPos;
 varying float vIntensity;
