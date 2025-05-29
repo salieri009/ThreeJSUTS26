@@ -543,6 +543,11 @@ export function setNightMode() {
         createSummerEffect();
     }
 
+    if (scene.fog) {
+        scene.fog.color.setHex(0x10131a);
+    }
+
+
 
     // 구름 색상 밤에 맞게 변경 (회색/푸른빛)
     if (clouds) {
@@ -1966,11 +1971,9 @@ export function setSeason(type) {
     // 모든 계절 이펙트 비활성화 및 제거
     removeAuroraEffect();
     season.spring = season.summer = season.autumn = season.winter = false;
-
     removeSpringEffect();
     removeSummerEffect();
     removeAutumnEffect();
-    removeAuroraEffect(); //Was winter effect previously/
 
     switch(type) {
         case 'spring':
