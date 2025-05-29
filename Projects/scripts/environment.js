@@ -543,6 +543,7 @@ export function setNightMode() {
         createSummerEffect();
     }
 
+
     // 구름 색상 밤에 맞게 변경 (회색/푸른빛)
     if (clouds) {
         clouds.forEach(cloud => {
@@ -1834,7 +1835,7 @@ export function removeWind() {
 export function createFog() {
     removeFog();
 
-    const fogGeometry = new THREE.BoxGeometry(140, 140, 140, 30, 30, 30);
+    const fogGeometry = new THREE.BoxGeometry(500, 500, 500, 30, 30, 30);
     const fogMaterial = new THREE.MeshBasicMaterial({
         color: 0xcccccc,
         transparent: true,
