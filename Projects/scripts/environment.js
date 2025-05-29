@@ -1053,9 +1053,9 @@ export function createAurora() {
     removeAuroraEffect();
 
     const layerSettings = Array.from({ length: 5 }, () => ({
-        amplitude: THREE.MathUtils.randFloat(2.5, 5.5),
-        frequency: THREE.MathUtils.randFloat(0.01, 0.04),
-        speed: THREE.MathUtils.randFloat(0.3, 1.2),
+        amplitude: THREE.MathUtils.randFloat(3.0, 3.0),
+        frequency: THREE.MathUtils.randFloat(1, 5.0),
+        speed: THREE.MathUtils.randFloat(0.001, 0.02),
         color1: new THREE.Color().setHSL(
             THREE.MathUtils.randFloat(0.5, 0.7),
             0.8,
@@ -1129,9 +1129,9 @@ export function updateAurora() {
 
         mat.uniforms.time.value = elapsedTime;
         mat.uniforms.auroraParams.value.set(
-            0.8 + Math.sin(elapsedTime * 0.1) * 0.1, //Aurora speeds
+            0.1 + Math.sin(elapsedTime * 0.1) * 0.1, //Aurora speeds
             0.5 + index * 0.005,
-            2.0 + Math.cos(elapsedTime * 0.2) * 0.3
+            10 + Math.cos(elapsedTime * 0.2) * 10.3
         );
 
         if(Math.random() < 0.02) {
@@ -1246,10 +1246,14 @@ void main() {
     vec3 noiseCoord1 = pos * auroraParams.x + vec3(t * 0.3, 0.0, 0.0);
     vec3 noiseCoord2 = pos * (auroraParams.x * 2.7) + vec3(0.0, t * 0.7, 0.0);
     vec3 noiseCoord3 = pos * (auroraParams.x * 5.2) + vec3(t * 1.2, t * 0.5, 0.0);
+    
+    //Noise shader 
     float noise1 = snoise(noiseCoord1) * 0.8;
     float noise2 = snoise(noiseCoord2) * 0.5;
     float noise3 = snoise(noiseCoord3) * 0.3;
     float verticalWave = smoothstep(0.3, 0.7, pos.y) * 2.0;
+    
+    //Distortion, 
     pos.z += (noise1 + noise2 + noise3) * auroraParams.z * verticalWave;
     pos.x += sin(pos.z * 0.1 + t * 2.0) * 0.3;
     vWorldPos = (modelMatrix * vec4(pos, 1.0)).xyz;
