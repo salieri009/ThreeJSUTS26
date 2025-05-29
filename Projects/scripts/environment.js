@@ -1108,15 +1108,6 @@ export function createAurora(moonPosition = new THREE.Vector3(0, 50, -100)) {
 
     const planegeometry = new THREE.PlaneGeometry(250, 120, 64, 64);
 
-    // UV2 속성 추가 시 에러 체크
-    try {
-        planegeometry.setAttribute('uv2', new THREE.BufferAttribute(
-            new Float32Array(planegeometry.attributes.uv.array),
-            2
-        ));
-    } catch (error) {
-        console.error('UV2 속성 설정 실패:', error);
-    }
 
     // 셰이더 머티리얼 생성 시 에러 처리
     const material = new THREE.ShaderMaterial({
