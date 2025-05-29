@@ -611,8 +611,6 @@ export function updateMoon(deltaTime) {
     // 달 자전 처리 (원본 유지)
     Supermoon.rotation.y += deltaTime * 10.0;
 
-    // CPU 측 위치 업데이트
-    Supermoon.position.copy(moonCenter.clone().add(rotatedVec));
 
 
 
@@ -1041,54 +1039,7 @@ export function removeAutumnEffect() {
 }
 
 
-// === WINTER: Axis Shock Effect (Gundam-style) === //
-let axisShockParticles = null;
-let axisShockComputeMaterial = null;
-let positionRenderTarget = null;
-let velocityRenderTarget = null;
-const AXIS_SHOCK_PARTICLES = 10; // 10만 개의 GPU 파티클
-
-// GPU 컴퓨트 셰이더 (위치/속도 업데이트)
-const computeShader = {
-    uniforms: {
-        time: { value: 0 },
-        waveSpeed: { value: 2.5 },
-        amplitude: { value: 3.0 },
-        frequency: { value: 0.8 }
-    },
-    vertexShader: `
-        void main() { gl_Position = vec4(position, 1.0); }
-    `,
-    fragmentShader: `
-        uniform float time;
-        uniform float waveSpeed;
-        uniform float amplitude;
-        uniform float frequency;
-
-        void main() {
-            vec2 uv = gl_FragCoord.xy / resolution.xy;
-            
-            // 파동 방정식 (플래그 효과)
-            float wave = sin(uv.x * frequency * 10.0 + time * waveSpeed) * amplitude;
-            
-            // 위치 업데이트
-            vec3 newPos = vec3(
-                uv.x * 100.0 - 50.0,
-                wave * (1.0 - uv.y) * 10.0,
-                uv.y * 100.0 - 50.0
-            );
-            
-            // 속도 업데이트 (물리 시뮬레이션)
-            vec3 velocity = vec3(
-                cos(time + uv.x * 5.0) * 0.2,
-                sin(time + uv.y * 3.0) * 0.3,
-                (sin(time * 2.0) + cos(time)) * 0.15
-            );
-            
-            gl_FragColor = vec4(newPos + velocity, 1.0);
-        }
-    `
-};
+// === WINTER: Create Aurora === //
 
 // 축쇽 효과 초기화
 export function createAurora() {
