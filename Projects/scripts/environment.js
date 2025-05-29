@@ -1041,115 +1041,203 @@ export function removeAutumnEffect() {
 
 // === WINTER: Create Aurora === //
 
-// 축쇽 효과 초기화
+// === 오로라 효과 생성 모듈 ===
+
+let auroraLayers = [];
+let auroraClock = new THREE.Clock();
+
 export function createAurora() {
-    if (auroraMesh) return;
+    removeAurora(); // 기존 오로라 제거
 
-    // 고해상도 PlaneGeometry 생성 (파동 효과를 위한 충분한 세그먼트)
-    const geometry = new THREE.PlaneGeometry(250, 120, 128, 128);
+    const layerSettings = [
+        { amplitude: 3.0, frequency: 0.02, speed: 0.5, color1: 0x00ff88, color2: 0x4488ff, yPos: 25 },
+        { amplitude: 4.5, frequency: 0.03, speed: 0.8, color1: 0x4488ff, color2: 0x00ff88, yPos: 30 },
+        { amplitude: 6.0, frequency: 0.04, speed: 1.1, color1: 0x8800ff, color2: 0xff0088, yPos: 35 }
+    ];
 
-    // UV 좌표 설정
-    const uvs = [];
-    for (let i = 0; i <= 128; i++) {
-        for (let j = 0; j <= 128; j++) {
-            uvs.push(i/128, j/128);
-        }
-    }
-    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+    layerSettings.forEach((settings, index) => {
+        const layer = createAuroraLayer(settings, index);
+        auroraLayers.push(layer);
+        scene.add(layer);
+    });
+}
 
-    // 셰이더 머티리얼 생성
+function createAuroraLayer(settings, layerIndex) {
+    const geometry = new THREE.PlaneGeometry(300, 100, 64, 64);
     const material = new THREE.ShaderMaterial({
         uniforms: {
             time: { value: 0 },
-            amplitude: { value: 5.0 },
-            baseColor: { value: new THREE.Color(0x4B0082) },
-            highlightColor: { value: new THREE.Color(0x9400D3) }
+            amplitude: { value: settings.amplitude },
+            frequency: { value: settings.frequency },
+            speed: { value: settings.speed },
+            baseColor: { value: new THREE.Color(settings.color1) },
+            accentColor: { value: new THREE.Color(settings.color2) },
+            opacity: { value: 0.7 - layerIndex * 0.2 },
+            noiseScale: { value: 2.0 + layerIndex * 0.5 },
+            seasonFactor: { value: 1.0 }
         },
-        vertexShader: `
-      varying vec2 vUv;
-      uniform float time;
-      uniform float amplitude;
-
-      void main() {
-        vUv = uv;
-        vec3 pos = position;
-        
-        // X축 파동 (시간 기반)
-        float waveX = sin(pos.x * 0.1 + time) * amplitude;
-        
-        // Y축 파동 (위치 기반)
-        float waveY = cos(pos.y * 0.2 + time * 1.5) * amplitude * 0.5;
-        
-        // Z축 변위 조합
-        pos.z += (waveX + waveY) * 0.3;
-        
-        // 가장자리 감쇠 효과
-        float edge = 1.0 - smoothstep(0.4, 0.6, length(uv - 0.5));
-        pos.z *= edge;
-
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-      }
-    `,
-        fragmentShader: `
-      varying vec2 vUv;
-      uniform vec3 baseColor;
-      uniform vec3 highlightColor;
-
-      void main() {
-        // UV 기반 그라데이션
-        vec3 color = mix(baseColor, highlightColor, vUv.x);
-        
-        // 중심 투명도 효과
-        float alpha = 1.0 - smoothstep(0.3, 0.7, length(vUv - 0.5));
-        
-        gl_FragColor = vec4(color, alpha * 0.8);
-      }
-    `,
+        vertexShader: auroraVertexShader,
+        fragmentShader: auroraFragmentShader,
         transparent: true,
-        blending: THREE.NormalBlending,
-        side: THREE.DoubleSide
+        blending: THREE.AdditiveBlending,
+        side: THREE.DoubleSide,
+        depthWrite: false
     });
 
-    auroraMesh = new THREE.Mesh(geometry, material);
-    auroraMesh.rotation.x = -Math.PI / 2;
-    scene.add(auroraMesh);
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.set(0, settings.yPos, -layerIndex * 15);
+    return mesh;
 }
 
+export function updateAurora() {
+    const elapsedTime = auroraClock.getElapsedTime();
 
+    auroraLayers.forEach((layer, index) => {
+        const mat = layer.material;
+        mat.uniforms.time.value = elapsedTime;
 
-// 프레임 업데이트
-export function updateAuroraEffect() {
-    if (!auroraMesh || !renderer) return; // renderer 존재 확인 추가
+        // 동적 파라미터 업데이트
+        mat.uniforms.amplitude.value = settings[index].amplitude + Math.sin(elapsedTime * 0.5) * 1.2;
 
-    const delta = clock.getDelta();
-    const material = axisShockParticles.material;
+        // 계절별 색상 변화
+        if(season.winter) {
+            mat.uniforms.baseColor.value.setHex(0x00ff88);
+            mat.uniforms.accentColor.value.setHex(0x4488ff);
+        } else {
+            mat.uniforms.baseColor.value.setHex(0xff4488);
+            mat.uniforms.accentColor.value.setHex(0x88ff44);
+        }
 
-    // 1. 컴퓨트 셰이더 실행
-    axisShockComputeMaterial.uniforms.time.value += delta;
-    renderer.setRenderTarget(positionRenderTarget);
-    renderer.render(axisShockComputeMaterial, scene);
-
-    // 2. 파티클 위치 업데이트
-    material.uniforms.time.value += delta;
-    material.uniforms.amplitude.value = 3.0 + Math.sin(Date.now() * 0.001) * 2.0;
-
-    // 3. 더블 버퍼링 교체
-    [positionRenderTarget, velocityRenderTarget] = [velocityRenderTarget, positionRenderTarget];
+        // 투명도 조절
+        mat.uniforms.opacity.value = isDay
+            ? 0.3 - index * 0.1
+            : 0.9 - index * 0.2;
+    });
 }
 
-// 효과 제거
-export function removeAuroraEffect() {
-
-
-    if (axisShockParticles) {
-        scene.remove(axisShockParticles);
-        axisShockParticles.geometry.dispose();
-        axisShockParticles.material.dispose();
-        axisShockParticles = null;
-    }
-    if (positionRenderTarget) positionRenderTarget.dispose();
-    if (velocityRenderTarget) velocityRenderTarget.dispose();
+export function removeAurora() {
+    auroraLayers.forEach(layer => {
+        layer.geometry.dispose();
+        layer.material.dispose();
+        scene.remove(layer);
+    });
+    auroraLayers = [];
 }
+
+// ===== 셰이더 코드 =====
+const auroraVertexShader = `
+varying vec2 vUv;
+varying vec3 vPosition;
+varying float vWave;
+
+uniform float time;
+uniform float amplitude;
+uniform float frequency;
+uniform float speed;
+uniform float noiseScale;
+
+// 3D Simplex Noise 함수
+vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+float snoise(vec3 v) {
+    const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+    const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+
+    vec3 i = floor(v + dot(v, C.yyy));
+    vec3 x0 = v - i + dot(i, C.xxx);
+
+    vec3 g = step(x0.yzx, x0.xyz);
+    vec3 l = 1.0 - g;
+    vec3 i1 = min(g.xyz, l.zxy);
+    vec3 i2 = max(g.xyz, l.zxy);
+
+    vec3 x1 = x0 - i1 + C.xxx;
+    vec3 x2 = x0 - i2 + C.yyy;
+    vec3 x3 = x0 - D.yyy;
+
+    i = mod289(i); 
+    vec4 p = permute(permute(permute( 
+        i.z + vec4(0.0, i1.z, i2.z, 1.0))
+        + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+        + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+
+    float n_ = 0.142857142857;
+    vec3 ns = n_ * D.wyz - D.xzx;
+
+    vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+    vec4 x_ = floor(j * ns.z);
+    vec4 y_ = floor(j - 7.0 * x_ );
+
+    vec4 x = x_ * ns.x + ns.yyyy;
+    vec4 y = y_ * ns.x + ns.yyyy;
+    vec4 h = 1.0 - abs(x) - abs(y);
+
+    vec4 b0 = vec4(x.xy, y.xy);
+    vec4 b1 = vec4(x.zw, y.zw);
+
+    vec4 s0 = floor(b0) * 2.0 + 1.0;
+    vec4 s1 = floor(b1) * 2.0 + 1.0;
+    vec4 sh = -step(h, vec4(0.0));
+
+    vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+    vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+
+    vec3 p0 = vec3(a0.xy,h.x);
+    vec3 p1 = vec3(a0.zw,h.y);
+    vec3 p2 = vec3(a1.xy,h.z);
+    vec3 p3 = vec3(a1.zw,h.w);
+
+    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+    p0 *= norm.x;
+    p1 *= norm.y;
+    p2 *= norm.z;
+    p3 *= norm.w;
+
+    vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+    m = m * m;
+    return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+}
+
+void main() {
+    vUv = uv;
+    vec3 pos = position;
+    
+    float t = time * speed;
+    vec3 noiseCoord = pos * frequency + vec3(0.0, t, 0.0);
+    
+    float noise = snoise(noiseCoord * noiseScale) * amplitude;
+    noise += snoise(noiseCoord * 2.0 + t) * amplitude * 0.5;
+    noise *= smoothstep(0.3, 0.8, length(uv - 0.5));
+    
+    pos.z += noise;
+    vWave = noise;
+    
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+}
+`;
+
+const auroraFragmentShader = `
+varying vec2 vUv;
+varying float vWave;
+uniform vec3 baseColor;
+uniform vec3 accentColor;
+uniform float opacity;
+
+void main() {
+    float gradient = smoothstep(0.2, 0.8, vUv.x);
+    vec3 color = mix(baseColor, accentColor, gradient);
+    
+    float waveIntensity = smoothstep(-1.0, 1.0, vWave);
+    float alpha = waveIntensity * opacity * (1.0 - smoothstep(0.4, 0.9, length(vUv - 0.5)));
+    
+    gl_FragColor = vec4(color * 1.5, alpha);
+}
+`;
+
 
 //===========================================================
 //
