@@ -614,19 +614,7 @@ export function updateMoon(deltaTime) {
     // CPU 측 위치 업데이트
     Supermoon.position.copy(moonCenter.clone().add(rotatedVec));
 
-    if (gpuCompute && positionVariable) {
-        gpuCompute.doRenderTarget(material);  // ✅ 컴퓨트 셰이더 렌더링
-    }
 
-    if (auroraMesh && Supermoon.position) {
-
-        auroraMesh.position.copy(Supermoon.position);
-        auroraMesh.position.y += 30;
-        auroraMesh.material.uniforms.moonPos.value.copy(Supermoon.position);
-
-    }
-
-    auroraMesh.material.uniforms.moonPos.value.copy(Supermoon.position);
 
 
 }
