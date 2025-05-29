@@ -1086,9 +1086,9 @@ function createAuroraLayer(settings, layerIndex) {
     );
 
     pivot.position.set(
-        THREE.MathUtils.randFloatSpread(1000),
-        THREE.MathUtils.randFloat(80, 200),
-        THREE.MathUtils.randFloatSpread(1000)
+        THREE.MathUtils.randFloatSpread(200),
+        THREE.MathUtils.randFloat(80, 100),
+        THREE.MathUtils.randFloatSpread(200)
     );
 
     const material = new THREE.ShaderMaterial({
@@ -1123,9 +1123,9 @@ export function updateAurora() {
 
         mat.uniforms.time.value = elapsedTime;
         mat.uniforms.auroraParams.value.set(
-            0.8 + Math.sin(elapsedTime * 0.2) * 0.3,
-            0.5 + index * 0.1,
-            2.0 + Math.cos(elapsedTime * 0.5) * 1.0
+            0.8 + Math.sin(elapsedTime * 0.1) * 0.1, //Aurora speeds
+            0.5 + index * 0.005,
+            2.0 + Math.cos(elapsedTime * 0.2) * 0.3
         );
 
         if(Math.random() < 0.02) {
