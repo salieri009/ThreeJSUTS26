@@ -1,44 +1,44 @@
 import * as THREE from '../build/three.module.js';
 import { scene, renderer } from './sceneManager.js';
-import { loader, grass,grasses } from './gridModels.js';
-import { GPUComputationRenderer } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/misc/GPUComputationRenderer.js';
+import { loader, grass, grasses } from './gridModels.js';
+// import { GPUComputationRenderer } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/misc/GPUComputationRenderer.js';
 
 
-let gpuCompute;
-let positionVariable, velocityVariable;
-const AURORA_PARTICLES = 512;
-
-// GPU 컴퓨트 초기화 로직 강화
-const initAuroraCompute = () => {
-    if (!renderer) {
-        console.warn('렌더러가 초기화되지 않았습니다.');
-        return false;
-    }
-
-    try {
-        gpuCompute = new GPUComputationRenderer(AURORA_PARTICLES, AURORA_PARTICLES, renderer);
-
-        const positionTexture = gpuCompute.createTexture();
-        const velocityTexture = gpuCompute.createTexture();
-
-        positionVariable = gpuCompute.addVariable('uPosition', positionShader, positionTexture);
-        velocityVariable = gpuCompute.addVariable('uVelocity', velocityShader, velocityTexture);
-
-        gpuCompute.setVariableDependencies(positionVariable, [positionVariable, velocityVariable]);
-        gpuCompute.setVariableDependencies(velocityVariable, [positionVariable, velocityVariable]);
-
-        const error = gpuCompute.init();
-        if (error !== null) {
-            console.error('GPU Compute 초기화 실패:', error);
-            return false;
-        }
-
-        return true;
-    } catch (error) {
-        console.error('GPU Compute 초기화 중 예외 발생:', error);
-        return false;
-    }
-};
+// let gpuCompute;
+// let positionVariable, velocityVariable;
+// const AURORA_PARTICLES = 512;
+//
+// // GPU 컴퓨트 초기화 로직 강화
+// const initAuroraCompute = () => {
+//     if (!renderer) {
+//         console.warn('렌더러가 초기화되지 않았습니다.');
+//         return false;
+//     }
+//
+//     try {
+//         gpuCompute = new GPUComputationRenderer(AURORA_PARTICLES, AURORA_PARTICLES, renderer);
+//
+//         const positionTexture = gpuCompute.createTexture();
+//         const velocityTexture = gpuCompute.createTexture();
+//
+//         positionVariable = gpuCompute.addVariable('uPosition', positionShader, positionTexture);
+//         velocityVariable = gpuCompute.addVariable('uVelocity', velocityShader, velocityTexture);
+//
+//         gpuCompute.setVariableDependencies(positionVariable, [positionVariable, velocityVariable]);
+//         gpuCompute.setVariableDependencies(velocityVariable, [positionVariable, velocityVariable]);
+//
+//         const error = gpuCompute.init();
+//         if (error !== null) {
+//             console.error('GPU Compute 초기화 실패:', error);
+//             return false;
+//         }
+//
+//         return true;
+//     } catch (error) {
+//         console.error('GPU Compute 초기화 중 예외 발생:', error);
+//         return false;
+//     }
+// };
 
 
 
@@ -599,7 +599,7 @@ function rotateVector(vec, axis, theta) {
 }
 
 export function updateMoon(deltaTime) {
-    if (!Supermoon) return;
+    if (!Supermoon || auroraMesh) return;
     moonOrbitAngle += deltaTime * 5; // 회전 속도
 
     // 현재 벡터를 회전
@@ -610,12 +610,23 @@ export function updateMoon(deltaTime) {
 
     // 달 자전 처리 (원본 유지)
     Supermoon.rotation.y += deltaTime * 10.0;
+
+    // CPU 측 위치 업데이트
+    Supermoon.position.copy(moonCenter.clone().add(rotatedVec));
+
+    if (gpuCompute && positionVariable) {
+        gpuCompute.doRenderTarget(material);  // ✅ 컴퓨트 셰이더 렌더링
+    }
+
     if (auroraMesh && Supermoon.position) {
 
         auroraMesh.position.copy(Supermoon.position);
         auroraMesh.position.y += 30;
         auroraMesh.material.uniforms.moonPos.value.copy(Supermoon.position);
+
     }
+
+    auroraMesh.material.uniforms.moonPos.value.copy(Supermoon.position);
 
 
 }
@@ -1109,6 +1120,12 @@ export function createAurora(moonPosition = new THREE.Vector3(0, 50, -100)) {
 
     // 셰이더 머티리얼 생성 시 에러 처리
     const material = new THREE.ShaderMaterial({
+
+        uniforms: {
+            time: { value: 0 },
+            amplitude: { value: 3.0 },
+            moonPos: { value: new THREE.Vector3() } // 추가된 uniform
+        },
         vertexShader: `
             attribute vec2 uv;
             attribute vec2 uv2;
@@ -1147,10 +1164,7 @@ export function createAurora(moonPosition = new THREE.Vector3(0, 50, -100)) {
                 gl_FragColor = vec4(finalColor, intensity * 0.8);
             }
         `,
-        uniforms: {
-            time: { value: 0 },
-            amplitude: { value: 3.0 }
-        },
+
         blending: THREE.AdditiveBlending,
         depthWrite: false,
         transparent: true
@@ -1162,6 +1176,14 @@ export function createAurora(moonPosition = new THREE.Vector3(0, 50, -100)) {
     };
 
     auroraMesh = new THREE.Mesh(planegeometry, material);
+
+    //Debug Box
+    const boxHelper = new THREE.BoxHelper(auroraMesh, 0x00ff00);
+    scene.add(boxHelper);
+
+    // 좌표축 헬퍼 추가 (X:빨강, Y:초록, Z:파랑)
+    const axesHelper = new THREE.AxesHelper(50);
+    auroraMesh.add(axesHelper);
 }
 
 
