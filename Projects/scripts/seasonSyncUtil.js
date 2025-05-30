@@ -119,11 +119,11 @@ export function updateClock() {
     const timeElement = document.getElementById('time');
     const dateElement = document.getElementById('date');
     if (timeElement)
-        timeElement.textContent = now.toLocaleTimeString('ko-KR', {
+        timeElement.textContent = now.toLocaleTimeString('en', {
             hour: '2-digit', minute: '2-digit', second: '2-digit'
         });
     if (dateElement)
-        dateElement.textContent = now.toLocaleDateString('ko-KR', {
+        dateElement.textContent = now.toLocaleDateString('en', {
             year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
         });
 }
@@ -153,7 +153,7 @@ export function updateSeason(latitude = 37) {
 // ===================== 날씨 데이터 fetch 및 UI =====================
 async function fetchWeather(lat, lon) {
     const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=kr`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=en`
     );
     if (!response.ok) throw new Error('날씨 API 오류');
     const json = await response.json();
@@ -212,7 +212,7 @@ export function updateForecast() {
     for (let i = -3; i <= 3; i++) {
         const date = new Date(now);
         date.setDate(date.getDate() + i);
-        const dateStr = date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
+        const dateStr = date.toLocaleDateString('en', { month: 'short', day: 'numeric' });
         const item = document.createElement('div');
         item.className = `forecast-item${i === 0 ? ' today' : ''}`;
         item.innerHTML = `
