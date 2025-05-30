@@ -168,7 +168,7 @@ async function fetchWeather(lat, lon) {
 
 function setRandomWeatherUI() {
     document.getElementById('temperature').textContent = `${Math.floor(Math.random() * 35) + 10}°C`;
-    document.getElementById('condition').textContent = ['맑음','구름','비','눈'][Math.floor(Math.random()*4)];
+    document.getElementById('condition').textContent = ['Sunny','Cloudy','Rainy','Snow'][Math.floor(Math.random()*4)];
     document.getElementById('humidity').textContent = `${Math.floor(Math.random() * 100)}%`;
     document.getElementById('wind').textContent = `${Math.floor(Math.random() * 30)} km/h`;
     if (document.getElementById('location'))
@@ -218,7 +218,7 @@ export function updateForecast() {
         item.innerHTML = `
             <div class="forecast-date">${dateStr}</div>
             <div class="forecast-temp">${Math.floor(Math.random() * 18) + 5}°C</div>
-            <div class="forecast-condition">${['맑음','흐림','비','눈'][Math.floor(Math.random()*4)]}</div>
+            <div class="forecast-condition">${['Sunny','Cloudy','Rain','Snow'][Math.floor(Math.random()*4)]}</div>
         `;
         forecastContainer.appendChild(item);
         const mark = document.createElement('div');
