@@ -20,6 +20,30 @@ import { loader, grass, grasses } from './gridModels.js';
  * - Level of Detail (LOD) control for performance optimization
  */
 
+//============================= Seasons & Weather Systems =========================
+/**
+ * SEASONS & WEATHER SYSTEM OVERVIEW
+ *
+ * This codebase simulates both "seasons" and "weather" in a real-time 3D environment using Three.js.
+ *
+ * - seasons: The four seasons (spring, summer, autumn, winter) represent large-scale, persistent environmental changes.
+ *   Each season affects grass color, sky color, sunlight intensity, and triggers unique seasonal particle effects
+ *   (e.g., cherry blossoms for spring, fireflies for summer, falling leaves for autumn, aurora for winter).
+ *   Only one season is active at a time, and the active season is tracked in the global `season` object.
+ *
+ * - weather: Weather types (sunny, cloudy, rainy, snowy, stormy, foggy) are dynamic and can change independently of the current season.
+ *   Weather controls particle systems (clouds, rain, snow, fog, lightning), wind strength/direction, puddle creation,
+ *   and ambient lighting. Only one weather type is active at a time, tracked in the global `weather` object.
+ *
+ * - Both systems are modular, with each effect (e.g., spring petals, rain) managed by create, update, and remove functions.
+ *   This structure enables interactive, realistic simulation of natural environments with efficient resource management.
+ *
+ * Naming is unified throughout the code: use `seasons` for all season-related logic and `weather` for all weather-related logic.
+ */
+
+//============================= Spring =========================
+
+
 
 // Main animation is at bottom
 let skyMaterial, skyDome, sunLight;
@@ -726,6 +750,8 @@ function removeNightEffect() {
 
 
 //=============================Spring =========================
+
+
 export function createSpringEffect() {
     removeSpringEffect();
     const count = 15; // Particles
