@@ -11,7 +11,7 @@ import {addCloudsRange} from "./environment.js";
 let isRemoving = false;
 //For the real time changer,
 let isRealtimeMode = false;
-
+let level = 1 ;
 //===================================
 export function addBlock() {
     if (grid) scene.remove(grid)
