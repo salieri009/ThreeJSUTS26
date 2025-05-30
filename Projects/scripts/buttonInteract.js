@@ -283,6 +283,8 @@ function updateWindDirection() {
 document.getElementById('windDirX').addEventListener('input', updateWindDirection);
 document.getElementById('windDirZ').addEventListener('input', updateWindDirection);
 
+
+
 //===================================================== Real Time Changer =========== Will be added
 let scheduledEvents = [];
 
