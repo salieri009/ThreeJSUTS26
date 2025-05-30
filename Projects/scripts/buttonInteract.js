@@ -290,23 +290,20 @@ document.querySelector('[data-category="stormy"]').addEventListener('click', () 
 document.querySelector('[data-category="btn-night"]').addEventListener('click', () => {
     env.setNightMode();
 });
-//
-// document.querySelector('[data-category="btn-day"]').addEventListener('click', () => {
-//
-// })
+
 
 //바람 ===========================
 // 바람 세기
 document.getElementById('windStrengthSlider').addEventListener('input', (e) => {
     const value = parseFloat(e.target.value);
-    setWindStrength(value);
+    env.setWindStrength(value);
     document.getElementById('windStrengthValue').textContent = value.toFixed(2);
 });
 
 // 바람 난류
 document.getElementById('windTurbulenceSlider').addEventListener('input', (e) => {
     const value = parseFloat(e.target.value);
-    setWindTurbulence(value);
+    env.setWindTurbulence(value);
     document.getElementById('windTurbulenceValue').textContent = value.toFixed(2);
 });
 
@@ -314,7 +311,7 @@ document.getElementById('windTurbulenceSlider').addEventListener('input', (e) =>
 function updateWindDirection() {
     const x = parseFloat(document.getElementById('windDirX').value);
     const z = parseFloat(document.getElementById('windDirZ').value);
-    setWindDirection(x, 0, z);
+    env.setWind(x, 0, z);
 }
 document.getElementById('windDirX').addEventListener('input', updateWindDirection);
 document.getElementById('windDirZ').addEventListener('input', updateWindDirection);

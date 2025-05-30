@@ -1478,12 +1478,6 @@ export function updateRain() {
             positions[index + 2] = (Math.random() - 0.5) * BOUNDARY_Z * 1.8;
         }
 
-        // // 5. Dynamic weather effects : commented out for debugging
-        // Remove for debugging
-        // const fallProgress = 1 - (positions[index + 1] / RESET_HEIGHT);
-        // sizes[i] = 1.2 +
-        //     Math.sin(fallProgress * Math.PI) * 2.5 +
-        //     Math.random() * 0.3;
     }
 
     rainParticles.geometry.attributes.position.needsUpdate = true;
@@ -1685,15 +1679,15 @@ let windTurbulence = 0.5;
 let windGustTimer = 0;
 let isGusty = false;
 
-let windDirection = { x: 1, y: 0, z: 0.3 };
-setWindDirection(1, 0, 0.3); // Set wind
+let windDirection = { x: 1,
+    y: 0,
+    z: 0.3 };
 
 export function setWind(vec3) {
-    wind.x = vec3.x;
-    wind.y = vec3.y;
-    wind.z = vec3.z;
+    windDirection.x = vec3.x;
+    windDirection.y = vec3.y;
+    windDirection.z = vec3.z;
 }
-//=======================================================
 
 
 export function setWindStrength(strength) {
@@ -1714,8 +1708,6 @@ export function setWindDirection(x, y, z) {
 export function setWindTurbulence(turbulence) {
     windTurbulence = Math.max(0, Math.min(2, turbulence));
 }
-
-
 
 export function createWind() {
     removeWind();
