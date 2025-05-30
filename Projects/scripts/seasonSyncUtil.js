@@ -129,6 +129,7 @@ export function updateClock() {
 }
 
 // ===================== 계절 UI =====================
+
 export function updateSeason(latitude = 37) {
     const now = new Date();
     const seasonName = getSeasonByDate(now, latitude);
@@ -180,6 +181,7 @@ export function updateWeatherUI() {
         setRandomWeatherUI();
         return;
     }
+
     navigator.geolocation.getCurrentPosition(async (pos) => {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;

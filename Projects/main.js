@@ -21,6 +21,6 @@ cloudMove();
 // - Enable terrain expansion and model deletion
 addBlock();
 deleteModel();
-
+seasonSyncUtil.initSeasonSyncUtil()
 
 init();

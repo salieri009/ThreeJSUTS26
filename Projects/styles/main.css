@@ -244,11 +244,11 @@ body {
 
 .scene-overlay-weather-container{
     position: absolute;
-    top: 40px;
-    right: 60px;
-    width: 400px;
-    height: 600px;
-    z-index: 10;
+    bottom: 50px;
+    right: 50px;
+    width: 450px;
+    height: 500px;
+    z-index: 8;
     background: rgba(255, 255, 255, 0.22);
     backdrop-filter: var(--glass-blur) var(--glass-saturation);
     border-radius: var(--radius-xl);
@@ -916,13 +916,15 @@ body {
 
 .clock {
     text-align: center;
-    margin-bottom: 24px;
+    margin-bottom: 5px;
 }
+
+
 
 .time {
     font-size: 48px;
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
 }
 
 .date {
@@ -931,15 +933,19 @@ body {
 }
 
 .weather-display {
-    background-color: black;
-    border: 1px solid #333;
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
+    background: var(--color-bg-panel, rgba(255,255,255,0.85)); /* 테마 변수, 없으면 밝은 반투명 */
+    border: 1.5px solid rgba(41, 50, 65, 0.12);                /* 부드러운 네이비 테두리 */
+    border-radius: var(--radius-lg, 18px);
+    padding: 5px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: var(--shadow-md, 0 4px 16px rgba(0,0,0,0.12));
+    backdrop-filter: var(--glass-blur, blur(12px));
+    transition: background 0.3s, box-shadow 0.3s;
 }
+
 
 .weather-info {
     text-align: left;
@@ -986,16 +992,16 @@ body {
 
 .forecast-section {
     position: relative;
-    background-color: black;
+    background-color: var(--slot-bg);
     border-radius: 8px;
-    padding: 16px;
+    padding: 10px;
     border: 1px solid #333;
 }
 
 .forecast-container {
     display: flex;
     overflow: hidden;
-    margin-bottom: 16px;
+    margin-bottom: none;
 }
 
 .forecast-item {
@@ -1078,8 +1084,6 @@ body {
     background-color: #000;
     border: 2px solid #333;
     border-radius: 8px;
-    padding: 2px;
-    margin-bottom: 1rem;
 }
 
 .ruler-marks {
@@ -1113,7 +1117,7 @@ body {
 
 .season-marks {
     display: flex;
-    height: 60px;
+    height: 40px;
     position: relative;
     background-color: #000;
 }
