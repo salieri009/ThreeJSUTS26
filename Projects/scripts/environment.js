@@ -88,6 +88,7 @@ let windParticles = null;
 let fogMesh = null;
 let lodQuality = 1.0; // 1.0 ~ 0.3 (LOD)
 // const deltaTime = clock.getDelta(); // deltaTime 계산
+let level = null;
 
 //========Season Particles===============
 let springEffect = null;
@@ -261,7 +262,7 @@ function getCloudCountForWeather(weather) {
     if (weather.snowy)  return Math.floor(25 * scale);
     if (weather.cloudy) return Math.floor(18 * scale);
     if (weather.foggy)  return Math.floor(10 * scale);
-    return Math.floor(5 * scale);
+    return Math.floor(base * scale);
 }
 
 
@@ -355,10 +356,12 @@ export function loadClouds(level = 1) {
 
 // 버튼 클릭 시 호출: 범위 확장
 export function addCloudsRange() {
-    cloudRange.x += 100; // x축 범위 확장
-    cloudRange.y += 10;  // y축 범위 확장
-    cloudRange.z += 50;  // z축 범위 확장
-    // 기존 구름은 그대로 두고, 새로 loadClouds() 하면 넓은 범위에 생성됨
+    const newRange = getCloudSpawnRange(level);
+    cloudRange = {
+        x: newRange.x,
+        y: newRange.y,
+        z: newRange.z
+    };
 }
 
 const particleBoxes = [];
@@ -1065,16 +1068,17 @@ export function createAurora() {
         frequency: THREE.MathUtils.randFloat(1, 5.0),
         speed: THREE.MathUtils.randFloat(0.001, 0.02),
         color1: new THREE.Color().setHSL(
+
             THREE.MathUtils.randFloat(0.5, 0.7),
             0.8,
             0.6
         ),
-        color2: new THREE.Color().setHSL(
+        color2: new THREE.Color().setHSL( //Second colour
             THREE.MathUtils.randFloat(0.3, 0.5),
             0.8,
             0.6
         ),
-        color3: new THREE.Color().setHSL(  // 3번째 색상 추가
+        color3: new THREE.Color().setHSL(  // Third colour
             THREE.MathUtils.randFloat(0.4, 0.6),
             0.9,
             0.7
@@ -1092,7 +1096,7 @@ function createAuroraLayer(settings, layerIndex) {
     const geometry = new THREE.PlaneGeometry(800, 350, 256, 256);
     const pivot = new THREE.Group();
 
-    // 랜덤 회전 및 위치 설정
+    // Random rotation
     pivot.rotation.set(
         THREE.MathUtils.randFloatSpread(Math.PI/8),
         THREE.MathUtils.randFloatSpread(Math.PI/4),
@@ -1111,7 +1115,7 @@ function createAuroraLayer(settings, layerIndex) {
             auroraParams: { value: new THREE.Vector3() },
             color1: { value: settings.color1 },
             color2: { value: settings.color2 },
-            color3: { value: settings.color3 },  // 3번째 색상 uniform 추가
+            color3: { value: settings.color3 },  //Color uniform added
             randSeed: { value: Math.random() * 100 }
         },
         vertexShader: auroraVertexShader,
@@ -1155,7 +1159,7 @@ export function updateAurora() {
 export function removeAuroraEffect() {
     auroraLayers.forEach(layer => {
         layer.traverse(child => {
-            if (child?.isMesh) { // 옵셔널 체이닝 추가
+            if (child?.isMesh) { //Optional Chainning : Remove aurora at once
                 child.geometry?.dispose();
                 if(child.material) {
                     if(Array.isArray(child.material)) {
@@ -1171,7 +1175,7 @@ export function removeAuroraEffect() {
     auroraLayers = [];
 }
 
-// ===== 셰이더 코드 =====
+// =======Shader Code ================================================
 // Aurora Vertex Shader
 
 /**
@@ -1334,7 +1338,7 @@ void main() {
     vec3 baseColor = mix(color1, color2, heightFactor);
     float plasmaPulse = sin(time * 2.0 + vWorldPos.x * 0.1) * 0.3 + 0.7;
 
-    // === FIXED: vec3 생성자 오류 없는 방식 ===
+   
     float noise1 = snoise(vec3(vWorldPos.x * 0.05, vWorldPos.y * 0.05, time * 0.3));
     float noise2 = snoise(vec3(vWorldPos.x * 0.1, vWorldPos.y * 0.1, time * 0.5));
 
@@ -1444,24 +1448,24 @@ export function updateRain() {
         const index = i * 3;
         const baseSpeed = Math.max(speeds[i] || 1.2, 0.5);
 
-        // 1. 물리 기반 낙하 계산
-        positions[index + 1] -= baseSpeed * 3.8 * delta; // 델타 타임 적용
+        // 1. Calculate
+        positions[index + 1] -= baseSpeed * 3.8 * delta; // Calculate with delta time
 
-        // 2. 바람 효과 (방향 벡터 정규화)
+        // 2. Wind effects
         const windFactor = safeWindStrength * 0.35 * (0.7 + Math.random() * 0.3);
         const turbulence = Math.cos(time * 1.8 + i) * windTurbulence * 0.15;
 
         positions[index] += (safeWindX * windFactor + turbulence) * 1.1;
         positions[index + 2] += (safeWindZ * windFactor + turbulence * 0.6) * 1.1;
 
-        // 3. 돌풍 효과 (방향 일관성 유지)
+        // 3 Gusty Syste
         if (isGusty) {
             const gustPhase = Math.sin(time * 4.2 + i * 0.05) * 0.45;
             positions[index] += safeWindX * gustPhase;
             positions[index + 2] += safeWindZ * gustPhase;
         }
 
-        // 4. 3D 경계 박스 재활용 시스템
+        // 4. Boundary :
         const shouldReset =
             positions[index + 1] < -15 ||
             Math.abs(positions[index]) > BOUNDARY_X ||
@@ -1473,7 +1477,7 @@ export function updateRain() {
             positions[index + 2] = (Math.random() - 0.5) * BOUNDARY_Z * 1.8;
         }
 
-        // // 5. 동적 크기 조절 (낙하 가속도 효과)
+        // // 5. Dynamic weather effects : commented out for debugging
         // Remove for debugging
         // const fallProgress = 1 - (positions[index + 1] / RESET_HEIGHT);
         // sizes[i] = 1.2 +
@@ -1494,7 +1498,7 @@ export function removeRain() {
     }
 }
 
-// 눈 (입자 크기/속도, 바람 영향)
+// Snow
 export function createSnow() {
     removeSnow();
     const snowCountPerCloud = Math.floor(100 * lodQuality);
@@ -1505,9 +1509,9 @@ export function createSnow() {
     const speeds = new Float32Array(totalSnowCount);
     let index = 0;
     for (const cloud of clouds) {
-        // 구름의 중심 위치는 그대로 사용 (cloud.position)
+
         for (let i = 0; i < snowCountPerCloud; i++) {
-            // 구름 아래에서 눈 입자를 퍼뜨릴 반경을 snowAreaRadius로 조절
+
             const angle = Math.random() * Math.PI * 2;
             const radius = Math.random() * snowAreaRadius;
             //Snows

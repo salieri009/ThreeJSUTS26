@@ -8,14 +8,15 @@ import {addCloudsRange} from "./environment.js";
 // import {updateWeatherWidget} from "./UIManager";
 // Don't use yet
 
-export let level = 1;
 let isRemoving = false;
 //For the real time changer,
 let isRealtimeMode = false;
 
 //===================================
 export function addBlock() {
-    if (grid) scene.remove(grid);
+    if (grid) scene.remove(grid)
+
+    
 
     let size = level * 10;
     const newGrid = new THREE.GridHelper(size, size / 2);
