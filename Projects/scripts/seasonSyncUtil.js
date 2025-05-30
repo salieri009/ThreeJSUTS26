@@ -1,4 +1,4 @@
-import * as env from '../environment';
+import * as env from './environment.js';
 
 // API 키 설정
 const API_KEY = '345a78d07f57356c5ddf8042e295cfc2';
