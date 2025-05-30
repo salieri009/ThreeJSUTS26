@@ -1414,9 +1414,9 @@ export function createRain() {
     geometry.setAttribute('speed', new THREE.BufferAttribute(speeds, 1));
     const material = new THREE.PointsMaterial({
         color: 0x88bbff,
-        size: 3.0,
+        size: 5.0,
         transparent: true,
-        opacity: 0.02,
+        opacity: 0.2,
         depthWrite: false
     });
     rainParticles = new THREE.Points(geometry, material);
@@ -1679,10 +1679,13 @@ let windTurbulence = 0.5;
 let windGustTimer = 0;
 let isGusty = false;
 
-let windDirection = { x: 1,
+let windDirection = {
+    x: 1,
     y: 0,
-    z: 0.3 };
+    z: 0.3
+};
 
+//Set winds from buttonItneract"
 export function setWind(vec3) {
     windDirection.x = vec3.x;
     windDirection.y = vec3.y;
