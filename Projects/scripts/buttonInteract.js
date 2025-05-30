@@ -24,6 +24,14 @@ export function addBlock() {
     scene.add(newGrid);
     setGrid(newGrid);
 
+    let grassColorKey = 'default';
+    if (env.season.spring) grassColorKey = 'spring';
+    else if (env.season.summer) grassColorKey = 'summer';
+    else if (env.season.autumn) grassColorKey = 'autumn';
+    else if (env.season.winter) grassColorKey = 'winter';
+    else if (env.weather.rainy) grassColorKey = 'rainy';
+    else if (env.weather.snowy) grassColorKey = 'snowy';
+
     for (let i = 0; i < level; i++) {
         for (let j = 0; j < level; j++) {
             let dirt = new THREE.Mesh(
@@ -35,7 +43,7 @@ export function addBlock() {
 
             let newGrass = new THREE.Mesh(
                 new THREE.BoxGeometry(10, 2, 10),
-                new THREE.MeshLambertMaterial({ color: 0x3E5C3A })
+                new THREE.MeshLambertMaterial({ color: env.GRASS_COLORS[grassColorKey] })
             );
             newGrass.position.set(-i * 10, 5, -j * 10);
             newGrass.receiveShadow = true;
@@ -51,6 +59,8 @@ export function addBlock() {
             scene.add(highlight);
         }
     }
+
+    env.setGrassColorByKey(grassColorKey);
     level++;
 }
 
