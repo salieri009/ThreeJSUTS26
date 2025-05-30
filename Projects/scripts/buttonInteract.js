@@ -2,22 +2,14 @@ import * as THREE from '../build/three.module.js';
 import { scene, camera } from './sceneManager.js';
 import { grasses, clips, grid , setGrid, modelData, setModel, cow, hay, soil, rock, tree, fence, barn, pSoil, tSoil, wSoil, wheat, sheep, path, chicken, pig, pine, pebble, windmill} from './gridModels.js';
 import * as env from './environment.js';
-import {addCloudsRange} from "./environment.js";
 
-
-// import {updateWeatherWidget} from "./UIManager";
-// Don't use yet
 
 let isRemoving = false;
-//For the real time changer,
 let isRealtimeMode = false;
 let level = 1 ;
 //===================================
 export function addBlock() {
     if (grid) scene.remove(grid)
-
-    
-
     let size = level * 10;
     const newGrid = new THREE.GridHelper(size, size / 2);
     newGrid.position.set(-size / 2 + 5, 6, -size / 2 + 5);
@@ -64,7 +56,6 @@ export function addBlock() {
     level++;
 }
 
-//==================================================
 
 export function deleteModel() {
     isRemoving = true;
@@ -93,13 +84,12 @@ export function deleteModel() {
     });
 }
 
+
+
 document.querySelector('[data-category="terrain expansion"]').addEventListener('click', () => {
         if (level < 8)
             addBlock();
         env.addCloudsRange(level);
-
-
-        // 현재 날씨 효과를 다시 적용 (구름, 비, 번개 등 모두)
         if (env.weather.stormy) {
             env.setWeather('stormy');
             env.loadClouds();
@@ -114,13 +104,13 @@ document.querySelector('[data-category="terrain expansion"]').addEventListener('
             env.setWeather('sunny');
         }
 
-        // 비가 오면 puddle 도 같이 증가
         if (env.weather.rainy || env.weather.stormy)
             env.addPuddle();
     }
 
 
 );
+
 document.querySelector('[data-category="remove"]').addEventListener('click', () => { deleteModel(); });
 
 //props
@@ -247,67 +237,44 @@ document.querySelector('[data-category="buildings"] .draggable-item:nth-child(2)
     scene.add(nBarn);
     setModel(nBarn, { width: modelData["Barn"].width, height: modelData["Barn"].height}, true);
 });
+
+
+
 //=================Seasons==========================================
-document.querySelector('[data-category="spring"]').addEventListener('click', () => {
-    env.setSeason('spring');
+// Season buttons
+['spring', 'summer', 'autumn', 'winter'].forEach(season => {
+    document.querySelector(`[data-category="${season}"]`)
+        .addEventListener('click', () => env.setSeason(season));
 });
 
-document.querySelector('[data-category="summer"]').addEventListener('click', () => {
-    env.setSeason('summer');
+// Weather buttons
+['cloudy', 'sunny', 'rainy', 'snowy', 'stormy'].forEach(weather => {
+    document.querySelector(`[data-category="${weather}"]`)
+        .addEventListener('click', () => env.setWeather(weather));
 });
 
-document.querySelector('[data-category="autumn"]').addEventListener('click', () => {
-    env.setSeason('autumn');
-});
-
-document.querySelector('[data-category="winter"]').addEventListener('click', () => {
-    env.setSeason('winter');
-});
-
-//============weather ================================================
-document.querySelector('[data-category="cloudy"]').addEventListener('click', () => {
-     env.setWeather('cloudy')
-});
-
-document.querySelector('[data-category="sunny"]').addEventListener('click', () => {
-    env.setWeather("sunny")
-});
-
-document.querySelector('[data-category="rainy"]').addEventListener('click', () => {
-    env.setWeather('rainy')
-});
-
-document.querySelector('[data-category="snowy"]').addEventListener('click', () => {
-    env.setWeather('snowy')
-});
-
-document.querySelector('[data-category="stormy"]').addEventListener('click', () => {
-    env.setWeather('stormy')
-});
-
-//======================================================================================
+//==============Trigger the night mode===================================
 
 document.querySelector('[data-category="btn-night"]').addEventListener('click', () => {
     env.setNightMode();
 });
+//================= Wind Controls ====================================
 
-
-//바람 ===========================
-// 바람 세기
+// Wind Strength Slider: Updates wind strength and displays the value
 document.getElementById('windStrengthSlider').addEventListener('input', (e) => {
     const value = parseFloat(e.target.value);
     env.setWindStrength(value);
     document.getElementById('windStrengthValue').textContent = value.toFixed(2);
 });
 
-// 바람 난류
+// Wind Turbulence Slider: Adjusts wind turbulence intensity
 document.getElementById('windTurbulenceSlider').addEventListener('input', (e) => {
     const value = parseFloat(e.target.value);
     env.setWindTurbulence(value);
     document.getElementById('windTurbulenceValue').textContent = value.toFixed(2);
 });
 
-// 바람 방향
+// Wind Direction: Handles X/Z axis inputs for wind vector
 function updateWindDirection() {
     const x = parseFloat(document.getElementById('windDirX').value);
     const z = parseFloat(document.getElementById('windDirZ').value);
@@ -315,8 +282,8 @@ function updateWindDirection() {
 }
 document.getElementById('windDirX').addEventListener('input', updateWindDirection);
 document.getElementById('windDirZ').addEventListener('input', updateWindDirection);
+
 //===================================================== Real Time Changer =========== Will be added
-// buttonInteract.js 확장
 let scheduledEvents = [];
 
 function generateWeatherSchedule(days = 5) {
@@ -328,7 +295,7 @@ function generateWeatherSchedule(days = 5) {
         const event = {
             time: new Date(timestamp),
             type: getRandomWeather(),
-            duration: Math.floor(Math.random() * 3 + 1) // 1-3시간 지속
+            duration: Math.floor(Math.random() * 3 + 1)
         };
         scheduledEvents.push(event);
     }
