@@ -66,7 +66,7 @@ function fail() {
     alert('위치 정보를 가져올 수 없습니다. Failed to get location data');
 }
 
-// API 호출하여 날씨 데이터 가져오기 (비동기 함수)
+// Get the weather data
 async function getWeather(lat, lon) {
     try {
         const response = await fetch(
@@ -113,6 +113,41 @@ export function getSeasonByDate(date, latitude = 37) {
     }
 }
 
+
+function syncWeatherToScene(weatherMain) {
+    switch (weatherMain) {
+        case 'Clear':
+            env.setWeather('sunny');
+            break;
+        case 'Clouds':
+            env.setWeather('cloudy');
+            break;
+        case 'Rain':
+        case 'Drizzle':
+            env.setWeather('rainy');
+            break;
+        case 'Snow':
+            env.setWeather('snowy');
+            break;
+        case 'Thunderstorm':
+        case 'Squall':
+        case 'Tornado':
+            env.setWeather('stormy');
+            break;
+        case 'Mist':
+        case 'Fog':
+        case 'Haze':
+        case 'Smoke':
+        case 'Dust':
+        case 'Sand':
+        case 'Ash':
+            env.setWeather('foggy');
+            break;
+        default:
+            env.setWeather('sunny');
+    }
+}
+
 // ===================== 시계/날짜 UI =====================
 export function updateClock() {
     const now = new Date();
@@ -130,7 +165,19 @@ export function updateClock() {
 
 // ===================== 계절 UI =====================
 
-export function updateSeason(latitude = 37) {
+export function updateSeason(latitude) {
+
+    if (typeof latitude !== 'number') {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => updateSeason(pos.coords.latitude),
+                () => updateSeason(-37.8136)
+            );
+            return;
+        } else {
+            latitude = -37.8136;
+        }
+    }
     const now = new Date();
     const seasonName = getSeasonByDate(now, latitude);
     const seasons = document.querySelectorAll('.season-mark');
@@ -234,6 +281,7 @@ export function initSeasonSyncUtil() {
     updateSeason();
     updateWeatherUI();
     updateForecast();
+    syncWeatherToScene();
 
     setInterval(updateClock, 1000);
     setInterval(() => updateSeason(), 60000);
