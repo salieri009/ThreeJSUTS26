@@ -1,48 +1,6 @@
 import * as THREE from '../build/three.module.js';
 import { scene, renderer } from './sceneManager.js';
 import { loader, grass, grasses } from './gridModels.js';
-// import { GPUComputationRenderer } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/misc/GPUComputationRenderer.js';
-
-
-// let gpuCompute;
-// let positionVariable, velocityVariable;
-// const AURORA_PARTICLES = 512;
-//
-// // GPU 컴퓨트 초기화 로직 강화
-// const initAuroraCompute = () => {
-//     if (!renderer) {
-//         console.warn('렌더러가 초기화되지 않았습니다.');
-//         return false;
-//     }
-//
-//     try {
-//         gpuCompute = new GPUComputationRenderer(AURORA_PARTICLES, AURORA_PARTICLES, renderer);
-//
-//         const positionTexture = gpuCompute.createTexture();
-//         const velocityTexture = gpuCompute.createTexture();
-//
-//         positionVariable = gpuCompute.addVariable('uPosition', positionShader, positionTexture);
-//         velocityVariable = gpuCompute.addVariable('uVelocity', velocityShader, velocityTexture);
-//
-//         gpuCompute.setVariableDependencies(positionVariable, [positionVariable, velocityVariable]);
-//         gpuCompute.setVariableDependencies(velocityVariable, [positionVariable, velocityVariable]);
-//
-//         const error = gpuCompute.init();
-//         if (error !== null) {
-//             console.error('GPU Compute 초기화 실패:', error);
-//             return false;
-//         }
-//
-//         return true;
-//     } catch (error) {
-//         console.error('GPU Compute 초기화 중 예외 발생:', error);
-//         return false;
-//     }
-// };
-
-
-
-
 
 
 /**
@@ -61,13 +19,14 @@ import { loader, grass, grasses } from './gridModels.js';
  * - Modular structure for easy extension and maintenance
  * - Level of Detail (LOD) control for performance optimization
  */
+
+
 // Main animation is at bottom
 let skyMaterial, skyDome, sunLight;
 let Supermoon = null;
 let auroraMesh = null;
 
 //======================================
-
 
 /**
  * All major objects (clouds, rain, snow, moon, puddle, etc.) are managed as global variables.
@@ -90,19 +49,14 @@ let lodQuality = 1.0; // 1.0 ~ 0.3 (LOD)
 // const deltaTime = clock.getDelta(); // deltaTime 계산
 let level = null;
 
+
+// Season particle effects
 //========Season Particles===============
 let springEffect = null;
-// let summerEffect = null;
 let autumnEffect = null;
-let winterEffect = null;
-let currentSeason = null;
 let rainParticles = null;
 let snowParticles = null;
-
-//This is for the weather area//
-// let snowAreaRadius , rainAreaRadius, windAreaRadius = 5;
 let snowAreaRadius = 10;
-//=============
 /**
  * Weather and season state management.
  * These objects track the current environmental conditions.
@@ -123,7 +77,9 @@ export const season = {
     winter: false
 }
 
-//Grass Colour Object
+/**
+ * Grass color mapping for each season and weather state.
+ */
 export const GRASS_COLORS = {
     spring: 0x8be47b,
     summer: 0x3e5c3a,
@@ -181,6 +137,13 @@ export function getRandomWeather() {
 
 //====================================================
 
+
+/**
+ * Create or update sunlight in the scene.
+ * Removes existing moonlight if present.
+ */
+
+
 // LOD Setting : allowing adjustment from the outside controller
 export function setWeatherLOD(q) {
     lodQuality = Math.max(0.3, Math.min(1.0, q));
@@ -192,7 +155,10 @@ export function setWeatherLOD(q) {
  * The sky dome and lighting are updated according to weather and time of day.
  */
 
-
+/**
+ * Initializes the sky dome and sets up basic lighting for the scene.
+ * Called when environment is first created or reset.
+ */
 export function setBackground() {
     skyMaterial = new THREE.MeshBasicMaterial({
         color: 0x87CEEB,
@@ -206,9 +172,12 @@ export function setBackground() {
 
 
 // Creates moonlight
-let moonLight; // 전역으로 선언
+let moonLight;
 
-// Sunlight
+/**
+ * Creates and adds a directional sunlight to the scene.
+ * Removes any existing moonlight to avoid lighting conflicts.
+ */
 export function sun() {
 
 
@@ -218,7 +187,7 @@ export function sun() {
         moonLight.dispose?.();
         moonLight = null;
     }
-    // sunLight가 없거나, 씬에 없는 경우 새로 생성 및 추가
+
     if (!sunLight || !scene.children.includes(sunLight)) {
         sunLight = new THREE.DirectionalLight(0xffffff, 1);
         sunLight.castShadow = true;
@@ -231,32 +200,18 @@ export function sun() {
     sunLight.intensity = 1;
 }
 
-// Moonlight Dummy Data : no-longer user
-// export function moon() {
-//     // 이미 있는 태양빛 제거
-//     if (sunLight) {
-//         scene.remove(sunLight);
-//         sunLight.dispose?.(); // 메모리 해제
-//         sunLight = null;
-//     }
-//
-//     // 달빛 생성
-//     moonLight = new THREE.DirectionalLight(0xaaaaFF, 0.3);
-//     moonLight.castShadow = true;
-//     moonLight.shadow.mapSize.set(1024, 1024);
-//     moonLight.shadow.camera.top = 30;
-//     moonLight.position.set(-30, 20, 10);
-//     scene.add(moonLight);
-// }
+
 
 
 
 //==============================clouds=============================
-
+/**
+ * Calculates the number of clouds to spawn based on current weather and scene scale.
+ * Returns an integer count for cloud instancing.
+ */
 function getCloudCountForWeather(weather) {
-    // base는 weather 상태별 기본값, scale은 반경에 따라 증가
-    let base = 30; // stormy 기준
-    let scale = cloudRange.x / 100; // cloudRange.x가 100일 때 base, 200이면 2*base
+    let base = 30;
+    let scale = cloudRange.x / 100;
     if (weather.stormy) return Math.floor(base * scale);
     if (weather.rainy)  return Math.floor(35 * scale);
     if (weather.snowy)  return Math.floor(25 * scale);
@@ -265,24 +220,29 @@ function getCloudCountForWeather(weather) {
     return Math.floor(base * scale);
 }
 
-
+/**
+ * Returns the appropriate color for clouds based on the current weather state.
+ * Uses Three.js color hex codes for visual fidelity.
+ */
 function getCloudColorForWeather(weather) {
-    // weather 객체의 상태값을 참고하여 구름 색상을 반환합니다.
-    // 반환값은 THREE.js의 color hex 코드입니다.
-    if (weather.stormy) return 0x6D4A7A;   // 어두운 회색/보라
-    if (weather.rainy)  return 0xbbbbbb;   // 연한 회색
-    if (weather.snowy)  return 0xf7f7f7;   // 밝은 흰색
-    if (weather.cloudy) return 0xcccccc;   // 중간 회색
-    if (weather.foggy)  return 0xdddddd;   // 연한 회백색
-    return 0xffffff;                       // 맑음(흰색)
-}
 
+    if (weather.stormy) return 0x6D4A7A;
+    if (weather.rainy)  return 0xbbbbbb;
+    if (weather.snowy)  return 0xf7f7f7;
+    if (weather.cloudy) return 0xcccccc;
+    if (weather.foggy)  return 0xdddddd;
+    return 0xffffff;
+}
+/**
+ * Removes all clouds and related weather particle systems from the scene.
+ * Ensures memory is freed and the scene is ready for new weather effects.
+ */
 function resetCloudScene() {
-    // 구름 제거
+
     for (let c of clouds) scene.remove(c);
     clouds = [];
     cloudMaterials = [];
-    // 비, 눈, 기타 이펙트도 필요시 제거
+
     if (rainParticles) {
         scene.remove(rainParticles);
         rainParticles = null;
@@ -291,37 +251,40 @@ function resetCloudScene() {
         scene.remove(snowParticles);
         snowParticles = null;
     }
-    // 기타 오브젝트도 필요하면 제거
+
 }
 
 
-// 구름 생성 (자연스러운 움직임, 투명도 변화)
-// 구름 생성 범위 변수 선언
+
 let cloudRange = {
     x: 100,   // -55 ~ +45 (기존)
     y: 10,    // 10 ~ 20
     z: 50     // -30 ~ +20
 };
-
+/**
+ * Calculates the spatial range for spawning clouds based on the current scene level.
+ * Ensures clouds cover the playable area with a natural distribution.
+ */
 function getCloudSpawnRange(level) {
-    // 블록은 -i*10, -j*10 위치에 생성됨. level*10이 전체 길이.
-    // 구름은 전체 맵을 충분히 덮도록 약간 여유를 둠.
+
     const size = level * 10;
     return {
-        x: size + 40, // 여유를 위해 +40
-        y: 20,        // y는 고정 또는 계절/날씨별로 조정 가능
+        x: size + 40,
+        y: 20,
         z: size + 40
     };
 }
 
-// 구름 생성 함수에서 범위 사용
-// 구름 생성 함수에서 사용
+/**
+ * Loads and instantiates cloud objects in the scene using a GLTF model.
+ * Cloud position, scale, color, and movement parameters are randomized for realism.
+ * @param {number} level - The current scene level or map size.
+ */
 export function loadClouds(level = 1) {
     resetCloudScene();
     const cloudCount = getCloudCountForWeather(weather);
     const cloudColor = getCloudColorForWeather(weather);
 
-    // level을 받아서 범위 계산
     cloudRange = getCloudSpawnRange(level);
 
     loader.load("models/cloud/scene.gltf", (gltf) => {
@@ -334,7 +297,7 @@ export function loadClouds(level = 1) {
                 Math.random() * cloudRange.y + 10,
                 Math.random() * cloudRange.z - cloudRange.z / 2
             );
-            // 이하 동일
+
             cloud.userData = {
                 speed: Math.random() * 1 + 1.4,
                 baseY: cloud.position.y,
@@ -354,7 +317,10 @@ export function loadClouds(level = 1) {
     });
 }
 
-// 버튼 클릭 시 호출: 범위 확장
+/**
+ * Animates all cloud objects, updating position and opacity for natural movement.
+ * Also synchronizes rain and snow particle positions beneath clouds if active.
+ */
 export function addCloudsRange() {
     const newRange = getCloudSpawnRange(level);
     cloudRange = {
@@ -380,22 +346,15 @@ function createDebugBox(color = 0xff0000) {
 const rainDebugBoxes = [];
 const snowDebugBoxes = [];
 
-//Debug Boxes
-// for (let i = 0; i < clouds.length; i++) {
-//     rainDebugBoxes.push(createDebugBox(0x0000ff)); // 파란색: 비
-//     snowDebugBoxes.push(createDebugBox(0xff0000)); // 빨간색: 눈
-// }
 
-// cloudAnimation
 export function cloudMove() {
     const delta = clock.getDelta();
     for (let i = 0; i < clouds.length; i++) {
         const cloud = clouds[i];
         cloud.position.x += delta * cloud.userData.speed;
-        // 자연스러운 위아래 움직임
+        //Up and Down
         cloud.position.y = cloud.userData.baseY + Math.sin(clock.elapsedTime * 0.2 + i) * 1.2;
         if (cloud.position.x > 60) cloud.position.x = -100;
-        // 투명도 변화 (구름 clone마다)
         cloud.traverse((node) => {
             if (node.isMesh && node.material) {
                 if (!cloudMaterials[i]) {
@@ -409,16 +368,16 @@ export function cloudMove() {
             }
         });
 
-        // === 구름 아래에 비/눈 파티클 위치시키기 ===
-        // rainParticles와 snowParticles가 존재할 때만 위치를 동기화
+        // === Rain //Snow particels  ===
+        // rainParticles와 snowParticles
         if (weather.rainy && rainParticles) {
             rainParticles.position.set(
                 cloud.position.x ,
-                cloud.position.y , // 구름 아래로 약간 내림
+                cloud.position.y ,
                 cloud.position.z + 5
             );
             // rainParticles.position.copy(rainPos);
-            // rainDebugBoxes[i].position.copy(rainPos); // 박스 위치 동기화
+            // rainDebugBoxes[i].position.copy(rainPos);
         }
         if (weather.snowy && snowParticles) {
             snowParticles.position.set(
@@ -430,7 +389,6 @@ export function cloudMove() {
     }
 }
 
-// 하늘/구름/태양광 상태 동기화
 export function updateSky() {
     if (!skyMaterial) return;
     let newColor = 0x87CEEB, sunIntensity = 1, cloudColor = 0xffffff, cloudIntensity = 1.0;
@@ -483,18 +441,16 @@ let nightAmbient = null;
 //=====Set Day mode
 export function setDayMode() {
     isDay = true;
-    // 야간 효과 리소스 정리
     if (nightAmbient) {
         scene.remove(nightAmbient);
         nightAmbient.dispose();
         nightAmbient = null;
     }
-    // 달 관련 리소스 정리
     if (Supermoon) {
         scene.remove(Supermoon);
         Supermoon = null;
     }
-    // 구름 색상 복원
+
     clouds.forEach(cloud => {
         cloud.traverse(node => {
             if (node.material) {
@@ -507,36 +463,32 @@ export function setDayMode() {
 //===================
 
 
-// 밤 모드로 전환
 export function setNightMode() {
     isDay = false;
     if (sunLight) sunLight.visible = false;
 
 
 
-    // 하늘색을 밤색(그라데이션 효과 포함)으로 변경
     if (skyMaterial) {
-        skyMaterial.color.setHex(0x0b1020); // 진한 남색
+        skyMaterial.color.setHex(0x0b1020);
         if (skyMaterial.emissive) skyMaterial.emissive.setHex(0x181d30); // 약간의 빛
     }
 
 
-    // 달(light) 보이기 및 색상 조정
     if (moonLight) {
         moonLight.visible = true;
         moonLight.intensity = 0.6;
         moonLight.color.setHex(0xddeeff);
-        moonLight.position.set(0, 100, -80); // 하늘 위쪽에 위치
+        moonLight.position.set(0, 100, -80);
     }
 
-    // 밤 전용 주변광 추가 (차가운 색)
     if (!nightAmbient) {
         nightAmbient = new THREE.AmbientLight(0x223344, 0.6);
         nightAmbient.name = "NightAmbient";
         scene.add(nightAmbient);
     }
 
-    // 별 생성
+
     createStars();
     createMoon();
 
@@ -550,60 +502,82 @@ export function setNightMode() {
         scene.fog.color.setHex(0x10131a);
     }
 
-    // 추가: 날씨/계절 변경 시 밤 설정 유지
     if(weather.rainy || weather.stormy) {
         scene.fog.color.setHex(0x1a1f2a);
     }
 
 
 
-    // 구름 색상 밤에 맞게 변경 (회색/푸른빛)
     if (clouds) {
         clouds.forEach(cloud => {
             cloud.traverse(node => {
                 if (node.isMesh && node.material) {
-                    node.material.color.setHex(0x8a9bbd); // 푸른 회색
+                    node.material.color.setHex(0x8a9bbd);
                     node.material.opacity = 0.35;
                 }
             });
         });
     }
 
-    // 기타 밤 효과
     createNightEffect();
 }
 //===========================================
 
 
 
-// === Moon orbital motion using Rodrigues' rotation formula ===
-// This function animates the moon's position along an arbitrary 3D orbit (not just a flat circle).
-// It uses Rodrigues' formula to rotate the moon's position vector around the orbit's normal vector.
+/**
+ * =========================
+ * MOON SYSTEM (Supermoon)
+ * =========================
+ */
 
+/**
+ * Creates a 3D moon mesh (Supermoon) and adds it to the scene.
+ * - The moon is modeled as a sphere with a slightly emissive, rough material to simulate lunar surface features.
+ * - Initial position is set to a point offset from the scene center.
+ * - Only one moon is present at a time; if a moon already exists, it is returned.
+ * - This function is typically called when switching to night mode or during the winter season.
+ *
+ * The moon's material uses low metalness and moderate roughness to mimic the real lunar regolith.
+ * Emissive color and intensity provide a subtle glow, making the moon visible even in low-light scenes.
+ * The mesh is added to the global scene for rendering.
+ */
 
 let moonOrbitAngle = 0;
-const moonCenter = new THREE.Vector3(0, 5, 0); // 중앙 grass 좌표
-let orbitVec = new THREE.Vector3(-80, 30, -10); // 초기 위치에서 중심까지의 벡터
-const orbitRadius = orbitVec.length(); // 공전 반지름 계산
+const moonCenter = new THREE.Vector3(0, 5, 0);
+let orbitVec = new THREE.Vector3(-80, 30, -10);
+const orbitRadius = orbitVec.length();
 const orbitNormal = new THREE.Vector3().crossVectors(orbitVec, new THREE.Vector3(0, 1, 0)).normalize(); // 궤도 평면 법선
 
 export function createMoon() {
     if (Supermoon) return Supermoon;
     const geometry = new THREE.SphereGeometry(5, 32, 32);
     const material = new THREE.MeshStandardMaterial({
-        metalness: 0.05,  // 금속성 감소 (암석 표면)
-        roughness: 0.4,   // 거칠기 증가 (크레이터 효과)
-        emissive: 0xFFF5E6,  // 부드러운 노란색
-        emissiveIntensity: 0.4, // 발광 세기 감소
-        displacementScale: 0.05 // 변위 강도
+        metalness: 0.05,
+        roughness: 0.4,
+        emissive: 0xFFF5E6,
+        emissiveIntensity: 0.4,
+        displacementScale: 0.05
     });
-    Supermoon = new THREE.Mesh(geometry, material); // 전역 변수에 할당
-    Supermoon.position.set(-170, 30, 20); // 초기 위치 설정
+    Supermoon = new THREE.Mesh(geometry, material);
+    Supermoon.position.set(-170, 30, 20);
     scene.add(Supermoon);
     return Supermoon;
 }
 
-// rodrigues rotation formula
+/**
+ * Animates the moon's orbital motion using Rodrigues' rotation formula.
+ * - The moon orbits around a defined center point (moonCenter) along an arbitrary 3D plane.
+ * - The orbit's normal vector is calculated from the initial position.
+ * - Each frame, the moon's position vector is rotated by a small angle to simulate continuous revolution.
+ * - The moon also rotates on its own axis for a more realistic appearance.
+ *
+ * This method allows for a physically plausible, non-planar orbit, enabling more dynamic and natural-looking lunar motion.
+ * The use of Rodrigues' formula ensures the moon's path remains consistent regardless of the orbit's orientation in 3D space.
+ *
+ * @param {number} deltaTime - Elapsed time since last frame (in seconds).
+ */
+
 function rotateVector(vec, axis, theta) {
     const cos = Math.cos(theta);
     const sin = Math.sin(theta);
@@ -614,49 +588,38 @@ function rotateVector(vec, axis, theta) {
 
 export function updateMoon(deltaTime) {
     if (!Supermoon || auroraMesh) return;
-    moonOrbitAngle += deltaTime * 5; // 회전 속도
+    moonOrbitAngle += deltaTime * 5;
 
-    // 현재 벡터를 회전
+
     const rotatedVec = rotateVector(orbitVec, orbitNormal, moonOrbitAngle);
 
-    // 중심점에 회전된 벡터를 더해 위치 업데이트
+
     Supermoon.position.copy(moonCenter.clone().add(rotatedVec));
 
-    // 달 자전 처리 (원본 유지)
+
     Supermoon.rotation.y += deltaTime * 10.0;
-
-
-
 
 
 }
 
-//
-// function removeMoon() 구현 예시
+
 function removeMoon() {
     if (Supermoon) {
-        // 씬에서 달 제거
         scene.remove(Supermoon);
-
-        // 달에 붙어있는 광원 등도 같이 제거 (예: moonLight)
         if (moonLight) {
             scene.remove(moonLight);
             moonLight = null;
         }
 
-        // 메모리 해제 (geometry, material)
+
         if (Supermoon.geometry) Supermoon.geometry.dispose();
         if (Supermoon.material) Supermoon.material.dispose();
 
-        // Supermoon 참조 해제
         Supermoon = null;
     }
 }
 
-//
-// }
-//======================================================
-// 별 생성 함수
+
 function createStars() {
     removeStars();
     const starCount = 700;
@@ -719,17 +682,13 @@ function createStars() {
     scene.add(stars);
 }
 
-// 밤에만 나타나는 특수 효과 (예: 희미한 안개, 달빛 반사 등)
 export function createNightEffect() {
-    // 예시: 밤에만 보이는 얕은 안개 추가
     if (scene.fog) {
         scene.fog.color.setHex(0x10131a);
         scene.fog.density = 0.012;
     }
-    // 달빛 반사, 반딧불 등 추가 가능
 }
 
-// 별 제거
 function removeStars() {
     if (stars) {
         scene.remove(stars);
@@ -739,18 +698,15 @@ function removeStars() {
     }
 }
 
-// 밤 효과 제거 (낮으로 돌아갈 때)
 function removeNightEffect() {
     // 밤 전용 주변광 제거
     if (nightAmbient) {
         scene.remove(nightAmbient);
         nightAmbient = null;
     }
-    // 별 제거
     removeStars();
     removeMoon();
     removeAuroraEffect();
-    // 구름 색상 원래대로 복원
     if (clouds) {
         clouds.forEach(cloud => {
             cloud.traverse(node => {
@@ -761,7 +717,6 @@ function removeNightEffect() {
             });
         });
     }
-    // 안개 색상 복원
     if (scene.fog) {
         scene.fog.color.setHex(0x87ceeb);
         scene.fog.density = 0.008;
@@ -1055,6 +1010,27 @@ export function removeAutumnEffect() {
 
 
 // === WINTER: Create Aurora === //
+
+/**
+ * =========================
+ * AURORA SYSTEM (Northern Lights)
+ * =========================
+ */
+
+/**
+ * Creates a multi-layered aurora (northern lights) effect using custom GLSL shaders.
+ * - Each aurora layer is a large, semi-transparent plane mesh with a unique color palette and noise parameters.
+ * - Layers are randomly rotated and positioned in the sky to create depth and parallax.
+ * - The vertex shader dynamically deforms the mesh using simplex noise and time, producing the signature flowing, waving aurora motion.
+ * - The fragment shader blends several colors (green, purple, cyan, etc.) with noise for soft gradients and glowing effects.
+ * - Additive blending and transparency are used for a luminous, ethereal appearance.
+ * - The aurora is only visible at night and typically in winter.
+ *
+ * This system is inspired by real auroras, which are caused by charged solar particles colliding with atmospheric gases near Earth's poles[4][2].
+ * The color and intensity of each layer are randomized to mimic the natural variability of auroral displays.
+ */
+
+
 let auroraLayers = [];
 let auroraClock = new THREE.Clock();
 
@@ -1355,9 +1331,8 @@ void main() {
 
 //===========================================================
 //
-// Rainning area around the clouds.
 let rainAreaRadius = 2;
-//
+
 export function createRain() {
     const minCloudCount = 20;
     if (clouds.length < minCloudCount) {
@@ -1678,22 +1653,21 @@ export function removeStorm() {
 }
 ///=============Wind===================
 
-// 예시: wind = { x: 1.2, y: 0, z: 0 } (x축으로 1.2의 속도)
-let windStrength = 0.5; // 바람 강도 (0.0 ~ 3.0)
-let windTurbulence = 0.5; // 바람 난류 정도
-let windGustTimer = 0; // 돌풍 타이머
-let isGusty = false; // 돌풍 상태
+
+let windStrength = 0.5;
+let windTurbulence = 0.5;
+let windGustTimer = 0;
+let isGusty = false;
 
 let windDirection = { x: 1, y: 0, z: 0.3 };
 setWindDirection(1, 0, 0.3); // Set wind
 
-// 외부에서 wind 값을 업데이트할 수 있도록 함수 제공
 export function setWind(vec3) {
     wind.x = vec3.x;
     wind.y = vec3.y;
     wind.z = vec3.z;
 }
-
+//=======================================================
 
 
 export function setWindStrength(strength) {
@@ -1715,24 +1689,8 @@ export function setWindTurbulence(turbulence) {
     windTurbulence = Math.max(0, Math.min(2, turbulence));
 }
 
-// For the test run,
-// export function updateWinterEffect() {
-//     if (!winterEffect) return;
-//     const positions = winterEffect.geometry.attributes.position.array;
-//     for (let i = 0; i < positions.length / 3; i++) {
-//         positions[i * 3 + 1] -= 0.022 + Math.random() * 0.011; // 아래로 낙하
-//         positions[i * 3 + 0] += wind.x * 0.06; // 바람의 x축 영향
-//         positions[i * 3 + 2] += wind.z * 0.06; // 바람의 z축 영향
-//         // 자연스러운 흔들림 추가
-//         positions[i * 3 + 0] += Math.sin(Date.now() * 0.0005 + i) * 0.013;
-//         // 바닥에 닿으면 다시 위로
-//         if (positions[i * 3 + 1] < 0) positions[i * 3 + 1] = Math.random() * 10 + 10;
-//     }
-//     winterEffect.geometry.attributes.position.needsUpdate = true;
-// }
 
 
-// 바람 효과 (입자)
 export function createWind() {
     removeWind();
 
@@ -1747,7 +1705,6 @@ export function createWind() {
         positions[index + 1] = Math.random() * 30 + 5;
         positions[index + 2] = Math.random() * 80 - 40;
 
-        // 각 파티클의 초기 속도
         velocities[index] = (Math.random() - 0.5) * 0.1;
         velocities[index + 1] = (Math.random() - 0.5) * 0.05;
         velocities[index + 2] = (Math.random() - 0.5) * 0.1;
@@ -1778,7 +1735,6 @@ export function updateWind() {
     for (let i = 0; i < positions.length / 3; i++) {
         const index = i * 3;
 
-        // 바람 방향과 강도 적용
         const windForce = windStrength * 0.2;
         const turbulence = Math.sin(time * 2 + i * 0.1) * windTurbulence * 0.05;
 
@@ -1786,18 +1742,17 @@ export function updateWind() {
         positions[index + 1] += (windDirection.y * windForce * 0.3 + velocities[index + 1]);
         positions[index + 2] += (windDirection.z * windForce + velocities[index + 2] + turbulence);
 
-        // 돌풍 효과
         if (isGusty) {
             const gustEffect = Math.sin(time * 4 + i * 0.05) * 0.1;
             positions[index] += windDirection.x * gustEffect;
             positions[index + 2] += windDirection.z * gustEffect;
         }
 
-        // 경계 처리
-        if (positions[index] > 60) positions[index] = -60;
-        if (positions[index] < -60) positions[index] = 60;
-        if (positions[index + 2] > 40) positions[index + 2] = -40;
-        if (positions[index + 2] < -40) positions[index + 2] = 40;
+
+        if (positions[index] > 160) positions[index] = -160;
+        if (positions[index] < -160) positions[index] = 160;
+        if (positions[index + 2] > 80) positions[index + 2] = -80;
+        if (positions[index + 2] < -80) positions[index + 2] = 80;
         if (positions[index + 1] > 35) positions[index + 1] = 5;
         if (positions[index + 1] < 5) positions[index + 1] = 35;
     }
@@ -1808,16 +1763,16 @@ export function updateWind() {
 export function updateGustSystem() {
     windGustTimer += 1/60; // 60fps 기준
 
-    // 랜덤하게 돌풍 발생 (10-30초 간격)
+
     if (!isGusty && windGustTimer > 10 + Math.random() * 20) {
         isGusty = true;
         windGustTimer = 0;
 
-        // 돌풍 시 바람 강도 일시적 증가
+
         const originalStrength = windStrength;
         windStrength *= 1.5 + Math.random() * 0.5;
 
-        // 2-5초 후 돌풍 종료
+
         setTimeout(() => {
             isGusty = false;
             windStrength = originalStrength;
@@ -1869,7 +1824,6 @@ export function removeWind() {
     }
 }
 
-// 안개 효과 (셰이더 기반)
 export function createFog() {
     removeFog();
 
@@ -1884,37 +1838,31 @@ export function createFog() {
     fogMesh.rotation.x = -Math.PI / 2;
     fogMesh.position.y = 2.5;
     scene.add(fogMesh);
-    scene.fog = new THREE.Fog(0xcccccc, 15, 50); // 색상, 시작, 끝
+    scene.fog = new THREE.Fog(0xcccccc, 15, 50);
 }
 export function updateFog() {
-    // Mesh 안개 애니메이션
+
     if (fogMesh) {
         fogMesh.material.opacity = 0.12 + Math.abs(Math.sin(clock.elapsedTime * 0.1)) * 0.05;
     }
-    // Three.js Fog 파라미터 변화(선택)
-    // Fog paramter adjustment
-    // if (scene.fog instanceof THREE.Fog) {
-    //     const t = clock.getElapsedTime();
-    //     scene.fog.near = 10 + Math.sin(t * 0.2) * 5;
-    //     scene.fog.far = 120 + Math.sin(t * 0.15) * 10;
-    // }
+
 }
 export function removeFog() {
-    // Mesh 안개 제거
+
     if (fogMesh) {
         scene.remove(fogMesh);
         fogMesh.geometry.dispose();
         fogMesh.material.dispose();
         fogMesh = null;
     }
-    // Three.js Fog 제거
+
     scene.fog = null;
 }
 
 
 
 let puddleMesh = null;
-let puddleSize = 15; // 초기 크기
+let puddleSize = 15;
 
 // 기존 퍼들을 제거
 export function removePuddle() {
@@ -1953,15 +1901,15 @@ export function createPuddle() {
     scene.add(puddleMesh);
 }
 
-// 버튼 누를 때마다 퍼들을 키움
+
 export function addPuddle() {
-    puddleSize += 5; // 반지름 증가
-    createPuddle();  // 새로운 크기로 퍼들 생성
+    puddleSize += 5;
+    createPuddle();
 }
 
 let isWeatherTransitioning = false;
 
-// 날씨 전환
+
 export function setWeather(type) {
 
     if(isWeatherTransitioning) return;
@@ -1998,8 +1946,8 @@ export function setWeather(type) {
         createWind();
     }else if (type === "sunny"){
         sun();
-        removeNightEffect(); // 야간 효과 완전 제거
-        setDayMode(); // 주간 모드 강제 활성화
+        removeNightEffect();
+        setDayMode();
     }
 
     updateSky();
@@ -2007,26 +1955,23 @@ export function setWeather(type) {
 
 }
 
-//계절 변환//
 export function setSeason(type) {
-    // 모든 계절 이펙트 비활성화 및 제거
     removeAuroraEffect();
     season.spring = season.summer = season.autumn = season.winter = false;
     removeSpringEffect();
     removeSummerEffect();
     removeAutumnEffect();
-
     switch(type) {
         case 'spring':
             season.spring = true;
-            setWeather('rainy'); // 봄: 비
+            setWeather('rainy');
             createSpringEffect();
             setGrassColorByKey('spring');
             removeMoon();
             break;
         case 'summer':
             season.summer = true;
-            setWeather('sunny'); // 여름: 맑음
+            setWeather('sunny');
             createSummerEffect();
             setGrassColorByKey('summer');
             removeMoon();
@@ -2034,7 +1979,7 @@ export function setSeason(type) {
             break;
         case 'autumn':
             season.autumn = true;
-            setWeather('cloudy'); // 가을: 흐림
+            setWeather('cloudy');
             createAutumnEffect();
             setGrassColorByKey('autumn');
             removeMoon();
@@ -2042,7 +1987,7 @@ export function setSeason(type) {
         case 'winter':
             season.winter = true;
             createMoon();
-            setWeather('snowy'); // 겨울: 눈
+            setWeather('snowy');
             createAurora();
             setGrassColorByKey('winter');
             updateMoon();
@@ -2052,7 +1997,6 @@ export function setSeason(type) {
     updateSkyForSeason(type);
 }
 
-// 계절별 하늘 업데이트 함수
 function updateSkyForSeason(type) {
     if (!skyMaterial || !sunLight) return;
 
@@ -2090,12 +2034,8 @@ function animate() {
     requestAnimationFrame(animate);
     cloudMove();
     const deltaTime = clock.getDelta();
-
     updateMoon(deltaTime);
     updateAurora();
-
-
-
     updateRain();
     updateSnow();
     updateStorm();
@@ -2104,11 +2044,6 @@ function animate() {
     updateSummerEffect();
     updateAutumnEffect();
     updateSpringEffect();
-
-
-    //It was "Winter Effect" previously//"
     updateGustSystem();
-
-
 }
 animate();
