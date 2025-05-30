@@ -3,7 +3,7 @@ import { animate, loadScene } from "./scripts/gridModels.js";
 import {  cloudMove, loadClouds, setBackground, sun, } from "./scripts/environment.js";
 import { init } from "./scripts/UIManager.js";
 import { addBlock, deleteModel } from "./scripts/buttonInteract.js";
-// import * as seasonSyncUtil from './seasonSyncUtil';
+import * as seasonSyncUtil from './scripts/seasonSyncUtil.js';
 
 //Scene & Camera Setup
 // - Initialize the Three.js scene, camera, and renderer

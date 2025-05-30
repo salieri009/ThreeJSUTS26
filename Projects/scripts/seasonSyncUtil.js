@@ -96,13 +96,6 @@ async function getWeather(lat, lon) {
     }
 }
 
-// UI 업데이트 예시 함수
-function updateWeatherUI(weather) {
-    document.getElementById('temperature').textContent = weather.temperature !== null ? `${weather.temperature}°C` : 'N/A';
-    document.getElementById('condition').textContent = weather.weatherMain || 'Unknown';
-    // document.getElementById('')
-}
-
 // 날짜로부터 계절 계산 (북반구/남반구 고려)
 export function getSeasonByDate(date, latitude = 37) {
     const month = date.getMonth() + 1;
