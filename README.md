@@ -25,9 +25,8 @@ npm install
 
 ---
 
-## **Current Status (as of 29/MAR/2025)**
 
-![Three JS installation explain](https://cdn.discordapp.com/attachments/1344839359689527368/1355288580523688137/image.png?ex=67e86259&is=67e710d9&hm=2cf33f67dddbacf5a0a6003c79844908e36fcac4d58964a4b **Key Features**
+**Key Features**
 
 - Real-time simulation of seasons and weather, including spring cherry blossoms, summer fireflies, autumn leaves, and winter auroras/snow[1].
 - Modular particle systems for clouds, rain, snow, wind, and fog, each with create, update, and remove functions for efficient resource management[1].
