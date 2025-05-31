@@ -52,10 +52,10 @@ npm install
 - Developed by Group 26, UTS 2025
 - Built with [Three.js](https://threejs.org/)
 
-<div align="center">
-  ## **Preview Videos**  
-  [![YouTube 영상](https://img.youtube.com/vi/OhrsFjwetAg/0.jpg)](https://youtu.be/OhrsFjwetAg)
-</div>
+
+## **Preview Videos**  
+[![YouTube 영상](https://img.youtube.com/vi/OhrsFjwetAg/0.jpg)](https://youtu.be/OhrsFjwetAg)
+
 ---
 
 For more details, refer to the source code and inline documentation in the repository.  
