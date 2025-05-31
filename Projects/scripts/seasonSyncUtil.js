@@ -246,7 +246,7 @@ export function updateWeatherUI() {
     }, () => setRandomWeatherUI());
 }
 
-// ===================== 예보 UI (임시 랜덤) =====================
+// ===================== Forecast UI // Random Generation ====================
 export function updateForecast() {
     const forecastContainer = document.getElementById('forecast');
     const timeRuler = document.getElementById('timeRuler');
