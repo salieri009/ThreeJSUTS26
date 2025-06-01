@@ -1,10 +1,12 @@
-![Project Banner](https://capsule-render.vercel.app/api?type=waving&height=200&text=Group%2026%20Three.js%20Projects&fontAlign=80&fontAlignY=40&color=gradient)
+![Project Banner](https://capsule-render.vercel.app/api?type=waving&width=1000&height=200&text=Group%2026%20Three.js%20프로젝트&fontAlign=80&fontAlignY=40&color=gradient)
 
 
 
 
 ## **ThreeJS Projects**
 Farm-like Simulator
+[![Three.js](https://img.shields.io/badge/Made%20with-Three.js-000?logo=three.js&logoColor=white)](https://threejs.org/)
+
 
 ---
 
@@ -18,6 +20,10 @@ Users can experience natural environmental changes—such as cherry blossoms in 
 All effects are modular and respond instantly to user interactions or real-world weather data, providing a rich and immersive simulation environment[1][2].
 
 ---
+
+[![Node.js](https://img.shields.io/badge/Node.js-powered-6DA55F?logo=node.js&logoColor=white)](https://nodejs.org)
+![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)
+
 
 ## **Installation**
 
@@ -57,9 +63,13 @@ npm install
 - Developed by Group 26, UTS 2025
 - Built with [Three.js](https://threejs.org/)
 - made by Juyoung Chang, Jungwook Van
+[![Contributors](https://img.shields.io/github/contributors/salieri009/ThreeJSUTS26)](https://github.com/salieri009/ThreeJSUTS26/graphs/contributors)
 
 
 ## **Preview Videos**  
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Click%20Here-success?logo=three.js)](https://your-live-demo-url.com)
+
 [![YouTube 영상](https://img.youtube.com/vi/OhrsFjwetAg/0.jpg)](https://youtu.be/OhrsFjwetAg)
 
 ---
