@@ -1,4 +1,7 @@
-# Group 26 Project Introduction
+![Project Banner](https://capsule-render.vercel.app/api?type=waving&height=200&text=Group%2026%20Three.js%20Projects&fontAlign=80&fontAlignY=40&color=gradient)
+
+
+
 
 ## **ThreeJS Projects**
 Farm-like Simulator
@@ -53,6 +56,7 @@ npm install
 
 - Developed by Group 26, UTS 2025
 - Built with [Three.js](https://threejs.org/)
+- made by Juyoung Chang, Jungwook Van
 
 
 ## **Preview Videos**  
@@ -64,4 +68,79 @@ For more details, refer to the source code and inline documentation in the repos
 Feel free to reach out for questions or contributions!
 
 
+Belows are Korean translation about this project. 
+
+---
+
+<details>
+<summary><strong>한국어 번역 보기</strong></summary>
+
+# 그룹 26 프로젝트 소개
+
+## **ThreeJS 프로젝트**
+
+농장 시뮬레이터
+
+---
+
+## 설명
+
+이 프로젝트는 Three.js로 제작된 실시간 인터랙티브 3D 농장 시뮬레이터입니다.
+봄, 여름, 가을, 겨울의 계절 변화와 맑음, 흐림, 비, 눈, 폭풍, 안개 등 다양한 날씨 시스템, 낮과 밤의 주기를 특징으로 합니다.
+
+사용자는 봄에는 벚꽃, 여름에는 반딧불이, 가을에는 낙엽, 겨울에는 오로라나 눈 같은 자연 환경의 변화를 경험할 수 있으며, 사실적인 조명, 구름, 비, 바람, 웅덩이 효과가 함께 제공됩니다.
+
+모든 효과는 모듈화되어 있으며 사용자 상호작용이나 실제 날씨 데이터에 따라 즉시 반응하여 풍부하고 몰입감 있는 시뮬레이션 환경을 제공합니다\[1]\[2].
+
+---
+
+## **설치 방법**
+
+```bash
+# 설치 명령어
+git clone https://github.com/salieri009/ThreeJSUTS26.git
+cd ThreeJSUTS26
+npm install
+```
+
+---
+
+**주요 기능**
+
+* 벚꽃이 피는 봄, 반딧불이가 날아다니는 여름, 낙엽이 떨어지는 가을, 오로라와 눈이 내리는 겨울 등 계절과 날씨의 실시간 시뮬레이션\[1]
+* 구름, 비, 눈, 바람, 안개 등을 위한 모듈식 파티클 시스템. 각각 생성(create), 갱신(update), 제거(remove) 기능으로 효율적인 자원 관리 지원\[1]
+* 태양과 달의 조명 변화, 부드러운 낮-밤 전환, 밤에는 별과 수퍼문 등 특수 효과 제공\[1]
+* 계절과 날씨에 따라 자동으로 변하는 풀과 하늘의 색상, 조명, 주변 효과 등 반응형 환경 구성\[1]
+* 다양한 기기에서 성능 최적화를 위한 LOD(Level of Detail) 제어 기능\[1]
+* 실제 위치의 날씨 API와 통합하여 현재 날씨에 맞춰 자동 동기화\[2]
+* 버튼과 단축키를 통한 사용자 상호작용으로 계절 및 날씨 즉시 전환 가능\[1]
+* 물리 기반 머티리얼을 사용한 사실적인 빗물 고임 및 웅덩이 효과 구현\[1]
+
+---
+
+## **실행 방법**
+
+1. 위 명령어를 사용해 레포지토리를 클론하고 의존성을 설치하세요.
+2. 개발 서버를 시작합니다 (`npm start` 또는 `npm run dev`).
+3. 브라우저에서 제공된 로컬 URL을 열어 시뮬레이션을 체험하세요.
+
+---
+
+## **제작진**
+
+* UTS 2025년 그룹 26
+* [Three.js](https://threejs.org/) 기반 제작
+
+---
+
+## **미리보기 영상**
+
+[![YouTube 영상](https://img.youtube.com/vi/OhrsFjwetAg/0.jpg)](https://youtu.be/OhrsFjwetAg)
+
+---
+
+더 많은 정보는 레포지토리의 소스 코드와 인라인 문서를 참고하세요.
+질문이나 기여를 원하시면 언제든지 연락 주세요!
+
+</details>
 
