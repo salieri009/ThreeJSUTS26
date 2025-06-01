@@ -9,7 +9,9 @@ Farm-like Simulator
 
 This project is a real-time, interactive 3D farm-like simulator built with Three.js.  
 It features dynamic seasons (spring, summer, autumn, winter), weather systems (sunny, cloudy, rainy, snowy, stormy, foggy), and day-night cycles.  
+
 Users can experience natural environmental changes—such as cherry blossoms in spring, fireflies in summer, falling leaves in autumn, and auroras or snow in winter—along with realistic lighting, clouds, rain, wind, and puddle effects.  
+
 All effects are modular and respond instantly to user interactions or real-world weather data, providing a rich and immersive simulation environment[1][2].
 
 ---
