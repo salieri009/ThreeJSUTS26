@@ -1,0 +1,450 @@
+/* 🎯 Minimal Button Interaction System */
+/* Clean, subtle, and performance-focused design */
+
+/* Global Button Reset with Minimal Base */
+.btn-minimal, 
+button, 
+[role="button"] {
+  position: relative;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  transform-origin: center;
+  outline: none;
+}
+
+/* 🔹 Clean Glass Effect */
+.btn-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+}
+
+.btn-glass:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-focus);
+  transform: translateY(-1px);
+}
+
+.btn-glass:active {
+  transform: translateY(0);
+  transition-duration: 0.1s;
+}
+
+/* 🔸 Subtle Elevation */
+.btn-elevated {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.btn-elevated:hover {
+  background: var(--bg-surface-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-elevated:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-xs);
+}
+
+/* 🔹 Flat Modern */
+.btn-flat {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease;
+}
+
+.btn-flat:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-focus);
+}
+
+.btn-flat:active {
+  background: var(--bg-surface-pressed);
+}
+
+/* 🔸 Ghost Style */
+.btn-ghost {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease;
+}
+
+.btn-ghost:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-primary);
+}
+
+.btn-ghost:active {
+  background: var(--bg-surface-pressed);
+}
+
+/* 🔹 Primary Action */
+.btn-primary {
+  background: var(--primary-500);
+  color: white;
+  border: 1px solid var(--primary-500);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: var(--primary-600);
+  border-color: var(--primary-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+  background: var(--primary-700);
+  transform: translateY(0);
+}
+
+/* 🔸 Secondary Action */
+.btn-secondary {
+  background: var(--secondary-500);
+  color: white;
+  border: 1px solid var(--secondary-500);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--secondary-600);
+  border-color: var(--secondary-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary:active {
+  background: var(--secondary-700);
+  transform: translateY(0);
+}
+
+/* 🔹 Icon Button */
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  transition: all 0.15s ease;
+}
+
+.btn-icon:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-focus);
+}
+
+.btn-icon:active {
+  background: var(--bg-surface-pressed);
+  transform: scale(0.95);
+}
+
+/* 🔸 Large Button */
+.btn-large {
+  padding: var(--space-4) var(--space-6);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-xl);
+}
+
+/* 🔹 Small Button */
+.btn-small {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-md);
+}
+
+/* 🔸 Disabled State */
+.btn-minimal:disabled,
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* 🎯 Apply Minimal Classes to Components */
+
+/* Left Sidebar */
+.left-sidebar .category-button {
+  @apply btn-ghost btn-large;
+  padding: var(--space-3) var(--space-4);
+  width: 100%;
+  text-align: left;
+  justify-content: flex-start;
+}
+
+.left-sidebar .category-button.active {
+  background: var(--primary-50);
+  border-color: var(--primary-200);
+  color: var(--primary-700);
+}
+
+.left-sidebar .sidebar-collapse-btn {
+  @apply btn-icon;
+  width: 32px;
+  height: 32px;
+}
+
+.left-sidebar .search-clear {
+  @apply btn-icon;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+}
+
+/* Right Dock */
+.right-dock .dock-toggle-btn {
+  @apply btn-icon;
+  width: 32px;
+  height: 32px;
+}
+
+.right-dock .weather-option {
+  @apply btn-flat;
+  padding: var(--space-3);
+  text-align: center;
+}
+
+.right-dock .weather-option.active {
+  background: var(--primary-100);
+  border-color: var(--primary-500);
+  color: var(--primary-700);
+}
+
+.right-dock .season-option {
+  @apply btn-flat;
+  padding: var(--space-3);
+  text-align: center;
+}
+
+.right-dock .season-option.active {
+  background: var(--accent-100);
+  border-color: var(--accent-500);
+  color: var(--accent-700);
+}
+
+.right-dock .quick-action-btn {
+  @apply btn-elevated;
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.right-dock .time-control-btn {
+  @apply btn-flat;
+  padding: var(--space-3) var(--space-4);
+}
+
+.right-dock .time-control-btn.active {
+  background: var(--secondary-100);
+  border-color: var(--secondary-500);
+  color: var(--secondary-700);
+}
+
+.right-dock .speed-btn {
+  @apply btn-ghost;
+  padding: var(--space-2);
+  text-align: center;
+}
+
+.right-dock .speed-btn.active {
+  background: var(--secondary-100);
+  border-color: var(--secondary-500);
+  color: var(--secondary-700);
+}
+
+/* Center Actions */
+.center-actions .main-action-btn {
+  @apply btn-primary;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xl);
+}
+
+.center-actions .main-action-btn.remove {
+  background: var(--error);
+  border-color: var(--error);
+}
+
+.center-actions .main-action-btn.remove:hover {
+  background: var(--error-600);
+  border-color: var(--error-600);
+}
+
+.center-actions .secondary-action-btn {
+  @apply btn-elevated;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+}
+
+.center-actions .expand-toggle-btn {
+  @apply btn-ghost;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+}
+
+/* Header & Footer */
+.header .theme-toggle {
+  @apply btn-icon;
+  border-radius: var(--radius-full);
+}
+
+.footer .action-btn {
+  @apply btn-ghost btn-small;
+}
+
+/* Item Panel */
+.item-panel .item-action-btn {
+  @apply btn-ghost btn-small;
+  flex: 1;
+}
+
+.item-panel .item-card {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  transition: all 0.2s ease;
+}
+
+.item-panel .item-card:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-focus);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.item-panel .item-card.selected {
+  background: var(--primary-50);
+  border-color: var(--primary-500);
+}
+
+/* Selection Actions */
+.selection-action {
+  @apply btn-icon;
+  width: 28px;
+  height: 28px;
+}
+
+/* Global Notification */
+.notification-close {
+  @apply btn-icon;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+}
+
+/* Focus States */
+.btn-minimal:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Loading States */
+.btn-loading {
+  position: relative;
+  color: transparent;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: btn-spin 0.8s linear infinite;
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .btn-large {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-sm);
+  }
+  
+  .btn-icon {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .center-actions .main-action-btn {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .center-actions .secondary-action-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .btn-glass,
+  .btn-elevated,
+  .btn-flat,
+  .btn-ghost,
+  .btn-icon {
+    border-width: 2px;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    border-width: 2px;
+    font-weight: var(--font-weight-semibold);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .btn-minimal,
+  button,
+  [role="button"] {
+    transition: none;
+  }
+  
+  .btn-loading::after {
+    animation: none;
+  }
+}
+
+/* Dark Theme Adjustments */
+[data-theme="dark"] {
+  .btn-glass {
+    backdrop-filter: blur(16px);
+  }
+  
+  .btn-elevated {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .btn-elevated:hover {
+    box-shadow: var(--shadow-lg);
+  }
+}

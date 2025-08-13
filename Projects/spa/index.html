@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- 🎯 Favicon & App Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- 📱 Mobile & PWA Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="AnimalSim" />
+    <meta name="application-name" content="Animal Simulator" />
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="msapplication-TileColor" content="#6366f1" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    
+    <!-- 🌐 SEO & Social -->
+    <title>🌾 Animal Simulator SPA - Interactive 3D Farm</title>
+    <meta name="description" content="Interactive 3D Animal Farm Simulator built with Vue3, TypeScript, and Three.js. Create your own virtual farm with animals, buildings, and dynamic weather." />
+    <meta name="keywords" content="3D, simulation, farm, animals, Vue3, Three.js, interactive, game" />
+    <meta name="author" content="Animal Simulator Team" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="🌾 Animal Simulator SPA" />
+    <meta property="og:description" content="Interactive 3D Animal Farm Simulator with Vue3 and Three.js" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/icons/icon-512x512.png" />
+    <meta property="og:site_name" content="Animal Simulator" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="🌾 Animal Simulator SPA" />
+    <meta name="twitter:description" content="Interactive 3D Animal Farm Simulator" />
+    <meta name="twitter:image" content="/icons/icon-512x512.png" />
+    
+    <!-- 🎨 Fonts & Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- 🚀 Preload Critical Resources -->
+    <link rel="modulepreload" href="/src/main.ts" />
+    <link rel="modulepreload" href="/src/App.vue" />
+    
+    <!-- 🎯 Critical CSS Inline -->
+    <style>
+      /* Critical loading styles */
+      #app {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Inter, system-ui, sans-serif;
+      }
+      
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #ffffff;
+        animation: spin 1s ease-in-out infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      .loading-text {
+        color: white;
+        margin-top: 1rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Loading state -->
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">🌾 Loading Animal Simulator...</div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
