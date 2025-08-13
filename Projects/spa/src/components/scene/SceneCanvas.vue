@@ -267,39 +267,38 @@ const setupEventListeners = () => {
   if (!interactionSystem) return
   
   // Model interaction events
-  interactionSystem.on('object-selected', (object) => {
-    selectedObject.value = object
-    emit('object-selected', object)
-    console.log('Object selected:', object.name)
+  interactionSystem.addEventListener('object-selected', (event: any) => {
+    selectedObject.value = event.object
+    emit('object-selected', event.object)
+    console.log('Object selected:', event.object.name)
   })
   
-  interactionSystem.on('object-deselected', () => {
+  interactionSystem.addEventListener('object-deselected', (event: any) => {
     selectedObject.value = null
     emit('object-deselected')
     console.log('Object deselected')
   })
   
-  interactionSystem.on('object-hover', (object) => {
-    hoveredObject.value = object
-    emit('object-hover', object)
+  interactionSystem.addEventListener('object-hover', (event: any) => {
+    hoveredObject.value = event.object
+    emit('object-hover', event.object)
   })
   
-  interactionSystem.on('object-added', (object) => {
+  interactionSystem.addEventListener('object-placed', (event: any) => {
     updateSceneInfo()
-    emit('object-added', object)
-    console.log('Object added:', object.name)
+    emit('object-added', event.object)
+    console.log('Object placed:', event.object.name)
   })
   
-  interactionSystem.on('object-removed', (object) => {
+  interactionSystem.addEventListener('object-removed', (event: any) => {
     updateSceneInfo()
-    emit('object-removed', object)
-    console.log('Object removed:', object.name)
+    emit('object-removed', event.object)
+    console.log('Object removed:', event.object.name)
   })
   
-  interactionSystem.on('camera-moved', (position, target) => {
-    cameraPosition.value = position
-    cameraTarget.value = target
-    emit('camera-moved', position, target)
+  interactionSystem.addEventListener('mode-changed', (event: any) => {
+    emit('mode-changed', event.mode)
+    console.log('Interaction mode changed:', event.mode)
   })
 }
 
